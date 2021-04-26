@@ -9,7 +9,9 @@ let db = {
             reportCount: 0,
             bio: 'Hi there, my name is Mark!',
             location: 'London, UK',
-            mainInterests: ['drama', 'adventure']
+            mainInterests: ['drama', 'adventure'],
+            // banned: false,
+            // banDate: ''
         }
     ],
     books: [
@@ -21,19 +23,110 @@ let db = {
             author: '',
             publisher: '',
             numPages: 200,
-            genre: '',
-            bookType: '',
+            genres: [''],
             language: '',
+            bookQuality: '',
             owner: '',
             ownerImage: '',
             publicationYear: 1998,
             summary: '',
-            averateRating: '',
+            ownerRating: '',
+            ownerReview: '',
             numExchanges: 3,
+            numReviews: 1,
             coverImageUrl: '',
-            bookImages: ['imageUrl array'],
+            averageRating: 4,
+            // bookImages: ['imageUrl array'],
             inAuction: false,
             auctionId: ''
+        }
+    ],
+    reviews: [
+        {
+            reviewId: '',
+            createdAt: '2021-04-21T15:38:46.994Z',
+            bookId: '',
+            username: '',
+            userImage: '',
+            body: '',
+            rating: 4
+            // bookOwner: '' ????
+
+        }
+    ],
+    notifications: [
+        {
+            notificationId: '',
+            createdAt: '2021-04-21T15:38:46.994Z',
+            recipient: '',
+            sender: '',
+            type: ' book-review | crossing-request | topic | reply ',
+            read: false,
+            // reviewId: '',
+            // topicId: '',
+            // exchangeId: '',
+            contendId: '',
+            senderImage: '' 
+        }
+    ],
+    crossings: [
+        {
+            crossingId: '',
+            type: 'permanent | temporar ',
+            createdAt: '2021-04-21T15:38:46.994Z',
+            recipient: '',
+            recipientData: {
+                userImage: '',
+                show: true
+            },
+            sender: '',
+            senderData: {
+                userImage: '',
+                show: true
+            },
+            reqBookId: '',
+            reqBook: {     // sender book
+                title: '',
+                author: '',
+                coverImage: ''
+            },
+            randomBookId: '',
+            randomBook: {       // recipient book
+                title: '',
+                author: '',
+                coverImage: ''
+            },
+            status: 'pending | accepted | in progress | done'
+        }
+    ],
+    topics: [
+        {
+            topicId: '',
+            createdAt: '2021-04-21T15:38:46.994Z',
+            crossingId: '',
+            username: '',
+            userImage: '',
+            body: '',
+            replyCount: 0
+        }
+    ],
+    replies: [
+        {
+            replyId: '',
+            createdAt: '2021-04-21T15:38:46.994Z',
+            topicId: '',
+            body: '',
+            username: '',
+            userImage: ''
+        }
+    ],
+    reports: [
+        {
+            reportId: '',
+            createdAt: '2021-04-21T15:38:46.994Z',
+            recipient: '',
+            sender: '',
+            body: ''
         }
     ],
     auctions:[
@@ -59,75 +152,6 @@ let db = {
             username: '',
             userImage: '',
             books: ['books id']
-        }
-    ],
-    reports: [
-        {
-            reportId: '',
-            createdAt: '2021-04-21T15:38:46.994Z',
-            recipient: '',
-            sender: '',
-            body: ''
-        }
-    ],
-    reviews: [
-        {
-            reviewId: '',
-            createdAt: '2021-04-21T15:38:46.994Z',
-            bookId: '',
-            username: '',
-            userImage: '',
-            body: '',
-            bookRate: 4
-            // bookOwner: '' ????
-
-        }
-    ],
-    notifications: [
-        {
-            notificationId: '',
-            createdAt: '2021-04-21T15:38:46.994Z',
-            recipient: '',
-            sender: '',
-            type: 'offer | review | auction | exchange | topic',
-            read: false,
-            contentId: '',
-            senderImage: '' 
-        }
-    ],
-    exchanges: [
-        {
-            exchangeId: '',
-            type: 'permanent | temporar',
-            createdAt: '2021-04-21T15:38:46.994Z',
-            recipient: '',
-            sender: '',
-            recipientBook: '',
-            senderBook: '',
-            state: 'pending request | in progress | done',
-            senderImage: '' ,
-            recipientImage: '' 
-        }
-    ],
-    topics: [
-        {
-            topicId: '',
-            createdAt: '2021-04-21T15:38:46.994Z',
-            exchangeId: '',
-            username: '',
-            userImage: '',
-            body: '',
-            replyCount: 0
-        }
-    ],
-    replies: [
-        {
-            replyId: '',
-            createdAt: '2021-04-21T15:38:46.994Z',
-            topicId: '',
-            body: '',
-            username: '',
-            userImage: ''
         }
     ]
 };
