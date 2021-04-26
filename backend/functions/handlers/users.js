@@ -43,6 +43,7 @@ exports.signUp = (req, res) => {
             createdAt: new Date().toISOString(),
             imageUrl: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImage}?alt=media`,
             reportCount: 0,
+            // banned: false,
             userId
         };
 
@@ -156,7 +157,7 @@ exports.changeEmail = (req, res) => {
 };
 
 
-// change account password
+// Change account password
 exports.changePassword = (req, res) => {
     const user = {
         email: req.body.email,
@@ -171,6 +172,7 @@ exports.changePassword = (req, res) => {
     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
         if (user.newPassword.trim() === '') return res.status(400).json({ password: 'Must not be empty!' });
+        if (user.newPassword.length < 8) return res.status(400).json({ password: 'Must be at least 8 characters long!' });
 
         return data.user.updatePassword(user.newPassword)
     })
@@ -184,16 +186,72 @@ exports.changePassword = (req, res) => {
 };
 
 
+// Change username
+exports.changeUsername = (req, res) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password,
+        newUsername: req.body.newUsername
+    };
+
+    if (user.newUsername.trim() === '') return res.status(400).json({ username: 'Must not be empty!' });
+
+    const { valid, errors } = validateLogInData(user);
+
+    if (!valid) return res.status(400).json(errors);
+
+    let userData = {};
+    let oldUsername = req.user.username;
+
+    const userDocument = db.doc(`/users/${oldUsername}`);
+
+    userDocument.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
+
+        userData = doc.data();
+        userData.username = user.newUsername;
+
+        console.log(userData);
+
+        return userDocument.delete();
+    })
+    .then(() => {
+        const batch = db.batch();
+
+        return db.doc(`/users/${user.newUsername}`).set(userData)
+        .then(() => {
+            return db.collection('books').where('owner', '==', oldUsername).get();
+        })
+        .then(data => {
+            data.forEach(doc => {
+                batch.update(db.doc(`/books/${doc.id}`), {owner: user.newUsername});
+            });
+    
+            return db.collection('reviews').where('username', '==', oldUsername).get();
+        })
+        .then((data) => {
+            data.forEach(doc => {
+                batch.update(db.doc(`/reviews/${doc.id}`), {username: user.newUsername});
+            });
+    
+            return batch.commit();
+        });
+    })
+    .then(() => {
+        return res.json({ message: 'Username updated successfully!' });
+    })
+    .catch(err => {
+        console.error(err);
+        return res.status(500).json({error: err.code});
+    })
+
+};
+
+
 // Add user details
 exports.addUserDetails = (req, res) => {
     let userDetails = reduceUserDetails(req.body);
-    // let username;
-
-    // if (req.body.hasOwnProperty('username')) {
-    //     username = req.body.username.trim();
-
-
-    // }
 
     db.doc(`/users/${req.user.username}`).update(userDetails)
     .then(() => {
@@ -204,18 +262,6 @@ exports.addUserDetails = (req, res) => {
         return res.status(500).json({ error: err.code });
     });
 };
-
-
-// // Get authenticated user
-// exports.getAuthenticatedUser = (req, res) => {
-
-// };
-
-
-// // Get any user details
-// exports.getUserDetails = (req, res) => {
-    
-// };
 
 
 // Upload profile image for current user
@@ -230,6 +276,8 @@ exports.uploadImage = (req, res) => {
     let imageUrl;
     let imageFileName;
     let imageToBeUploaded = {};
+
+    let oldImageUrl = req.user.imageUrl;
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
         if (mimetype !== 'image/jpeg' && mimetype !== 'image/jpg' && mimetype !== 'image/png') {
@@ -256,10 +304,34 @@ exports.uploadImage = (req, res) => {
         })
         .then(() => {
             imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
+            const batch = db.batch();
 
-            return db.doc(`/users/${req.user.username}`).update({ imageUrl });
+            return db.doc(`/users/${req.user.username}`).update({ imageUrl })
+            .then(() => {
+                return db.collection('books').where('owner', '==', req.user.username).get();
+            })
+            .then(data => {
+                data.forEach(doc => {
+                    batch.update(db.doc(`/books/${doc.id}`), {ownerImage: imageUrl});
+                });
+
+                return db.collection('reviews').where('username', '==', req.user.username).get();
+            })
+            .then(data => {
+                data.forEach(doc => {
+                    batch.update(db.doc(`/reviews/${doc.id}`), {userImage: imageUrl});
+                });
+
+                return batch.commit();
+            });
         })
         .then(() => {
+            oldImageFilename = path.basename(oldImageUrl).split('?')[0];
+
+            if (oldImageFilename !== 'no-image.jpg') {
+                admin.storage().bucket().file(oldImageFilename).delete();
+            }
+
             return res.json({message: 'Image uploaded successfully!'});
         })
         .catch(err => {
@@ -270,3 +342,60 @@ exports.uploadImage = (req, res) => {
 
     busboy.end(req.rawBody);
 };
+
+
+// // Get authenticated user
+// exports.getAuthenticatedUser = (req, res) => {
+
+// };
+
+
+// // Get any user details
+exports.getUserDetails = (req, res) => {
+    let userData = {};
+    db.doc(`/users/${req.params.username}`).get()
+    .then(doc => {
+        if (doc.exists) {
+            userData.user = doc.data();
+            return db.collection('books').where('owner', '==', req.params.username).orderBy('createdAt', 'desc').get();
+        } else {
+            return res.status(404).json({error: 'User not found!'});
+        }
+    })
+    .then(data => {
+        userData.books = [];
+        data.forEach(doc => {
+            userData.books.push({
+                title: doc.data().title,
+                author: doc.data().author,
+                publisher: doc.data().publisher,
+                publicationYear: doc.data().publicationYear,
+                createdAt: doc.data().createdAt,
+                owner: doc.data().owner,
+                ownerImage: doc.data().ownerImage,
+                numReviews: doc.data().numReviews,
+                numExchanges: doc.data().numExchanges,
+                averageRating: doc.data().averageRating,
+                available: doc.data().available,
+                inAuction: doc.data().inAuction,
+                auctionId: doc.data().auctionId,
+                bookId: doc.id
+            });
+        });
+
+        // TO ADD
+        // return db.collection('auctions').where('owner', '==', req.params.username).orderBy('createdAt', 'desc').get();
+
+        return res.json(userData);
+    })
+    .catch(err => {
+        console.error(err);
+        return res.status(500).json({error: err.code});
+    });
+};
+
+
+// Delete user account
+// exports.deleteUserAccount = (req, res) => {
+
+// };
