@@ -13,26 +13,25 @@ const bookOwnerAuth = require("./util/bookOwnerAuth");
 app.post('/signup', signUp);        // Sign up with email and password route
 app.post('/login', logIn);        // Log in with email and password route
 app.post('/forgotPassword', forgotPassword);
-app.post('/user/image', fbAuth, uploadImage);        // Upload user profile picture
 app.post('/user', fbAuth, addUserDetails);       // Add user details
+app.post('/user/image', fbAuth, uploadImage);        // Upload user profile picture
 app.post('/user/email', fbAuth, changeEmail);       // Change account email
 app.post('/user/username', fbAuth, changeUsername);         // Change account username
 app.post('/user/password', fbAuth, changePassword);       // Change account password
 app.get('/user/:username', getUserDetails);          // Get any user details 
 
 // Book routes
-app.get('/books', getAllBooks);     // Get all books
 app.post('/book', fbAuth, addBook);     // Add new book
-app.post('/books/:bookId', bookOwnerAuth, editBook);       // Add/edit book details
-app.post('/books/:bookId/cover', bookOwnerAuth, uploadCoverImage);        // Choose book's cover image
-app.post('/books/:bookId/review', fbAuth, reviewBook);      // Add book Review
-app.post('/books/:bookId/:reviewId', fbAuth, editReview);       // Edit book review
-app.delete('/books/:bookId/:reviewId', fbAuth, deleteReview);       // Delete book review
+app.post('/book/:bookId/cover', bookOwnerAuth, uploadCoverImage);        // Choose book's cover image
+app.post('/book/:bookId/review', fbAuth, reviewBook);      // Add book Review
+app.post('/book/:bookId/:reviewId', fbAuth, editReview);       // Edit book review
+app.delete('/book/:bookId/:reviewId', fbAuth, deleteReview);       // Delete book review
 
+app.get('/books', getAllBooks);     // Get all books
+app.post('/books/:bookId', bookOwnerAuth, editBook);       // Add/edit book details
 
 // Crossing routes
-// routes crossing??? '/books/..' -> calls the editReview route
-app.post('/book/:bookId/crossing', fbAuth, sendCrossingReq);       // Send crossing request + add crossing
+app.post('/crossing/:bookId', fbAuth, sendCrossingReq);       // Send crossing request + add crossing
 // app.get('/crossings/:crossingId', fbAuth, getCrossingDetails);      // Get crossing details (crossing data + topics + replies)
 // app.delete('/crossings/:crossingId', fbAuth, deleteCrossing);       // Delete book crossing 
 

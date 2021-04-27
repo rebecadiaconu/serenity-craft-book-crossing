@@ -29,8 +29,7 @@ exports.sendCrossingReq = (req, res) => {
     .limit(1)
     .get()
     .then((data) => {
-        if (!data.empty) return res.status(400).json({ error: 'You already sent one crossing request for this book!' });
-
+        if (!data.empty) return res.status(400).json({ error: 'You already sent one crossing request to this user for this book!' });
         return db.collection('crossings').add(newCrossing);
     })
     .then(() => {
@@ -38,7 +37,6 @@ exports.sendCrossingReq = (req, res) => {
     })
     .catch((err) => {
         console.error(err);
-
         return res.status(500).json({ error: err.code });
     });
 };
