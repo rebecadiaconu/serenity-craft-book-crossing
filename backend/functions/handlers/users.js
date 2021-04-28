@@ -5,6 +5,8 @@ const { validateLogInData, validateSignUpData, validateEmail, reduceUserDetails}
 const firebase = require('firebase');
 firebase.initializeApp(config);
 
+realtime = firebase.database();
+
 
 // SignUp route
 exports.signUp = (req, res) => {
@@ -25,7 +27,7 @@ exports.signUp = (req, res) => {
     db.doc(`/users/${newUser.username}`).get()
     .then((doc) => {
         if (doc.exists) {
-            return res.status(400).json({ message: 'This username is already taken. Please choose another one!'});
+            return res.status(400).json({ username: 'This username is already taken. Please choose another one!'});
         } else {
             return firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password);
         }
@@ -43,7 +45,7 @@ exports.signUp = (req, res) => {
             createdAt: new Date().toISOString(),
             imageUrl: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImage}?alt=media`,
             reportCount: 0,
-            // banned: false,
+            banned: false,
             userId
         };
 
@@ -55,7 +57,7 @@ exports.signUp = (req, res) => {
     .catch((err) => {
         console.error(err);
         if (err.code == "auth/email-already-in-use") {
-            return res.status(400).json({ email: 'Email already in use!'});
+            return res.status(400).json({ email: 'Email already in use!' });
         }
 
         return res.status(500).json({ general: 'Something went wrong... Try again!' });
@@ -80,8 +82,7 @@ exports.logIn = (req, res) => {
     .then((token) => {
         return res.json({ token });
     })
-    .catch(err => {
-        let errors = {};
+    .catch((err) => {
         console.error(err);
 
         if (err.code == 'auth/wrong-password') {
@@ -100,7 +101,12 @@ exports.forgotPassword = (req, res) => {
 
     if (!valid) return res.status(400).json(errors);
 
-    firebase.auth().sendPasswordResetEmail(userEmail)
+    db.collection("users").where("email", "==", req.body.email).get()
+    .then((data) => {
+        if (data.empty) return res.status(404).json({ error: 'User not found! '});
+
+        return firebase.auth().sendPasswordResetEmail(userEmail);
+    })
     .then(() => {
         return res.json({ message: 'Please verify your email!'});
     })
@@ -110,138 +116,43 @@ exports.forgotPassword = (req, res) => {
     });
 };
 
-// Change account email
-exports.changeEmail = (req, res) => {
-    const user = {
-        email: req.body.email,
-        newEmail: req.body.newEmail,
-        password: req.body.password
-    };
-
-    const { valid, errors } = validateLogInData(user);
-
-    if (!valid) return res.status(400).json(errors);
-
-    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
-    .then((data) => {
-        const { valid, errors } = validateEmail(user.newEmail);
-
-        if (!valid) return res.status(400).json({ newEmail: errors.email });
-
-        return data.user.updateEmail(user.newEmail);
-    })
-    .then(() => {
-        return db.collection('users').where('email', '==', user.email).limit(1).get()
-    })
-    .then((data) => {
-        if (data.empty) {
-            return res.status(404).json({ error: user.email + ' User not found!' });
-        }
-
-        return db.doc(`/users/${data.docs[0].id}`).update({ email: user.newEmail });
-    })
-    .then(() => {
-        return res.json({ message: 'Email updated successfully' });
-    })
-    .catch((err) => {
-        console.error(err);
-
-        if (err.code == "auth/email-already-in-use") {
-            return res.status(400).json({ email: 'New email is already in use!'});
-        }
-
-        return res.status(500). json({ error: err.code });
-    });
-};
-
-// Change account password
-exports.changePassword = (req, res) => {
-    const user = {
-        email: req.body.email,
-        password: req.body.password,
-        newPassword: req.body.newPassword
-    };
-
-    const { valid, errors } = validateLogInData(user);
-
-    if (!valid) return res.status(400).json(errors);
-
-    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
-    .then((data) => {
-        if (user.newPassword.trim() === '') return res.status(400).json({ password: 'Must not be empty!' });
-        if (user.newPassword.length < 8) return res.status(400).json({ password: 'Must be at least 8 characters long!' });
-
-        return data.user.updatePassword(user.newPassword)
-    })
-    .then(()=> {
-        return res.json({ message: 'Password updated successfully' });
-    })
-    .catch((err) => {
-        console.error(err);
-        return res.status(500). json({ error: err.code });
-    });
-};
-
-// Change username
-exports.changeUsername = (req, res) => {
-    const user = {
-        email: req.body.email,
-        password: req.body.password,
-        newUsername: req.body.newUsername
-    };
-
-    if (user.newUsername.trim() === '') return res.status(400).json({ username: 'Must not be empty!' });
-
-    const { valid, errors } = validateLogInData(user);
-
-    if (!valid) return res.status(400).json(errors);
-
+// Get authenticated user
+exports.getAuthenticatedUser = (req, res) => {
     let userData = {};
-    let oldUsername = req.user.username;
 
-    const userDocument = db.doc(`/users/${oldUsername}`);
-
-    userDocument.get()
+    db.doc(`/users/${req.user.username}`).get()
     .then((doc) => {
-        if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
+        if (!doc.exists) return res.status(404).json({error: 'User not found!' });
 
-        userData = doc.data();
-        userData.username = user.newUsername;
+        userData.credentials = doc.data();
 
-        console.log(userData);
-
-        return userDocument.delete();
+        return db.collection('books').orderBy('createdAt', 'desc').where('owner', '==', req.user.username).get();
     })
-    .then(() => {
-        const batch = db.batch();
-
-        return db.doc(`/users/${user.newUsername}`).set(userData)
-        .then(() => {
-            return db.collection('books').where('owner', '==', oldUsername).get();
-        })
-        .then(data => {
-            data.forEach(doc => {
-                batch.update(db.doc(`/books/${doc.id}`), {owner: user.newUsername});
-            });
-    
-            return db.collection('reviews').where('username', '==', oldUsername).get();
-        })
-        .then((data) => {
-            data.forEach(doc => {
-                batch.update(db.doc(`/reviews/${doc.id}`), {username: user.newUsername});
-            });
-    
-            return batch.commit();
+    .then((data) => {
+        userData.books = [];
+        data.forEach(doc => {
+            userData.books.push(doc.data());
         });
-    })
-    .then(() => {
-        return res.json({ message: 'Username updated successfully!' });
-    })
-    .catch(err => {
-        console.error(err);
-        return res.status(500).json({error: err.code});
-    })
 
+        const recipientCross = db.collection("crossings").where("recipient", "==", req.user.username).get();
+        const senderCross = db.collection("crossings").where("sender", "==", req.user.username).get();
+
+        return Promise.all([recipientCross, senderCross]);
+    })
+    .then((responses) => {
+        userData.crossings = [];
+        responses.forEach((response) => {
+            response.docs.forEach((doc) => {
+                userData.crossings.push(doc.data());
+            })
+        });
+
+        return res.json(userData);
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
 };
 
 // Add user details
@@ -252,7 +163,7 @@ exports.addUserDetails = (req, res) => {
     .then(() => {
         return res.json({ message: 'Details updated successfully!' });
     })
-    .catch(err => {
+    .catch((err) => {
         console.error(err);
         return res.status(500).json({ error: err.code });
     });
@@ -304,18 +215,75 @@ exports.uploadImage = (req, res) => {
             .then(() => {
                 return db.collection('books').where('owner', '==', req.user.username).get();
             })
-            .then(data => {
-                data.forEach(doc => {
+            .then((data) => {
+                data.forEach((doc) => {
                     batch.update(db.doc(`/books/${doc.id}`), {ownerImage: imageUrl});
                 });
 
                 return db.collection('reviews').where('username', '==', req.user.username).get();
             })
-            .then(data => {
-                data.forEach(doc => {
+            .then((data) => {
+                data.forEach((doc) => {
                     batch.update(db.doc(`/reviews/${doc.id}`), {userImage: imageUrl});
                 });
 
+                return db.collection('crossings').where('sender', '==', req.user.username).get();
+            })
+            .then((data) => {
+                data.forEach((doc) => {
+                    senderData = doc.data().senderData;
+                    senderData.userImage = imageUrl;
+
+                    let promises = [];
+                    realtime.ref(`/topics/${doc.id}`).orderByChild("username").equalTo(req.user.username).get()
+                    .then((data) => {
+                        data.forEach((topic) => {
+                            promises.push(realtime.ref(`/topics/${doc.id}/${topic.topicId}/userImage`).update(imageUrl));
+                        });
+
+                        return Promise.all(promises);
+                    })
+                    .then(() => {
+                        batch.update(db.doc(`/crossings/${doc.id}`), {senderData: senderData});
+                    });
+                });
+
+                return db.collection('crossings').where('recipient', '==', req.user.username).get();
+            })
+            .then((data) => {
+                data.forEach((doc) => {
+                    recipientData = doc.data().recipientData;
+                    recipientData.userImage = imageUrl;
+
+                    let promises = [];
+                    realtime.ref(`/topics/${doc.id}`).orderByChild("username").equalTo(req.user.username).get()
+                    .then((data) => {
+                        data.forEach((topic) => {
+                            promises.push(realtime.ref(`/topics/${doc.id}/${topic.topicId}/userImage`).update(imageUrl));
+                        });
+
+                        return Promise.all(promises);
+                    })
+                    .then(() => {
+                        batch.update(db.doc(`/crossings/${doc.id}`), {recipientData: recipientData});
+                    });
+                });
+
+                return realtime.ref("replies/username").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let promises = [];
+                data.forEach((doc) => {
+                    let replyData = doc.val();
+
+                    if (replyData.username === req.user.username) {
+                        promises.push(realtime.ref(`/replies/${replyData.replyId}/userImage`).update(imageUrl));
+                    }
+                });
+
+                return Promise.all(promises);
+            })
+            .then(() => {
                 return batch.commit();
             });
         })
@@ -328,35 +296,235 @@ exports.uploadImage = (req, res) => {
 
             return res.json({message: 'Image uploaded successfully!'});
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(err);
-            return res.status(500).json({error: err.code});
+            return res.status(500).json({ error: err.code });
         });
     });
 
     busboy.end(req.rawBody);
 };
 
-// // Get authenticated user
-// exports.getAuthenticatedUser = (req, res) => {
+// Change account email
+exports.changeEmail = (req, res) => {
+    const user = {
+        email: req.body.email,
+        newEmail: req.body.newEmail,
+        password: req.body.password
+    };
 
-// };
+    const { valid, errors } = validateLogInData(user);
+
+    if (!valid) return res.status(400).json(errors);
+
+    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+    .then((data) => {
+        const { valid, errors } = validateEmail(user.newEmail);
+
+        if (!valid) return res.status(400).json({ newEmail: errors.email });
+
+        db.collection('users').where('email', '==', user.email).limit(1).get()
+        .then((data) => {
+            if (data.empty) {
+                return res.status(404).json({ error: user.email + ' User not found!' });
+            }
+
+            if (data.docs[0].data().username !== req.user.username) return res.status(400).json({ error: 'Wrong credentials!' });
+    
+            return db.doc(`/users/${data.docs[0].id}`).update({ email: user.newEmail });
+        })
+        .then(() => {
+            return data.user.updateEmail(user.newEmail);
+        });
+    })
+    .then(() => {
+        return res.json({ message: 'Email updated successfully' });
+    })
+    .catch((err) => {
+        console.error(err);
+
+        if (err.code == "auth/email-already-in-use") {
+            return res.status(400).json({ newEmail: 'New email is already in use!' });
+        }
+
+        if (err.code == "auth/user-not-found") {
+            return res.status(400).json({ email: 'Invalid email!' });
+        }
+        if (err.code == "auth/wrong-password") {
+            return res.status(400).json({ password: 'Wrong password!' });
+        }
+
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+// Change username
+exports.changeUsername = (req, res) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password,
+        newUsername: req.body.newUsername
+    };
+
+    if (user.newUsername.trim() === '') return res.status(400).json({ username: 'Must not be empty!' });
+
+    let userData = {};
+    let oldUsername = req.user.username;
+
+    const userDocument = db.doc(`/users/${oldUsername}`);
+
+    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+    .then((data) => { 
+        const { valid, errors } = validateLogInData(user);
+
+        if (!valid) return res.status(400).json(errors);
+        
+        userDocument.get()
+        .then((doc) => {
+            if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
+    
+            if (doc.data().email !== req.body.email) return res.status(400).json({ error: 'Wrong credentials!' });
+
+            userData = doc.data();
+            userData.username = user.newUsername;
+    
+            return userDocument.delete();
+        })
+        .then(() => {
+            const batch = db.batch();
+    
+            return db.doc(`/users/${user.newUsername}`).set(userData)
+            .then(() => {
+                return db.collection('books').where('owner', '==', oldUsername).get();
+            })
+            .then((data) => {
+                data.forEach((doc) => {
+                    batch.update(db.doc(`/books/${doc.id}`), {owner: user.newUsername});
+                });
+        
+                return db.collection('reviews').where('username', '==', oldUsername).get();
+            })
+            .then((data) => {
+                data.forEach((doc) => {
+                    batch.update(db.doc(`/reviews/${doc.id}`), {username: user.newUsername});
+                });
+        
+                return db.collection('crossings').where('sender', '==', req.user.username).get();
+            })
+            .then((data) => {
+                data.forEach((doc) => {
+                    let promises = [];
+                    realtime.ref(`/topics/${doc.id}`).orderByChild("username").equalTo(req.user.username).get()
+                    .then((data) => {
+                        data.forEach((topic) => {
+                            promises.push(realtime.ref(`/topics/${doc.id}/${topic.topicId}/username`).update(user.newUsername));
+                        });
+
+                        return Promise.all(promises);
+                    })
+                    .then(() => {
+                        batch.update(db.doc(`/crossings/${doc.id}`), {sender: user.newUsername});
+                    });
+                });
+
+                return db.collection('crossings').where('recipient', '==', req.user.username).get();
+            })
+            .then((data) => {
+                data.forEach((doc) => {
+                    let promises = [];
+                    realtime.ref(`/topics/${doc.id}`).orderByChild("username").equalTo(req.user.username).get()
+                    .then((data) => {
+                        data.forEach((topic) => {
+                            promises.push(realtime.ref(`/topics/${doc.id}/${topic.topicId}/username`).update(user.newUsername));
+                        });
+
+                        return Promise.all(promises);
+                    })
+                    .then(() => {
+                        batch.update(db.doc(`/crossings/${doc.id}`), {recipient: user.newUsername});
+                    });
+                });
+
+                return realtime.ref("replies/username").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let promises = [];
+                data.forEach((doc) => {
+                    let replyData = doc.val();
+
+                    if (replyData.username === req.user.username) {
+                        promises.push(realtime.ref(`/replies/${replyData.replyId}/username`).update(user.newUsername));
+                    }
+                });
+
+                return Promise.all(promises);
+            })
+            .then(() => {
+                return batch.commit();
+            });
+        });
+    })
+    .then(() => {
+        return res.json({ message: 'Username updated successfully!' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    })
+
+};
+
+// Change account password
+exports.changePassword = (req, res) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password,
+        newPassword: req.body.newPassword
+    };
+
+    const { valid, errors } = validateLogInData(user);
+
+    if (!valid) return res.status(400).json(errors);
+
+    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+    .then((data) => {
+        if (user.newPassword.trim() === '') return res.status(400).json({ password: 'Must not be empty!' });
+        if (user.newPassword.length < 8) return res.status(400).json({ password: 'Must be at least 8 characters long!' });
+
+        db.collection('users').where('email', '==', user.email).limit(1).get()
+        .then((userData) => {
+            if (userData.empty) {
+                return res.status(404).json({ error: user.email + ' User not found!' });
+            }
+
+            if (userData.docs[0].data().username !== req.user.username) return res.status(400).json({ error: 'Wrong credentials!' });
+            return data.user.updatePassword(user.newPassword);
+        });
+    })
+    .then(()=> {
+        return res.json({ message: 'Password updated successfully' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500). json({ error: err.code });
+    });
+};
 
 // // Get any user details
 exports.getUserDetails = (req, res) => {
     let userData = {};
     db.doc(`/users/${req.params.username}`).get()
-    .then(doc => {
+    .then((doc) => {
         if (doc.exists) {
             userData.user = doc.data();
             return db.collection('books').where('owner', '==', req.params.username).orderBy('createdAt', 'desc').get();
         } else {
-            return res.status(404).json({error: 'User not found!'});
+            return res.status(404).json({error: 'User not found!' });
         }
     })
-    .then(data => {
+    .then((data) => {
         userData.books = [];
-        data.forEach(doc => {
+        data.forEach((doc) => {
             userData.books.push({
                 title: doc.data().title,
                 author: doc.data().author,
@@ -380,9 +548,9 @@ exports.getUserDetails = (req, res) => {
 
         return res.json(userData);
     })
-    .catch(err => {
+    .catch((err) => {
         console.error(err);
-        return res.status(500).json({error: err.code});
+        return res.status(500).json({ error: err.code });
     });
 };
 

@@ -124,9 +124,9 @@ exports.addReply = (req, res) => {
 
         topicData = data.val();
 
-        topicData.replyCount++;
         if (topicData.replyCount > 0) topicData.replies.push(newReply.replyId);
         else topicData.replies = [newReply.replyId];
+        topicData.replyCount++;
 
         let topicUpdates = {};
         topicUpdates['replyCount'] = topicData.replyCount;

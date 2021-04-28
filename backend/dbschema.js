@@ -19,6 +19,7 @@ let db = {
             bookId: '',
             createdAt: '2021-04-21T15:38:46.994Z',
             available: true,
+            crossingId: '',
             title: '',
             author: '',
             publisher: '',
@@ -100,13 +101,15 @@ let db = {
             reqBook: {     // sender book
                 title: '',
                 author: '',
-                coverImage: ''
+                coverImage: '',
+                averageRating: 4
             },
             randomBookId: '',
             randomBook: {       // recipient book
                 title: '',
                 author: '',
-                coverImage: ''
+                coverImage: '',
+                averageRating: 4
             },
             status: 'pending | accepted | book-send | start-reading | send-back | done',
             canceled: false,
