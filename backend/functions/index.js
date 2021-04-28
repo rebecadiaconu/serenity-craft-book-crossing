@@ -1,8 +1,8 @@
 const functions = require("firebase-functions");
 const app = require('express')();
 
-const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, addUserDetails, getUserDetails } = require('./handlers/users');
-const { addBook, uploadCoverImage, editBook, getAllBooks, reviewBook, editReview, deleteReview } = require('./handlers/books');
+const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails } = require('./handlers/users');
+const { addBook, uploadCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, editReview, deleteReview } = require('./handlers/books');
 const { sendCrossingReq, acceptCrossing, rejectCrossing, cancelCrossing, changeCrossingStatus, getCrossingDetails, deleteCrossing } = require('./handlers/crossings');
 const { addTopic, editTopic, deleteTopic, addReply, deleteReply } = require('./handlers/topics');
 
@@ -13,14 +13,14 @@ const { fbAuth, bookOwnerAuth, crossingPartener } = require('./util/middleware')
 app.post('/signup', signUp);        // Sign up with email and password route
 app.post('/login', logIn);        // Log in with email and password route
 app.post('/forgotPassword', forgotPassword);
-// app.get('/user', fbAuth,  getAuthenticatedUser);         // Get current user details  (books + crossings + notif + req)
+app.get('/user', fbAuth,  getAuthenticatedUser);         // Get current user details  (books + crossings + notif + req)
 app.post('/user', fbAuth, addUserDetails);       // Add user details
 app.post('/user/image', fbAuth, uploadImage);        // Upload user profile picture
 app.post('/user/email', fbAuth, changeEmail);       // Change account email
 app.post('/user/username', fbAuth, changeUsername);         // Change account username
 app.post('/user/password', fbAuth, changePassword);       // Change account password
 app.get('/user/:username', getUserDetails);          // Get any user details 
-// app.delete('/user/:username', fbAuth, deleteUserAccount);          // Delete account
+// app.delete('/user', fbAuth, deleteUserAccount);          // Delete account
 
 
 // Book routes
@@ -32,8 +32,8 @@ app.delete('/book/:bookId/:reviewId', fbAuth, deleteReview);       // Delete boo
 
 app.get('/books', getAllBooks);     // Get all books
 app.post('/books/:bookId', bookOwnerAuth, editBook);       // Add/edit book details
-// app.get('/books/:bookId', fbAuth, getBook);     // Get book details
-// app.delete('books/:bookId', bookOwnerAuth, deleteBook);          // Delete book
+app.get('/books/:bookId', getBook);     // Get book details
+app.delete('/books/:bookId', bookOwnerAuth, deleteBook);          // Delete book
 
 
 // Crossing routes

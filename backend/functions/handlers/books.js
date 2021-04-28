@@ -3,6 +3,7 @@ const { db, admin } = require('../util/admin');
 
 const { validateBookData, reduceBookDetails } = require('../util/validators');
 
+
 // Get all books
 exports.getAllBooks = (req, res) => {
     db.collection('books')
@@ -249,10 +250,108 @@ exports.reviewBook = (req, res) => {
 };
 
 
-// // Get book details
-// exports.getBook = (req, res) => {
+// Get book details
+exports.getBook = (req, res) => {
+    const bookDocument = db.doc(`/books/${req.params.bookId}`);
+    let bookData = {};
 
-// };
+    bookDocument.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'Book not found!' });
+
+        bookData = doc.data();
+        bookData.bookId = doc.id;
+
+        return db.collection('reviews').where('bookId', '==', bookData.bookId).orderBy('createdAt', 'desc').get();
+    })
+    .then((data) => {
+        bookData.reviews = [];
+        data.forEach(doc => {
+            bookData.reviews.push(doc.data());
+        });
+
+        return res.json(bookData);
+    })
+    .catch(err => {
+        console.error(err);
+
+        return res.status(500).json({error: err.code});
+    });
+};
+
+
+exports.deleteBook = (req, res) => {
+    const bookDocument = db.doc(`/books/${req.params.bookId}`);
+    let bookData = {};
+
+    bookDocument.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'Book not found!' });
+
+        bookData = doc.data();
+        bookData.bookId = doc.id;
+
+        batch = db.batch();
+
+        return db.collection("reviews").where("bookId", "==", req.params.bookId).get()
+        .then((data) => {
+            data.forEach(doc => {
+                batch.delete(db.doc(`/reviews/${doc.id}`));
+            });
+    
+            const reqBooks = db.collection("crossings").where("reqBookId", "==", req.params.bookId).get();
+            const randomBooks = db.collection("crossings").where("randomBookId", "==", req.params.bookId).get();
+    
+            return Promise.all([reqBooks, randomBooks]);
+        })
+        .then((responses) => {
+            responses.forEach((response) => {
+                response.docs.forEach((doc) => {
+                    let promises = [];
+                    let crossingData = doc.data();
+                    crossingData.crossingId = doc.id;
+                    
+                    realtime.ref(`/topics/${crossingData.crossingId}`).get()
+                    .then((data) => {
+                        if (data.exists()) {
+                            crossingData.topics = Object.values(data.val());
+                        }
+    
+                        crossingData.topics.map((topic) => {
+                            if (topic.replyCount > 0) {
+                                topic.replies.map( (reply) => {
+                                    promises.push(realtime.ref(`/replies/${reply}`).remove());
+                                });
+                            }
+    
+                            promises.push(realtime.ref(`/topics/${crossingData.crossingId}/${topic.topicId}`).remove());
+                        });
+    
+                        return Promise.all(promises);
+                    })
+                    .then(() => {
+                        return batch.delete(db.doc(`/crossings/${crossingData.crossingId}`));
+                    })
+                    .then(() => {
+                        batch.commit();
+                    });
+                });
+            });
+        })
+        .then(() => {
+            return bookDocument.delete();
+        });
+    })
+    .then(() => {
+        return res.json({ message: 'Book deleted successfully!' });
+    })
+    .catch(err => {
+        console.error(err);
+        return res.status(500).json({error: err.code});
+    })
+
+};
+
 
 
 // // Edit book review
