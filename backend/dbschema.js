@@ -75,11 +75,23 @@ let db = {
             type: 'permanent | temporar ',
             createdAt: '2021-04-21T15:38:46.994Z',
             recipient: '',
+            recipientProgress: {
+                sendBook: false,
+                receiveBook: false,
+                sendBack: false,
+                getBookBack: false
+            },
             recipientData: {
                 userImage: '',
                 show: true
             },
             sender: '',
+            senderProgress: {
+                sendBook: false,
+                receiveBook: false,
+                sendBack: false,
+                getBookBack: false
+            },
             senderData: {
                 userImage: '',
                 show: true
@@ -96,7 +108,10 @@ let db = {
                 author: '',
                 coverImage: ''
             },
-            status: 'pending | accepted | in progress | done'
+            status: 'pending | accepted | book-send | start-reading | send-back | done',
+            canceled: false,
+            canceledBy: 'username',     // only if canceled = true
+            reason: ''    // only if canceled = true
         }
     ],
     topics: [
@@ -106,8 +121,10 @@ let db = {
             crossingId: '',
             username: '',
             userImage: '',
+            title: '',
             body: '',
-            replyCount: 0
+            replyCount: 0,
+            replies: []
         }
     ],
     replies: [

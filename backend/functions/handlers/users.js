@@ -92,7 +92,6 @@ exports.logIn = (req, res) => {
     });
 };
 
-
 // Forgot password
 exports.forgotPassword = (req, res) => {
     let userEmail = req.body.email;
@@ -110,7 +109,6 @@ exports.forgotPassword = (req, res) => {
         return res.status(500).json({ error: err.code });
     });
 };
-
 
 // Change account email
 exports.changeEmail = (req, res) => {
@@ -156,7 +154,6 @@ exports.changeEmail = (req, res) => {
     });
 };
 
-
 // Change account password
 exports.changePassword = (req, res) => {
     const user = {
@@ -184,7 +181,6 @@ exports.changePassword = (req, res) => {
         return res.status(500). json({ error: err.code });
     });
 };
-
 
 // Change username
 exports.changeUsername = (req, res) => {
@@ -248,7 +244,6 @@ exports.changeUsername = (req, res) => {
 
 };
 
-
 // Add user details
 exports.addUserDetails = (req, res) => {
     let userDetails = reduceUserDetails(req.body);
@@ -262,7 +257,6 @@ exports.addUserDetails = (req, res) => {
         return res.status(500).json({ error: err.code });
     });
 };
-
 
 // Upload profile image for current user
 exports.uploadImage = (req, res) => {
@@ -343,12 +337,10 @@ exports.uploadImage = (req, res) => {
     busboy.end(req.rawBody);
 };
 
-
 // // Get authenticated user
 // exports.getAuthenticatedUser = (req, res) => {
 
 // };
-
 
 // // Get any user details
 exports.getUserDetails = (req, res) => {
@@ -393,7 +385,6 @@ exports.getUserDetails = (req, res) => {
         return res.status(500).json({error: err.code});
     });
 };
-
 
 // Delete user account
 // exports.deleteUserAccount = (req, res) => {
