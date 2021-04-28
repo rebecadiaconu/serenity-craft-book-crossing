@@ -3,6 +3,7 @@ const isEmpty = (value) => {
     else return false;
 };
 
+
 const isEmail = (email) => {
     const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -23,7 +24,6 @@ exports.validateEmail = (data) => {
         valid: Object.keys(errors).length === 0 ? true : false
     }
 }
-
 
 exports.validateSignUpData = (data) => {
     let errors = {};
@@ -57,7 +57,6 @@ exports.validateSignUpData = (data) => {
     }
 };
 
-
 exports.validateLogInData = (data) => {
     
     let errors = {};
@@ -71,7 +70,6 @@ exports.validateLogInData = (data) => {
         valid: Object.keys(errors).length === 0 ? true : false
     }
 };
-
 
 exports.reduceUserDetails = (data) => {
     let userDetails = {};
@@ -153,7 +151,6 @@ exports.validateBookData = (data) => {
         valid: Object.keys(errors).length === 0 ? true : false
     }
 };
-
 
 exports.reduceBookDetails = (data) => {
     let bookDetails = {};

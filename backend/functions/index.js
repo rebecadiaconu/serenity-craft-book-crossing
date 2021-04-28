@@ -31,8 +31,8 @@ app.post('/book/:bookId/:reviewId', fbAuth, editReview);       // Edit book revi
 app.delete('/book/:bookId/:reviewId', fbAuth, deleteReview);       // Delete book review
 
 app.get('/books', getAllBooks);     // Get all books
-app.post('/books/:bookId', bookOwnerAuth, editBook);       // Add/edit book details
 app.get('/books/:bookId', getBook);     // Get book details
+app.post('/books/:bookId', bookOwnerAuth, editBook);       // Add/edit book details
 app.delete('/books/:bookId', bookOwnerAuth, deleteBook);          // Delete book
 
 

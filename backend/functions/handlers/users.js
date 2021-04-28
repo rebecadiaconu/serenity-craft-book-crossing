@@ -177,6 +177,7 @@ exports.uploadImage = (req, res) => {
     const fs = require('fs');
 
     const busboy = BusBoy({ headers: req.headers });
+    const userDoc = db.doc(`/users/${req.user.username}`);
 
     let imageUrl;
     let imageFileName;
@@ -211,7 +212,12 @@ exports.uploadImage = (req, res) => {
             imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
             const batch = db.batch();
 
-            return db.doc(`/users/${req.user.username}`).update({ imageUrl })
+            userDoc.get()
+            .then((doc) => {
+                if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
+
+                return userDoc.update({ imageUrl});
+            })
             .then(() => {
                 return db.collection('books').where('owner', '==', req.user.username).get();
             })
