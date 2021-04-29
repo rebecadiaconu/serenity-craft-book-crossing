@@ -1,4 +1,4 @@
-const { db } = require('../util/admin');
+const { db, admin } = require('../util/admin');
 const firebase = require('firebase');
 const e = require('express');
 
@@ -59,19 +59,30 @@ exports.sendCrossingReq = (req, res) => {
     });
 };
 
-
 // Accept crossing request (only by recipient)
 exports.acceptCrossing = (req, res) => {
     const crossingDoc = db.doc(`/crossings/${req.params.crossingId}`);
+    let bookIdx = [];
 
     crossingDoc.get()
-    .then(doc => {
+    .then((doc) => {
         if (!doc.exists) return res.status(404).json({ error: 'Crossing not found!' });
 
         if (doc.data().recipient === req.user.username) {
+            bookIdx.push(doc.data().randomBookId);
+            bookIdx.push(doc.data().reqBookId);
+
             return doc.ref.update({status: 'accepted'});
         }
         else return res.status(403).json({ error: 'You can not accept the same request that you sent!' });
+    })
+    .then(() => {
+        let promises = [];
+        bookIdx.forEach((bookId) => {
+            promises.push(db.doc(`/books/${bookId}`).update({available: false, crossingId: req.params.crossingId}));
+        });
+
+        return Promise.all(promises);
     })
     .then(() => {
         return res.json({ message: 'Book crossing accepted!' })
@@ -82,13 +93,12 @@ exports.acceptCrossing = (req, res) => {
     });
 }
 
-
 // Reject crossing request (only by recipient)
 exports.rejectCrossing = (req, res) => {
     const crossingDoc = db.doc(`/crossings/${req.params.crossingId}`);
 
     crossingDoc.get()
-    .then(doc => {
+    .then((doc) => {
         if (!doc.exists) return res.status(404).json({ error: 'Book crossing not found!' });
 
         if (doc.data().recipient !== req.user.username) {
@@ -96,6 +106,7 @@ exports.rejectCrossing = (req, res) => {
         }
 
         return crossingDoc.delete();
+        // notification to the sender
     })
     .then(() => {
         return res.json({ message: 'Book crossing rejected!' })
@@ -106,12 +117,12 @@ exports.rejectCrossing = (req, res) => {
     })
 };
 
-
 // Cancel book crossing (only if status > 'accepted')
 // status == pending -> just sender can cancel it
 // status == accepted -> any user
 exports.cancelCrossing = (req, res) => {
     const crossingDoc = db.doc(`/crossings/${req.params.crossingId}`);
+    let bookIdx = [];
 
     crossingDoc.get()
     .then((doc) => {
@@ -121,6 +132,9 @@ exports.cancelCrossing = (req, res) => {
 
         if (doc.data().status === 'pending') {
             if (doc.data().sender === req.user.username) {
+                bookIdx.push(doc.data().randomBookId);
+                bookIdx.push(doc.data().reqBookId);
+
                 return crossingDoc.delete();
             }
         } 
@@ -132,6 +146,14 @@ exports.cancelCrossing = (req, res) => {
         });
     })
     .then(() => {
+        let promises = [];
+        bookIdx.forEach((bookId) => {
+            promises.push(db.doc(`/books/${bookId}`).update({available: true, crossingId: admin.firestore.FieldValue.delete()}));
+        });
+
+        return Promise.all(promises);
+    })
+    .then(() => {
         return res.json({ message: 'Book crossing canceled successfully!' });
     })
     .catch((err) => {
@@ -139,7 +161,6 @@ exports.cancelCrossing = (req, res) => {
         return res.status(500).json({error: err.code});
     })
 };
-
 
 // Change each user crossing progress -> status updated by itself
 exports.changeCrossingStatus = (req, res) => {
@@ -150,6 +171,7 @@ exports.changeCrossingStatus = (req, res) => {
 
     let senderProgress = {};
     let recipientProgress = {};
+    let bookIdx = [];
 
     crossingDoc.get()
     .then(doc => {
@@ -180,7 +202,11 @@ exports.changeCrossingStatus = (req, res) => {
         if (senderProgress.sendBook && recipientProgress.sendBook) {
             if (senderProgress.receiveBook && recipientProgress.receiveBook) {
                 if (senderProgress.sendBack && recipientProgress.sendBack) {
-                    if (senderProgress.getBookBack && recipientProgress.getBookBack) status = 'done';
+                    if (senderProgress.getBookBack && recipientProgress.getBookBack){
+                        bookIdx.push(doc.data().randomBookId);
+                        bookIdx.push(doc.data().reqBookId);
+                        status = 'done';
+                    } 
                     else status = 'send-back';
                 }
                 else status = 'start-reading';
@@ -201,6 +227,14 @@ exports.changeCrossingStatus = (req, res) => {
         }
     })
     .then(() => {
+        let promises = [];
+        bookIdx.forEach((bookId) => {
+            promises.push(db.doc(`/books/${bookId}`).update({available: true, crossingId: admin.firestore.FieldValue.delete()}));
+        });
+
+        return Promise.all(promises);
+    })
+    .then(() => {
         return res.json({ message: 'Crossing status updated successfully!' });
     })
     .catch((err) => {
@@ -208,7 +242,6 @@ exports.changeCrossingStatus = (req, res) => {
         return res.status(500).json({ error: err.code });
     })
 };
-
 
 // Get book crossing details
 exports.getCrossingDetails = (req, res) => {
@@ -222,7 +255,7 @@ exports.getCrossingDetails = (req, res) => {
         crossingData = doc.data();
         crossingData.crossingId = doc.id;
 
-        return realtime.ref(`/topics/${req.params.crossingId}`).get();
+        return realtime.ref(`/topics/`).orderByChild("crossingId").equalTo(req.params.crossingId).get();
     })
     .then((data) => {
         if (data.exists()) {
@@ -256,9 +289,8 @@ exports.getCrossingDetails = (req, res) => {
     .catch((err) => {
         console.error(err);
         return res.status(500).json({error: err.code});
-    })
+    });
 };
-
 
 // Delete book crossing (only if its finished)
 exports.deleteCrossing = (req, res) => {
@@ -294,12 +326,12 @@ exports.deleteCrossing = (req, res) => {
         }
         
         if (isSender) {
-            crossingData.senderData.show = true;
+            crossingData.senderData.show = false;
             return crossingDoc.update({
                 senderData: crossingData.senderData
             });
         } else {
-            crossingData.recipientData.show = true;
+            crossingData.recipientData.show = false;
             return crossingDoc.update({
                 recipientData: crossingData.recipientData
             });
@@ -308,7 +340,7 @@ exports.deleteCrossing = (req, res) => {
     .then(() => {
         if (deleteIt) {
             let promises = [];
-            realtime.ref(`/topics/${req.params.crossingId}`).get()
+            realtime.ref(`/topics/`).orderByChild("crossingId").equalTo(req.params.crossingId).get()
             .then((data) => {
                 if (data.exists()) {
                     crossingData.topics = Object.values(data.val());
@@ -321,10 +353,13 @@ exports.deleteCrossing = (req, res) => {
                         });
                     }
 
-                    promises.push(realtime.ref(`/topics/${req.params.crossingId}/${topic.topicId}`).remove());
+                    promises.push(realtime.ref(`/topics/${topic.topicId}`).remove());
                 });
 
                 return Promise.all(promises);
+            })
+            .then(() => {
+
             });
         }
     })

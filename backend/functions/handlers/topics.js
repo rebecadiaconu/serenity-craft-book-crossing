@@ -33,7 +33,7 @@ exports.addTopic = (req, res) => {
         newTopic.topicId = topicId;
 
         let updates = {};
-        updates['/topics/' + req.params.crossingId + "/" + topicId] = newTopic;
+        updates['/topics/' + topicId] = newTopic;
 
         return realtime.ref().update(updates);
     })
@@ -50,17 +50,19 @@ exports.addTopic = (req, res) => {
 exports.editTopic = (req, res) => {
     let errors = {};
 
+    console.log("EDIT TOPIC!");
+
     if (req.body.title.trim() === '') errors.title = 'Must not be empty!';
     if (req.body.body.trim() === '') errors.body = 'Must not be empty!';
 
-    if (!Object.keys(errors).length === 0) return res.status(400).json(errors);
+    if (!(Object.keys(errors).length === 0)) return res.status(400).json(errors);
 
     let topicData = {};
     let updates = {};
     updates['title'] = req.body.title.trim();
     updates['body'] = req.body.body.trim();
 
-    realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).get()
+    realtime.ref(`/topics/${req.params.topicId}`).get()
     .then((data) => {
         if (!data.exists()) return res.status(404).json({ error: 'Topic not found!' });
 
@@ -68,7 +70,7 @@ exports.editTopic = (req, res) => {
 
         if (topicData.username !== req.user.username) return res.status(403).json({ error: 'Unauthorized!' });
 
-        return realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).update(updates);
+        return realtime.ref(`/topics/${req.params.topicId}`).update(updates);
     })
     .then(() => {
         return res.json({ message: 'Topic updated successfully!' });
@@ -81,7 +83,9 @@ exports.editTopic = (req, res) => {
 
 
 exports.deleteTopic = (req, res) => {
-    realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).get()
+    let topicData = {};
+
+    realtime.ref(`/topics/${req.params.topicId}`).get()
     .then((data) => {
         if (!data.exists()) return res.status(404).json({ error: 'Topic already deleted!' });
 
@@ -89,7 +93,16 @@ exports.deleteTopic = (req, res) => {
 
         if (topicData.username !== req.user.username) return res.status(403).json({ error: 'Unauthorized!' });
 
-        return realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).remove();
+        return realtime.ref(`/topics/${req.params.topicId}`).remove();
+    })
+    .then(() => {
+        let promises = [];
+
+        topicData.replies.forEach((reply) => {
+            promises.push(realtime.ref(`/replies/${reply}`).remove());
+        });
+
+        return Promise.all(promises);
     })
     .then(() => {
         return res.json({ message: 'Topic deleted successfully!' });
@@ -118,7 +131,7 @@ exports.addReply = (req, res) => {
     };
     let topicData ={};
 
-    realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).get()
+    realtime.ref(`/topics/${req.params.topicId}`).get()
     .then((data) => {
         if (!data.exists()) return res.status(404).json({ error: 'Topic not found!' });
 
@@ -132,7 +145,7 @@ exports.addReply = (req, res) => {
         topicUpdates['replyCount'] = topicData.replyCount;
         topicUpdates['replies'] = topicData.replies;
 
-        return realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).update(topicUpdates);
+        return realtime.ref(`/topics/${req.params.topicId}`).update(topicUpdates);
     })
     .then(() => {
         return realtime.ref(`/replies/${newReply.replyId}`).set(newReply);
@@ -148,7 +161,7 @@ exports.addReply = (req, res) => {
 
 
 exports.deleteReply = (req, res) => {
-    realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).get()
+    realtime.ref(`/topics/${req.params.topicId}`).get()
     .then((data) => {
         if (!data.exists()) return res.status(404).json({ error: 'Topic not found!' });
 
@@ -164,7 +177,7 @@ exports.deleteReply = (req, res) => {
         topicUpdates['replyCount'] = topicData.replyCount;
         topicUpdates['replies'] = topicData.replies;
 
-        return realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).update(topicUpdates);
+        return realtime.ref(`/topics/${req.params.topicId}`).update(topicUpdates);
     })
     .then(() => {
         return realtime.ref(`/replies/${req.params.replyId}`).remove();
@@ -177,81 +190,3 @@ exports.deleteReply = (req, res) => {
         return res.status(500).json({ error: err.code });
     });
 };
-
-
-
-// exports.addReply = (req, res) => {
-//     let errors = {};
-
-//     if (req.body.body.trim() === '') errors.body = 'Must not be empty!';
-
-//     if (!(Object.keys(errors).length === 0)) return res.status(400).json(errors);
-
-//     let newReply = {
-//         replyId: uuid(),
-//         topicId: req.params.topicId,
-//         createdAt: new Date().toISOString(),
-//         username: req.user.username,
-//         userImage: req.user.imageUrl,
-//         body: req.body.body.trim()
-//     };
-//     let topicData = {};
-
-//     realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).get()
-//     .then((data) => {
-//         if (!data.exists()) return res.status(404).json({ error: 'Topic not found!' });
-
-//         topicData = data.val();
-
-//         if (topicData.replyCount === 0) topicData.replies = {};
-//         topicData.replyCount++;
-//         topicData.replies[newReply.replyId] = newReply;
-
-//         console.log(topicData.replies);
-
-//         let topicUpdates = {};
-//         topicUpdates['replyCount'] = topicData.replyCount;
-//         topicUpdates['replies'] = topicData.replies;
-
-//         return realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).update(topicUpdates);
-//     })
-//     .then(() => {
-//         return res.json(newReply);
-//     })
-//     .catch((err) => {
-//         console.error(err);
-//         return res.status(500).json({ error: err.code });
-//     });
-// };
-
-
-// exports.deleteReply = (req, res) => {
-//     realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).get()
-//     .then((data) => {
-//         if (!data.exists()) return res.status(404).json({ error: 'Topic not found!' });
-
-//         topicData = data.val();
-
-//         if (topicData.replyCount > 0 && topicData.replies.keys().includes(req.params.replyId)) {
-//             topicData.replyCount--;
-//             delete topicData.replies[req.params.replyId];
-//         }
-//         else return res.status(404).json({ error: 'Do not belong to this topic!' });
-
-//         let topicUpdates = {};
-//         topicUpdates['replyCount'] = topicData.replyCount;
-//         topicUpdates['replies'] = topicData.replies;
-
-//         return realtime.ref(`/topics/${req.params.crossingId}/${req.params.topicId}`).update(topicUpdates);
-//     })
-//     .then(() => {
-//         return realtime.ref(`/replies/${req.params.replyId}`).remove();
-//     })
-//     .then(() => {
-//         return res.json({ message: 'Reply deleted successfully!' });
-//     })
-//     .catch((err) => {
-//         console.error(err);
-//         return res.status(500).json({ error: err.code });
-//     });
-// };

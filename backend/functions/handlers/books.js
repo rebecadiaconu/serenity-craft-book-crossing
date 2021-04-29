@@ -80,6 +80,8 @@ exports.deleteBook = (req, res) => {
     .then((doc) => {
         if (!doc.exists) return res.status(404).json({ error: 'Book not found!' });
 
+        if (doc.data().available == false) return res.status(400).json({ error: 'Seems like this book is not available. You can not delete it!' });
+
         bookData = doc.data();
         bookData.bookId = doc.id;
 
@@ -107,7 +109,7 @@ exports.deleteBook = (req, res) => {
                     .then((data) => {
                         if (data.exists()) {
                             crossingData.topics = Object.values(data.val());
-                        }
+                        } else crossingData.topics = [];
     
                         crossingData.topics.map((topic) => {
                             if (topic.replyCount > 0) {
@@ -122,10 +124,9 @@ exports.deleteBook = (req, res) => {
                         return Promise.all(promises);
                     })
                     .then(() => {
-                        return batch.delete(db.doc(`/crossings/${crossingData.crossingId}`));
-                    })
-                    .then(() => {
-                        batch.commit();
+                        batch.delete(db.doc(`/crossings/${crossingData.crossingId}`));
+                        
+                        return batch.commit();
                     });
                 });
             });
@@ -294,7 +295,7 @@ exports.uploadCoverImage = (req, res) => {
             .then((data) => {
                 data.forEach((doc) => {
                     reqBook = doc.data().reqBook;
-                    reqBook.coverImage = imageUrl;
+                    reqBook.coverImage = coverImage;
 
                     batch.update(db.doc(`/crossings/${doc.id}`), {reqBook: reqBook});
                 });
@@ -304,7 +305,7 @@ exports.uploadCoverImage = (req, res) => {
             .then((data) => {
                 data.forEach((doc) => {
                     randomBook = doc.data().randomBook;
-                    randomBook.coverImage = imageUrl;
+                    randomBook.coverImage = coverImage;
 
                     batch.update(db.doc(`/crossings/${doc.id}`), {randomBook: randomBook});
                 });

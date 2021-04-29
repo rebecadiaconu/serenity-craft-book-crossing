@@ -3,6 +3,7 @@ const { db, admin } = require('../util/admin');
 const { validateLogInData, validateSignUpData, validateEmail, reduceUserDetails} = require('../util/validators');
 
 const firebase = require('firebase');
+const { DataSnapshot } = require('firebase-functions/lib/providers/database');
 firebase.initializeApp(config);
 
 realtime = firebase.database();
@@ -210,88 +211,91 @@ exports.uploadImage = (req, res) => {
         })
         .then(() => {
             imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
+            return userDoc.get();
+        })
+        .then((doc) => {
+            if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
+
             const batch = db.batch();
 
-            userDoc.get()
-            .then((doc) => {
-                if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
-
-                return userDoc.update({ imageUrl});
-            })
-            .then(() => {
-                return db.collection('books').where('owner', '==', req.user.username).get();
-            })
+            return db.collection('books').where('owner', '==', req.user.username)
+            .get()
             .then((data) => {
                 data.forEach((doc) => {
-                    batch.update(db.doc(`/books/${doc.id}`), {ownerImage: imageUrl});
+                    batch.update(db.doc(`/books/${doc.id}`), { ownerImage: imageUrl });
                 });
 
                 return db.collection('reviews').where('username', '==', req.user.username).get();
             })
             .then((data) => {
                 data.forEach((doc) => {
-                    batch.update(db.doc(`/reviews/${doc.id}`), {userImage: imageUrl});
+                    batch.update(db.doc(`/reviews/${doc.id}`), {userImage: imageUrl });
                 });
 
                 return db.collection('crossings').where('sender', '==', req.user.username).get();
             })
             .then((data) => {
                 data.forEach((doc) => {
-                    senderData = doc.data().senderData;
+                    let senderData = doc.data().senderData;
                     senderData.userImage = imageUrl;
-
-                    let promises = [];
-                    realtime.ref(`/topics/${doc.id}`).orderByChild("username").equalTo(req.user.username).get()
-                    .then((data) => {
-                        data.forEach((topic) => {
-                            promises.push(realtime.ref(`/topics/${doc.id}/${topic.topicId}/userImage`).update(imageUrl));
-                        });
-
-                        return Promise.all(promises);
-                    })
-                    .then(() => {
-                        batch.update(db.doc(`/crossings/${doc.id}`), {senderData: senderData});
-                    });
+                    batch.update(db.doc(`/crossings/${doc.id}`), {senderData});
                 });
 
                 return db.collection('crossings').where('recipient', '==', req.user.username).get();
             })
             .then((data) => {
                 data.forEach((doc) => {
-                    recipientData = doc.data().recipientData;
+                    let recipientData = doc.data().recipientData;
                     recipientData.userImage = imageUrl;
-
-                    let promises = [];
-                    realtime.ref(`/topics/${doc.id}`).orderByChild("username").equalTo(req.user.username).get()
-                    .then((data) => {
-                        data.forEach((topic) => {
-                            promises.push(realtime.ref(`/topics/${doc.id}/${topic.topicId}/userImage`).update(imageUrl));
-                        });
-
-                        return Promise.all(promises);
-                    })
-                    .then(() => {
-                        batch.update(db.doc(`/crossings/${doc.id}`), {recipientData: recipientData});
-                    });
+                    batch.update(db.doc(`/crossings/${doc.id}`), {recipientData});
                 });
 
-                return realtime.ref("replies/username").equalTo(req.user.username).get();
+                return realtime.ref(`/topics/`).orderByChild("username").equalTo(req.user.username).get();
             })
             .then((data) => {
+                let topicData = [];
                 let promises = [];
-                data.forEach((doc) => {
-                    let replyData = doc.val();
 
-                    if (replyData.username === req.user.username) {
-                        promises.push(realtime.ref(`/replies/${replyData.replyId}/userImage`).update(imageUrl));
-                    }
-                });
+                if (data.exists()) {
+                    topicData = Object.values(data.val()).reverse();
+                    console.log(topicData);
+                    topicData.forEach((doc) => {
+                        console.log(doc.id);
+                        let updates = {};
+                        updates['userImage'] = imageUrl;
+                        promises.push(realtime.ref(`/topics/${doc.topicId}`).update(updates));
+                    });
+    
+                }
+
+                return Promise.all(promises);
+            })
+            .then(() => {
+                return realtime.ref(`/replies/`).orderByChild("username").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let replyData = [];
+                let promises = [];
+                if (data.exists()) {
+                    replyData = Object.values(data.val()).reverse();
+                    console.log(replyData);
+
+                    replyData.forEach((doc) => {
+                        console.log(doc.id);
+                        let updates = {};
+                        updates['userImage'] = imageUrl;
+                        promises.push(realtime.ref(`/replies/${doc.replyId}`).update(updates));
+                    });
+                }
 
                 return Promise.all(promises);
             })
             .then(() => {
                 return batch.commit();
             });
+        })
+        .then(() => {
+            return userDoc.update({imageUrl});
         })
         .then(() => {
             oldImageFilename = path.basename(oldImageUrl).split('?')[0];
@@ -451,7 +455,7 @@ exports.changeUsername = (req, res) => {
                     });
                 });
 
-                return realtime.ref("replies/username").equalTo(req.user.username).get();
+                return realtime.ref("replies").orderBy("username").equalTo(req.user.username).get();
             })
             .then((data) => {
                 let promises = [];

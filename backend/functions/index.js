@@ -47,14 +47,14 @@ app.delete('/crossings/:crossingId', crossingPartener, deleteCrossing);       //
 
 
 // Topics routes
-app.post('/crossing/:crossingId/topic', crossingPartener, addTopic);
-app.post('/crossing/:crossingId/:topicId', crossingPartener, editTopic);
-app.delete('/crossing/:crossingId/:topicId', crossingPartener, deleteTopic);
+app.post('/crossing/:crossingId/topic', crossingPartener, addTopic);       // Add topic in book crossing page
+app.post('/topics/:topicId', fbAuth, editTopic);        // Edit topic title and body
+app.delete('/topics/:topicId', fbAuth, deleteTopic);        // Delete topic
 
 
 // Replies routes
-app.post('/crossing/:crossingId/:topicId/reply', crossingPartener, addReply);
-app.delete('/crossing/:crossingId/:topicId/:replyId', crossingPartener, deleteReply);
+app.post('/topics/:topicId/reply', fbAuth, addReply);
+app.delete('/topics/:topicId/:replyId', fbAuth, deleteReply);
 
 
 // ???
