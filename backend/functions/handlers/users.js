@@ -257,10 +257,8 @@ exports.uploadImage = (req, res) => {
                 let promises = [];
 
                 if (data.exists()) {
-                    topicData = Object.values(data.val()).reverse();
-                    console.log(topicData);
+                    topicData = Object.values(data.val());
                     topicData.forEach((doc) => {
-                        console.log(doc.id);
                         let updates = {};
                         updates['userImage'] = imageUrl;
                         promises.push(realtime.ref(`/topics/${doc.topicId}`).update(updates));
@@ -278,10 +276,8 @@ exports.uploadImage = (req, res) => {
                 let promises = [];
                 if (data.exists()) {
                     replyData = Object.values(data.val()).reverse();
-                    console.log(replyData);
 
                     replyData.forEach((doc) => {
-                        console.log(doc.id);
                         let updates = {};
                         updates['userImage'] = imageUrl;
                         promises.push(realtime.ref(`/replies/${doc.replyId}`).update(updates));
