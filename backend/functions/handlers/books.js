@@ -132,6 +132,12 @@ exports.deleteBook = (req, res) => {
             });
         })
         .then(() => {
+            oldImageFilename = path.basename(bookData.coverImage).split('?')[0];
+
+            if (oldImageFilename !== 'nobook-image2.jpg') {
+                admin.storage().bucket().file(oldImageFilename).delete();
+            }
+
             return bookDocument.delete();
         });
     })
