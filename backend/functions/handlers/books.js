@@ -183,7 +183,7 @@ exports.deleteBook = (req, res) => {
 
         return db.collection("reviews").where("bookId", "==", req.params.bookId).get()
         .then((data) => {
-            data.forEach(doc => {
+            data.forEach((doc) => {
                 batch.delete(db.doc(`/reviews/${doc.id}`));
             });
     
@@ -236,11 +236,13 @@ exports.deleteBook = (req, res) => {
                     })
                     .then(() => {
                         batch.delete(db.doc(`/crossings/${crossingData.crossingId}`));
-                        
-                        return batch.commit();
                     });
                 });
             });
+        })
+        .then(() => {
+            console.log("COMMIT!");
+            return batch.commit();
         })
         .then(() => {
             return realtime.ref(`/notifications/`).orderByChild("bookId").equalTo(req.params.bookId).get();
