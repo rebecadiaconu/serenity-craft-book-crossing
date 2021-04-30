@@ -134,8 +134,8 @@ exports.getAuthenticatedUser = (req, res) => {
             userData.books.push(doc.data());
         });
 
-        const recipientCross = db.collection("crossings").where("recipient", "==", req.user.username).get();
-        const senderCross = db.collection("crossings").where("sender", "==", req.user.username).get();
+        const recipientCross = db.collection("crossings").orderBy('createdAt', 'desc').where("recipient", "==", req.user.username).get();
+        const senderCross = db.collection("crossings").orderBy('createdAt', 'desc').where("sender", "==", req.user.username).get();
 
         return Promise.all([recipientCross, senderCross]);
     })
@@ -157,6 +157,7 @@ exports.getAuthenticatedUser = (req, res) => {
             userData.notifications = Object.values(data.val());
         }
 
+        userData.notifications.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
         return res.json(userData);
     })
     .catch((err) => {
@@ -565,9 +566,6 @@ exports.getUserDetails = (req, res) => {
             });
         });
 
-        // TO ADD
-        // return db.collection('auctions').where('owner', '==', req.params.username).orderBy('createdAt', 'desc').get();
-
         return res.json(userData);
     })
     .catch((err) => {
@@ -576,18 +574,13 @@ exports.getUserDetails = (req, res) => {
     });
 };
 
-// Delete user account
-// exports.deleteUserAccount = (req, res) => {
-
-// };
-
-
+// Mark user notification read
 exports.markNotificationRead = (req, res) => {
     let promises = [];
     req.body.forEach(notifId => {
         let updates = {};
         updates["read"] = true;
-        promises.push(realtime.ref(`/notifications/`).orderByChild("notificationId").equalTo(notifId).update(updates));
+        promises.push(realtime.ref(`/notifications/${notifId}`).update(updates));
     });
 
     Promise.all(promises)
@@ -600,3 +593,43 @@ exports.markNotificationRead = (req, res) => {
     });
 
 };
+
+
+// Delete user account
+// exports.deleteUserAccount = (req, res) => {
+//     const user = {
+//         email: req.body.email,
+//         password: req.body.password,
+//     };
+
+//     const { valid, errors } = validateLogInData(user);
+//     if (!valid) return res.status(400).json(errors);
+
+//     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+//     .then((data) => {
+//         const batch = db.batch();
+//         const path = require('path');
+//         const userDocument = db.doc(`/users/${req.user.username}`);
+
+//         db.collection("books").where("owner", "==", req.user.username).get()
+//         .then((data) => {
+//             data.forEach((doc) => {
+//                 if (!doc.data().available) return res.status(400).json({ error: '' });
+//                 batch.delete(db.doc(`/books/${doc.id}`));
+//             });
+//         })
+//         // data.user.delete()
+//         // var user = firebase.auth().currentUser;
+
+//         // user.delete()
+//     })
+//     .then(() => {
+
+//     })
+//     .then(() => {
+//         return res.json({ message: 'User account deleted successfully' });
+//     }).catch((err) => {
+//         console.error(err);
+//         return res.status(500). json({ error: err.code });
+//     });
+// };

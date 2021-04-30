@@ -4,7 +4,7 @@ const app = require('express')();
 const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationRead } = require('./handlers/users');
 const { addBook, uploadCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, editReview, deleteReview } = require('./handlers/books');
 const { sendCrossingReq, acceptCrossing, rejectCrossing, cancelCrossing, changeCrossingStatus, getCrossingDetails, deleteCrossing } = require('./handlers/crossings');
-const { addTopic, editTopic, deleteTopic, addReply, deleteReply } = require('./handlers/topics');
+const { addTopic, getTopic, editTopic, deleteTopic, addReply, deleteReply } = require('./handlers/topics');
 
 const { fbAuth, bookOwnerAuth, crossingPartener } = require('./util/middleware');
 
@@ -21,7 +21,7 @@ app.post('/user/username', fbAuth, changeUsername);         // Change account us
 app.post('/user/password', fbAuth, changePassword);       // Change account password
 app.get('/user/:username', getUserDetails);          // Get any user details 
 // app.delete('/user', fbAuth, deleteUserAccount);          // Delete account
-app.post('/notifications', fbAuth, markNotificationRead);       // Mark new notifications as read
+app.post('/notifications', fbAuth, markNotificationRead);       // Mark user notifications as read
 
 
 // Book routes
@@ -49,6 +49,7 @@ app.delete('/crossings/:crossingId', crossingPartener, deleteCrossing);       //
 
 // Topics routes
 app.post('/crossing/:crossingId/topic', crossingPartener, addTopic);       // Add topic in book crossing page
+app.get('/topics/:topicId', fbAuth, getTopic);        // Get topic details
 app.post('/topics/:topicId', fbAuth, editTopic);        // Edit topic title and body
 app.delete('/topics/:topicId', fbAuth, deleteTopic);        // Delete topic
 

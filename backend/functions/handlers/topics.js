@@ -67,10 +67,35 @@ exports.addTopic = (req, res) => {
 };
 
 
+exports.getTopic = (req, res) => {
+    let topicData = {};
+    topic.replyData = [];
+
+    realtime.ref(`/topics/${req.params.topicId}`).get()
+    .then((data) => {
+        if (!data.exists()) return res.status(404).json({ error: 'Topic not found!' });
+
+        topicData = data.val();
+
+        return realtime.ref(`/replies/`).orderByChild("topicId").equalTo(req.params.topicId).get();
+
+    })
+    .then((data) => {
+        if (data.exists()) {
+            topic.replyData = Object.values(data.val()).sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+        }
+
+        return res.json(topicData);
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+
 exports.editTopic = (req, res) => {
     let errors = {};
-
-    console.log("EDIT TOPIC!");
 
     if (req.body.title.trim() === '') errors.title = 'Must not be empty!';
     if (req.body.body.trim() === '') errors.body = 'Must not be empty!';

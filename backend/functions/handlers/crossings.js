@@ -312,9 +312,11 @@ exports.getCrossingDetails = (req, res) => {
 
             crossingData.topics.map((topic) => {
                 if (topic.topicId === reply.topicId) topic.replyData.push(reply);
+                topic.replyData.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
             });
         });
 
+        crossingData.topics.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
         return res.json(crossingData);
     })
     .catch((err) => {
@@ -411,30 +413,3 @@ exports.deleteCrossing = (req, res) => {
         return res.status(500).json({error: err.code});
     });
 };
-
-
-// exports.getCrossingDetails = (req, res) => {
-//     let crossingData = {};
-//     db.doc(`/crossings/${req.params.crossingId}`).get()
-//     .then((doc) => {
-//         if (!doc.exists) return res.status(404).json({error: 'Book crossing not found!'});
-
-//         crossingData = doc.data();
-//         crossingData.crossingId = doc.id;
-
-//         return realtime.ref(`/topics/${req.params.crossingId}`).get();
-//     })
-//     .then((data) => {
-//         crossingData.topics = [];
-//         if (data.exists()) {
-//             crossingData.topics = Object.values(data.val()).reverse();
-//         }
-//     })
-//     .then(() => {
-//         return res.json(crossingData);
-//     })
-//     .catch((err) => {
-//         console.error(err);
-//         return res.status(500).json({error: err.code});
-//     })
-// };
