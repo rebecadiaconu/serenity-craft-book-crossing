@@ -14,6 +14,7 @@ exports.addTopic = (req, res) => {
 
     if (!Object.keys(errors).length === 0) return res.status(400).json(errors);
 
+    let crossingData = {};
     let newTopic = {
         crossingId: req.params.crossingId,
         createdAt: new Date().toISOString(),
@@ -29,6 +30,9 @@ exports.addTopic = (req, res) => {
     .then((doc) => {
         if (!doc.exists) return res.status(404).json({ error: 'Book crossing not found!' });
 
+        crossingData = doc.data();
+        crossingData.crossingId = doc.id;
+
         let topicId = uuid();
         newTopic.topicId = topicId;
 
@@ -36,6 +40,22 @@ exports.addTopic = (req, res) => {
         updates['/topics/' + topicId] = newTopic;
 
         return realtime.ref().update(updates);
+    })
+    .then(() => {
+        let newNotification = {
+            notificationId: uuid(),
+            createdAt: new Date().toISOString(),
+            read: false,
+            sender: req.user.username,
+            senderImage: req.user.imageUrl,
+            type: 'topic',
+            topicId: newTopic.topicId
+        };
+
+        if (crossingData.sender === req.user.username) newNotification.recipient = crossingData.recipient;
+        else newNotification.recipient = crossingData.sender;
+
+        return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
     })
     .then(() => {
         return res.json(newTopic);
@@ -84,6 +104,7 @@ exports.editTopic = (req, res) => {
 
 exports.deleteTopic = (req, res) => {
     let topicData = {};
+    let promises = [];
 
     realtime.ref(`/topics/${req.params.topicId}`).get()
     .then((data) => {
@@ -96,11 +117,21 @@ exports.deleteTopic = (req, res) => {
         return realtime.ref(`/topics/${req.params.topicId}`).remove();
     })
     .then(() => {
-        let promises = [];
+        if (topicData.replyCount > 0) {
+            topicData.replies.map((reply) => {
+                promises.push(realtime.ref(`/replies/${reply}`).remove());
+            });
+        }
 
-        topicData.replies.forEach((reply) => {
-            promises.push(realtime.ref(`/replies/${reply}`).remove());
-        });
+        return realtime.ref(`/notifications/`).orderByChild("topicId").equalTo(req.params.topicId).get();
+    })
+    .then((data) => {
+        if (data.exists()) {
+            let notifications = Object.values(data.val());
+            notifications.forEach((notif) => {
+                promises.push(realtime.ref(`/notifications/${notif.notificationId}`).remove());
+            });
+        }
 
         return Promise.all(promises);
     })
@@ -151,7 +182,49 @@ exports.addReply = (req, res) => {
         return realtime.ref(`/replies/${newReply.replyId}`).set(newReply);
     })
     .then(() => {
-        return res.json(newReply);
+        let promises = [];
+        promises.push(realtime.ref(`/replies/`).orderByChild("topicId").equalTo(topicData.topicId).get());
+
+        return Promise.all(promises);
+    })
+    .then((responses) => {
+        let recipientName = "";
+        let sendNotif = false;
+
+        responses.forEach((response) => {
+            replies = Object.values(response.val());
+            
+            replies.forEach((reply) => {
+                if (reply.username !== req.user.username) {
+                    sendNotif = true;
+                    recipientName = reply.username;
+                }
+            });
+        });
+
+        if (topicData.username !== req.user.username) {
+            sendNotif = true;
+            recipientName = topicData.username;
+        }
+
+        if (sendNotif) {
+            let newNotification = {
+                notificationId: uuid(),
+                createdAt: new Date().toISOString(),
+                read: false,
+                sender: req.user.username,
+                senderImage: req.user.imageUrl,
+                type: 'reply',
+                recipient: recipientName,
+                topicId: topicData.topicId
+            };
+
+            realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification)
+            .then(() => {
+                return res.json(newReply);
+            });
+        }
+        else return res.json(newReply);
     })
     .catch((err) => {
         console.error(err);

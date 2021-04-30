@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 const app = require('express')();
 
-const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails } = require('./handlers/users');
+const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationRead } = require('./handlers/users');
 const { addBook, uploadCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, editReview, deleteReview } = require('./handlers/books');
 const { sendCrossingReq, acceptCrossing, rejectCrossing, cancelCrossing, changeCrossingStatus, getCrossingDetails, deleteCrossing } = require('./handlers/crossings');
 const { addTopic, editTopic, deleteTopic, addReply, deleteReply } = require('./handlers/topics');
@@ -21,6 +21,7 @@ app.post('/user/username', fbAuth, changeUsername);         // Change account us
 app.post('/user/password', fbAuth, changePassword);       // Change account password
 app.get('/user/:username', getUserDetails);          // Get any user details 
 // app.delete('/user', fbAuth, deleteUserAccount);          // Delete account
+app.post('/notifications', fbAuth, markNotificationRead);       // Mark new notifications as read
 
 
 // Book routes

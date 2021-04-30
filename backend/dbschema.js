@@ -61,13 +61,13 @@ let db = {
             createdAt: '2021-04-21T15:38:46.994Z',
             recipient: '',
             sender: '',
-            type: ' book-review | crossing-request | topic | reply ',
+            type: ' info | review | topic | reply | accept-request | cancel-request ',
             read: false,
-            // reviewId: '',
-            // topicId: '',
-            // exchangeId: '',
-            contendId: '',
-            senderImage: '' 
+            bookId: '',     // optional
+            topicId: '',        // optional
+            crossingId: '',     // optional
+            message: '',        // optional
+            senderImage: ''        
         }
     ],
     crossings: [

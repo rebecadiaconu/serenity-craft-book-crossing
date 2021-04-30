@@ -1,6 +1,7 @@
 const { db, admin } = require('../util/admin');
 const firebase = require('firebase');
 const e = require('express');
+const { uuid } = require('uuidv4');
 
 realtime = firebase.database();
 
@@ -70,9 +71,23 @@ exports.acceptCrossing = (req, res) => {
 
         if (doc.data().recipient === req.user.username) {
             bookIdx.push(doc.data().randomBookId);
-            bookIdx.push(doc.data().reqBookId);
+            bookIdx.push(doc.data().reqBookId);            
 
-            return doc.ref.update({status: 'accepted'});
+            return doc.ref.update({status: 'accepted'})
+            .then(() => {
+                let newNotification = {
+                    notificationId: uuid(),
+                    createdAt: new Date().toISOString(),
+                    read: false,
+                    sender: req.user.username,
+                    senderImage: req.user.imageUrl,
+                    recipient: doc.data().sender,
+                    type: 'accept-request',
+                    crossingId: doc.id
+                }
+
+                return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
+            });
         }
         else return res.status(403).json({ error: 'You can not accept the same request that you sent!' });
     })
@@ -143,6 +158,22 @@ exports.cancelCrossing = (req, res) => {
             canceled: true,
             canceledBy: req.user.username,
             reason: req.body.reason.trim()
+        })
+        .then(() => { 
+            let newNotification = {
+                notificationId: uuid(),
+                createdAt: new Date().toISOString(),
+                read: false,
+                sender: req.user.username,
+                senderImage: req.user.imageUrl,
+                type: 'cancel-request',
+                crossingId: doc.id
+            }
+
+            if (doc.data().sender === req.user.username) newNotification.recipient = doc.data().recipient;
+            else newNotification.recipient = doc.data().sender;
+
+            return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
         });
     })
     .then(() => {
@@ -346,20 +377,29 @@ exports.deleteCrossing = (req, res) => {
                     crossingData.topics = Object.values(data.val());
                 }
 
-                crossingData.topics.map((topic) => {
-                    if (topic.replyCount > 0) {
-                        topic.replies.map( (reply) => {
-                            promises.push(realtime.ref(`/replies/${reply}`).remove());
-                        });
-                    }
+                if (crossingData.topics) {
+                    crossingData.topics.map((topic) => {
+                        if (topic.replyCount > 0) {
+                            topic.replies.map( (reply) => {
+                                promises.push(realtime.ref(`/replies/${reply}`).remove());
+                            });
+                        }
+    
+                        promises.push(realtime.ref(`/topics/${topic.topicId}`).remove());
+                    });
+                }
 
-                    promises.push(realtime.ref(`/topics/${topic.topicId}`).remove());
-                });
+                return realtime.ref(`/notifications/`).orderByChild("crossingId").equalTo(req.params.crossingId).get();
+            })
+            .then((data) => {
+                if (data.exists()) {
+                    let notifications = Object.values(data.val());
+                    notifications.forEach((notif) => {
+                        promises.push(realtime.ref(`/notifications/${notif.notificationId}`).remove());
+                    });
+                }
 
                 return Promise.all(promises);
-            })
-            .then(() => {
-
             });
         }
     })

@@ -3,7 +3,6 @@ const { db, admin } = require('../util/admin');
 const { validateLogInData, validateSignUpData, validateEmail, reduceUserDetails} = require('../util/validators');
 
 const firebase = require('firebase');
-const { DataSnapshot } = require('firebase-functions/lib/providers/database');
 firebase.initializeApp(config);
 
 realtime = firebase.database();
@@ -141,12 +140,22 @@ exports.getAuthenticatedUser = (req, res) => {
         return Promise.all([recipientCross, senderCross]);
     })
     .then((responses) => {
+        userData.requests = [];
         userData.crossings = [];
         responses.forEach((response) => {
             response.docs.forEach((doc) => {
-                userData.crossings.push(doc.data());
-            })
+                if (doc.data().status === "pending" && doc.data().recipient === req.user.username) userData.requests.push(doc.data());
+                else userData.crossings.push(doc.data());
+            });
         });
+
+        return realtime.ref(`/notifications/`).orderByChild("recipient").equalTo(req.user.username).get();
+    })
+    .then((data) => {
+        userData.notifications = [];
+        if (data.exists()) {
+            userData.notifications = Object.values(data.val());
+        }
 
         return res.json(userData);
     })
@@ -571,3 +580,23 @@ exports.getUserDetails = (req, res) => {
 // exports.deleteUserAccount = (req, res) => {
 
 // };
+
+
+exports.markNotificationRead = (req, res) => {
+    let promises = [];
+    req.body.forEach(notifId => {
+        let updates = {};
+        updates["read"] = true;
+        promises.push(realtime.ref(`/notifications/`).orderByChild("notificationId").equalTo(notifId).update(updates));
+    });
+
+    Promise.all(promises)
+    .then(() => {
+        return res.json({message: 'Notifications marked read.'});
+    })
+    .catch(err => {
+        console.error(err);
+        return res.status(500).json({error: err.code});
+    });
+
+};

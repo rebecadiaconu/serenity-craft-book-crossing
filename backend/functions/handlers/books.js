@@ -1,7 +1,11 @@
+const firebase = require('firebase');
 const config = require('../util/config');
 const { db, admin } = require('../util/admin');
 
 const { validateBookData, reduceBookDetails } = require('../util/validators');
+const { uuid } = require('uuidv4');
+
+realtime = firebase.database();
 
 
 // Get all books
@@ -22,133 +26,6 @@ exports.getAllBooks = (req, res) => {
             console.error(err);
             return res.status(500).json({ error: err.code });
         });
-};
-
-// Get book details
-exports.getBook = (req, res) => {
-    const bookDocument = db.doc(`/books/${req.params.bookId}`);
-    let bookData = {};
-
-    bookDocument.get()
-    .then((doc) => {
-        if (!doc.exists) return res.status(404).json({ error: 'Book not found!' });
-
-        bookData = doc.data();
-        bookData.bookId = doc.id;
-
-        return db.collection('reviews').where('bookId', '==', bookData.bookId).orderBy('createdAt', 'desc').get();
-    })
-    .then((data) => {
-        bookData.reviews = [];
-        data.forEach(doc => {
-            bookData.reviews.push(doc.data());
-        });
-
-        return res.json(bookData);
-    })
-    .catch(err => {
-        console.error(err);
-
-        return res.status(500).json({ error: err.code });
-    });
-};
-
-// Add book details
-exports.editBook = (req, res) => {
-    let bookDetails = reduceBookDetails(req.body);
-
-    const { valid, errors } = validateBookData(bookDetails);
-
-    if (!valid) return res.status(400).json(errors);
-
-    db.doc(`/books/${req.params.bookId}`).update(bookDetails)
-    .then(() => {
-        return res.json({ message: 'Book details updated successfully!' });
-    })
-    .catch((err) => {
-        console.error(err);
-        return res.status(500).json({ error: err.code });
-    });
-};
-
-// Delete book
-exports.deleteBook = (req, res) => {
-    const bookDocument = db.doc(`/books/${req.params.bookId}`);
-    let bookData = {};
-
-    bookDocument.get()
-    .then((doc) => {
-        if (!doc.exists) return res.status(404).json({ error: 'Book not found!' });
-
-        if (doc.data().available == false) return res.status(400).json({ error: 'Seems like this book is not available. You can not delete it!' });
-
-        bookData = doc.data();
-        bookData.bookId = doc.id;
-
-        batch = db.batch();
-
-        return db.collection("reviews").where("bookId", "==", req.params.bookId).get()
-        .then((data) => {
-            data.forEach(doc => {
-                batch.delete(db.doc(`/reviews/${doc.id}`));
-            });
-    
-            const reqBooks = db.collection("crossings").where("reqBookId", "==", req.params.bookId).get();
-            const randomBooks = db.collection("crossings").where("randomBookId", "==", req.params.bookId).get();
-    
-            return Promise.all([reqBooks, randomBooks]);
-        })
-        .then((responses) => {
-            responses.forEach((response) => {
-                response.docs.forEach((doc) => {
-                    let promises = [];
-                    let crossingData = doc.data();
-                    crossingData.crossingId = doc.id;
-                    
-                    realtime.ref(`/topics/${crossingData.crossingId}`).get()
-                    .then((data) => {
-                        if (data.exists()) {
-                            crossingData.topics = Object.values(data.val());
-                        } else crossingData.topics = [];
-    
-                        crossingData.topics.map((topic) => {
-                            if (topic.replyCount > 0) {
-                                topic.replies.map( (reply) => {
-                                    promises.push(realtime.ref(`/replies/${reply}`).remove());
-                                });
-                            }
-    
-                            promises.push(realtime.ref(`/topics/${crossingData.crossingId}/${topic.topicId}`).remove());
-                        });
-    
-                        return Promise.all(promises);
-                    })
-                    .then(() => {
-                        batch.delete(db.doc(`/crossings/${crossingData.crossingId}`));
-                        
-                        return batch.commit();
-                    });
-                });
-            });
-        })
-        .then(() => {
-            oldImageFilename = path.basename(bookData.coverImage).split('?')[0];
-
-            if (oldImageFilename !== 'nobook-image2.jpg') {
-                admin.storage().bucket().file(oldImageFilename).delete();
-            }
-
-            return bookDocument.delete();
-        });
-    })
-    .then(() => {
-        return res.json({ message: 'Book deleted successfully!' });
-    })
-    .catch((err) => {
-        console.error(err);
-        return res.status(500).json({ error: err.code });
-    })
-
 };
 
 // Add new book
@@ -238,6 +115,165 @@ exports.addBook = (req, res) => {
         console.error(err);
         return res.status(500).json({ error: err.code });
     });
+};
+
+// Get book details
+exports.getBook = (req, res) => {
+    const bookDocument = db.doc(`/books/${req.params.bookId}`);
+    let bookData = {};
+
+    bookDocument.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'Book not found!' });
+
+        bookData = doc.data();
+        bookData.bookId = doc.id;
+
+        return db.collection('reviews').where('bookId', '==', bookData.bookId).orderBy('createdAt', 'desc').get();
+    })
+    .then((data) => {
+        bookData.reviews = [];
+        data.forEach(doc => {
+            bookData.reviews.push(doc.data());
+        });
+
+        return res.json(bookData);
+    })
+    .catch(err => {
+        console.error(err);
+
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+// Add book details
+exports.editBook = (req, res) => {
+    let bookDetails = reduceBookDetails(req.body);
+
+    const { valid, errors } = validateBookData(bookDetails);
+
+    if (!valid) return res.status(400).json(errors);
+
+    db.doc(`/books/${req.params.bookId}`).update(bookDetails)
+    .then(() => {
+        return res.json({ message: 'Book details updated successfully!' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+// Delete book
+exports.deleteBook = (req, res) => {
+    const path = require('path');
+    const bookDocument = db.doc(`/books/${req.params.bookId}`);
+    let bookData = {};
+
+    bookDocument.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'Book not found!' });
+
+        if (doc.data().available == false) return res.status(400).json({ error: 'Seems like this book is not available. You can not delete it!' });
+
+        bookData = doc.data();
+        bookData.bookId = doc.id;
+
+        batch = db.batch();
+
+        return db.collection("reviews").where("bookId", "==", req.params.bookId).get()
+        .then((data) => {
+            data.forEach(doc => {
+                batch.delete(db.doc(`/reviews/${doc.id}`));
+            });
+    
+            const reqBooks = db.collection("crossings").where("reqBookId", "==", req.params.bookId).get();
+            const randomBooks = db.collection("crossings").where("randomBookId", "==", req.params.bookId).get();
+    
+            return Promise.all([reqBooks, randomBooks]);
+        })
+        .then((responses) => {
+            responses.forEach((response) => {
+                response.docs.forEach((doc) => {
+                    let promises = [];
+                    let crossingData = doc.data();
+                    crossingData.crossingId = doc.id;
+                    
+                    realtime.ref(`/topics/${crossingData.crossingId}`).get()
+                    .then((data) => {
+                        if (data.exists()) {
+                            crossingData.topics = Object.values(data.val());
+                        } else crossingData.topics = [];
+    
+                        crossingData.topics.map((topic) => {
+                            if (topic.replyCount > 0) {
+                                topic.replies.map( (reply) => {
+                                    promises.push(realtime.ref(`/replies/${reply}`).remove());
+                                });
+                            }
+    
+                            promises.push(realtime.ref(`/topics/${crossingData.crossingId}/${topic.topicId}`).remove());
+                        });
+
+                        return Promise.all(promises);
+                    })
+                    .then(() => {
+                        let newNotification = {
+                            notificationId: uuid(),
+                            createdAt: new Date().toISOString(),
+                            sender: req.user.username,
+                            senderImage: req.user.imageUrl,
+                            read: false,
+                            type: 'info'
+                        };
+    
+                        if (crossingData.sender === req.user.username) newNotification.recipient = crossingData.recipient;
+                        else newNotification.recipient = crossingData.sender;
+    
+                        newNotification.message = `Seems like ${newNotification.sender} deleted one book present in your crossings or pending requests, so these are gone too!`;
+    
+                        return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
+                    })
+                    .then(() => {
+                        batch.delete(db.doc(`/crossings/${crossingData.crossingId}`));
+                        
+                        return batch.commit();
+                    });
+                });
+            });
+        })
+        .then(() => {
+            return realtime.ref(`/notifications/`).orderByChild("bookId").equalTo(req.params.bookId).get();
+        })
+        .then((data) => {
+            let promises = [];
+            if (data.exists()) {
+                let notifications = Object.values(data.val());
+                notifications.forEach((notif) => {
+                    promises.push(realtime.ref(`/notifications/${notif.notificationId}`).remove());
+                });
+            }
+
+            return Promise.all(promises);
+        })
+        .then(() => {
+            oldImageFilename = path.basename(bookData.coverImage).split('?')[0];
+
+            if (oldImageFilename !== 'nobook-image2.png') {
+                admin.storage().bucket().file(oldImageFilename).delete();
+            }
+
+            return bookDocument.delete();
+        });
+    })
+    .then(() => {
+        return res.json({ message: 'Book deleted successfully!' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    })
+
 };
 
 // Upload book cover image
@@ -367,6 +403,20 @@ exports.reviewBook = (req, res) => {
             return doc.ref.update({
                 averageRating: (doc.data().averageRating * doc.data().numReviews + req.body.rating) / (doc.data().numReviews + 1),
                 numReviews: doc.data().numReviews + 1
+            })
+            .then(() => {
+                let newNotification = {
+                    notificationId: uuid(),
+                    sender: req.user.username,
+                    senderImage: req.user.imageUrl,
+                    createdAt: new Date().toISOString(),
+                    recipient: doc.data().owner,
+                    read: false,
+                    type: 'review',
+                    bookId: doc.id
+                };
+
+                return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
             });
         }
     })
@@ -492,49 +542,3 @@ exports.deleteReview = (req, res) => {
         return res.status(500).json({ error: err.code });
     });
 };
-
-
-// // Edit book review
-// exports.editReview = (req, res) => {
-//     let oldReview;
-//     let reviewDetails = {};
-
-//     if (req.body.hasOwnProperty('body')) {
-//         reviewDetails.body = req.body.body.trim();
-//     }
-
-//     if (req.body.hasOwnProperty('rating')) {
-//         reviewDetails.rating = req.body.rating;
-//     }
-
-//     db.doc(`/reviews/${req.params.reviewId}`).get()
-//     .then((doc) => {
-//         if (!doc.exists) return res.status(404).json({ error: 'Review not found!' });
-
-//         oldReview = doc.data().rating;
-
-//         doc.ref.update({ body: reviewDetails.body, rating: reviewDetails.rating })
-//         .then(() => {
-//             return db.doc(`/books/${req.params.bookId}`).get();
-//         })
-//         .then((doc) => {
-//             if (!doc.exists) return res.status(404).json({ error: 'Book not found!' });
-    
-//             if (doc.data().owner === req.user.username) {
-//                 return doc.ref.update({
-//                     ownerRating: reviewDetails.rating,
-//                     ownerReview: reviewDetails.body,
-//                     averageRating: (doc.data().averageRating * doc.data().numReviews - oldReview + reviewDetails.rating) / doc.data().numReviews
-//                 });
-//             }
-//             else return doc.ref.update({ averageRating: (doc.data().averageRating * doc.data().numReviews - oldReview + reviewDetails.rating) / doc.data().numReviews});
-//         })
-//         .then(() => {
-//             return res.json({ message: 'Review updated successfully!' });
-//         });
-//     })
-//     .catch((err) => {
-//         console.error(err);
-//         return res.status(500).json({error: err.code});
-//     });
-// };
