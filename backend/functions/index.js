@@ -1,6 +1,9 @@
 const functions = require("firebase-functions");
 const app = require('express')();
 
+var cors = require('cors');
+app.use(cors());
+
 const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationRead } = require('./handlers/users');
 const { addBook, uploadCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, editReview, deleteReview } = require('./handlers/books');
 const { sendCrossingReq, acceptCrossing, rejectCrossing, cancelCrossing, changeCrossingStatus, getCrossingDetails, deleteCrossing } = require('./handlers/crossings');
