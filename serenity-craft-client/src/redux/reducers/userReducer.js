@@ -24,13 +24,13 @@ const UserReducer = (state = initialState, action) => {
             };
         case Actions.USER.LOADING_USER:
             return {
-              ...state,
               loading: true,
+              ...state
             };
         case Actions.USER.STOP_LOADING_USER:
             return {
-              ...state,
               loading: false,
+              ...state
             };
         default:
             return state;

@@ -26,7 +26,7 @@ export const signUp = (userData, history) => (dispatch) => {
         });
 };
 
-
+ 
 export const loginUser = (userData, history) => (dispatch) => {
     dispatch({ type: Actions.USER.LOADING_USER });
     axios

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import AppIcon from '../images/icon.png';
@@ -8,6 +8,7 @@ import '../css/App.css';
 // Redux stuff
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from '../redux/actions/userActions';
+import { Actions } from "../redux/types";
 
 // MUI stuff
 import { makeStyles } from '@material-ui/core/styles';
@@ -81,6 +82,11 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        console.log('sedfefrg => ',errors);
+    }, []);
+
+    useEffect(() => {
         if (authenticated) {
             history.push("/");
         }
@@ -112,8 +118,8 @@ const Login = () => {
                         name="email" 
                         type="email" 
                         label="Email" 
-                        error={errors.email ? true : false}
-                        helperText={errors.email}
+                        error={errors?.email ? true : false}
+                        helperText={errors?.email}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
@@ -125,8 +131,8 @@ const Login = () => {
                         name="password" 
                         type={showPassword ? "text" : "password"} 
                         label="Password" 
-                        error={errors.password ? true : false}
-                        helperText={errors.password}
+                        error={errors?.password ? true : false}
+                        helperText={errors?.password}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
@@ -151,7 +157,7 @@ const Login = () => {
                     </small>
                     <br />
                     {
-                        errors.general && (
+                        errors?.general && (
                             <Typography variant="body2" className={classes.customError}>
                                 {errors.general}
                             </Typography>

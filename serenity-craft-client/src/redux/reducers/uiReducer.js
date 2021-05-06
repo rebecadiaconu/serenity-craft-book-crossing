@@ -2,7 +2,7 @@ import { Actions } from '../types';
 
 const initialState = {
     sendingEmail: false,
-    errors: {},
+    errors: null,
     message: ''
 }
 
@@ -16,24 +16,24 @@ const UiReducer = (state = initialState, action) => {
         case Actions.UI.CLEAR_ERRORS:
             return {
                 ...state,
-                errors: {}
+                errors: null
             }
         case Actions.UI.SET_ACTION_DONE:
             return {
                 ...state,
-                errors: {},
-                message: action.payload
+                errors: null,
+                message: action.payload,
             }
         case Actions.UI.CLEAR_ACTION:
             return {
                 ...state,
-                errors: {},
+                errors: null,
                 message: ''
             }
         case Actions.UI.SEND_EMAIL:
             return {
                 ...state,
-                sendingEmail: true
+                sendingEmail: true,
             }
         case Actions.UI.STOP_SEND_EMAIL:
             return {

@@ -8,6 +8,7 @@ import '../css/App.css';
 // Redux stuff
 import { useSelector, useDispatch } from 'react-redux';
 import { signUp } from '../redux/actions/userActions';
+import { Actions } from '../redux/types';
 
 // MUI stuff
 import { makeStyles } from '@material-ui/core/styles';
@@ -74,6 +75,12 @@ const Signup = () => {
     const [showConfirmed, setShowConfirmed] = useState(false)
 
     useEffect(() => {
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        console.log('sedfefrg => ',errors);
+    }, []);
+
+    useEffect(() => {
+        console.log(errors);
         if (authenticated) {
             history.push("/");
         }
@@ -83,15 +90,17 @@ const Signup = () => {
         dispatch(signUp(formData, history));
     };
 
-    const handleClickShowPassword = () => {
+    const handleClickShowPassword = (event) => {
+        event.preventDefault();
         setShowPassword(!showPassword);
     };
 
-    const handleClickShowConfirmed = () => {
+    const handleClickShowConfirmed = (event) => {
+        event.preventDefault();
         setShowConfirmed(!showConfirmed);
     };
 
-    const handleMouseDownPassword = (event) => {
+    const handleMouseDown = (event) => {
         event.preventDefault();
     };
 
@@ -102,15 +111,15 @@ const Signup = () => {
                 <div className={classes.form}>
                     <img src={AppIcon} alt="app-icon" className={classes.icon}/>
                     <Typography variant="h3" className={classes.siteName}>Serenity Craft</Typography>
-                    <Typography variant="h3" className={classes.pageTitle}>Singup</Typography>
+                    <Typography variant="h3" className={classes.pageTitle}>Signup</Typography>
                     <TextField                         
                         className={classes.textField} 
                         variant="outlined"
                         name="email" 
                         type="email" 
                         label="Email" 
-                        error={errors.email ? true : false}
-                        helperText={errors.email}
+                        error={errors?.email ? true : false}
+                        helperText={errors?.email}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
@@ -122,8 +131,8 @@ const Signup = () => {
                         name="password" 
                         type={showPassword? "text" : "password"} 
                         label="Password" 
-                        error={errors.password ? true : false}
-                        helperText={errors.password}
+                        error={errors?.password ? true : false}
+                        helperText={errors?.password}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
@@ -132,7 +141,7 @@ const Signup = () => {
                                 <IconButton
                                 aria-label="toggle password visibility"
                                 onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
+                                onMouseDown={handleMouseDown}
                                 >
                                     {showPassword ? <Visibility /> : <VisibilityOff />}
                                 </IconButton>
@@ -146,8 +155,8 @@ const Signup = () => {
                         name="confirmPassword" 
                         type={showConfirmed ? "text" : "password"} 
                         label="Confirm your password" 
-                        error={errors.confirmPassword ? true : false}
-                        helperText={errors.confirmPassword}
+                        error={errors?.confirmPassword ? true : false}
+                        helperText={errors?.confirmPassword}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
@@ -156,7 +165,7 @@ const Signup = () => {
                                 <IconButton
                                 aria-label="toggle password visibility"
                                 onClick={handleClickShowConfirmed}
-                                onMouseDown={handleMouseDownPassword}
+                                onMouseDown={handleMouseDown}
                                 >
                                     {showConfirmed ? <Visibility /> : <VisibilityOff />}
                                 </IconButton>
@@ -169,8 +178,8 @@ const Signup = () => {
                         name="username" 
                         type="text" 
                         label="Username" 
-                        error={errors.username ? true : false}
-                        helperText={errors.username}
+                        error={errors?.username ? true : false}
+                        helperText={errors?.username}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
@@ -181,13 +190,13 @@ const Signup = () => {
                     </small>
                     <br />
                     {
-                        errors.general && (
+                        errors?.general && (
                             <Typography variant="body2" className={classes.customError}>
                                 {errors.general}
                             </Typography>
                         )
                     }
-                    <Button onClick={handleSubmit(onSubmit)} type="submit" variant="contained" color="primary" className={classes.submitButton} disabled={loading}>
+                    <Button onMouseDown={handleMouseDown} onClick={handleSubmit(onSubmit)} type="submit" variant="contained" color="primary" className={classes.submitButton} disabled={loading}>
                         Signup
                         {
                             loading && (

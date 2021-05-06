@@ -87,13 +87,18 @@ const ResetPassword = () => {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        console.log('sedfefrg => ',errors);
+    }, []);
+
+    useEffect(() => {
         if (message !== '') setOpen(true);
         else setOpen(false);
 
     }, [errors, message]);
 
     const handleClose = () => {
-        store.dispatch({ type: Actions.UI.CLEAR_ACTION });
+        dispatch({ type: Actions.UI.CLEAR_ACTION });
         console.log(message);
         history.push('/login');
     }
@@ -119,15 +124,15 @@ const ResetPassword = () => {
                         name="email" 
                         type="email" 
                         label="Email address" 
-                        error={errors.email ? true : false}
-                        helperText={errors.email}
+                        error={errors?.email ? true : false}
+                        helperText={errors?.email}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
                     />
                     <br />
                     {
-                        errors.general && (
+                        errors?.general && (
                             <Typography variant="body2" className={classes.customError}>
                                 {errors.general}
                             </Typography>
