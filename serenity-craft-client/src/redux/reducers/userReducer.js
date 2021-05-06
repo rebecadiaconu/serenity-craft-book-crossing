@@ -7,8 +7,7 @@ const initialState = {
     books: [],
     crossings: [],
     requests: [],
-    notifications: [],
-    errors: {}
+    notifications: []
 };
 
 const UserReducer = (state = initialState, action) => {
@@ -21,13 +20,11 @@ const UserReducer = (state = initialState, action) => {
             return {
               authenticated: true,
               loading: false,
-              errors: {},
               ...action.payload,
             };
         case Actions.USER.LOADING_USER:
             return {
               ...state,
-              errors: {},
               loading: true,
             };
         case Actions.USER.STOP_LOADING_USER:
@@ -35,17 +32,6 @@ const UserReducer = (state = initialState, action) => {
               ...state,
               loading: false,
             };
-        case Actions.USER.SET_ERRORS:
-            return {
-              ...state,
-              errors: action.payload,
-              loading: false,
-            };
-        case Actions.USER.CLEAR_ERRORS:
-            return {
-              ...state,
-              errors: {}
-            }
         default:
             return state;
     }

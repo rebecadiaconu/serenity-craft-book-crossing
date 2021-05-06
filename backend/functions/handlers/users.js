@@ -86,10 +86,12 @@ exports.logIn = (req, res) => {
         console.error(err);
 
         if (err.code == 'auth/wrong-password') {
-            return res.status(403).json({ error: 'Wrong password! Please try again!' });
+            return res.status(403).json({ password: 'Wrong password! Please try again!' });
         } else if (err.code == 'auth/user-not-found') {
-            return res.status(403).json({ error: 'Invalid email! Please try again!' });
+            return res.status(403).json({ email: 'Invalid email! Please try again!' });
         }
+
+        return res.status(500).json({ general: 'Something went wrong... Try again!' });
     });
 };
 
@@ -103,7 +105,7 @@ exports.forgotPassword = (req, res) => {
 
     db.collection("users").where("email", "==", req.body.email).get()
     .then((data) => {
-        if (data.empty) return res.status(404).json({ error: 'User not found! '});
+        if (data.empty) return res.status(404).json({ general: 'User not found! '});
 
         return firebase.auth().sendPasswordResetEmail(userEmail);
     })
@@ -122,7 +124,7 @@ exports.getAuthenticatedUser = (req, res) => {
 
     db.doc(`/users/${req.user.username}`).get()
     .then((doc) => {
-        if (!doc.exists) return res.status(404).json({error: 'User not found!' });
+        if (!doc.exists) return res.status(404).json({general: 'User not found!' });
 
         userData.credentials = doc.data();
 
@@ -224,7 +226,7 @@ exports.uploadImage = (req, res) => {
             return userDoc.get();
         })
         .then((doc) => {
-            if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
+            if (!doc.exists) return res.status(404).json({ general: 'User not found!' });
 
             const batch = db.batch();
 
@@ -342,7 +344,7 @@ exports.changeEmail = (req, res) => {
         db.collection('users').where('email', '==', user.email).limit(1).get()
         .then((data) => {
             if (data.empty) {
-                return res.status(404).json({ error: user.email + ' User not found!' });
+                return res.status(404).json({ general: user.email + ' user not found!' });
             }
 
             if (data.docs[0].data().username !== req.user.username) return res.status(400).json({ error: 'Wrong credentials!' });
@@ -366,6 +368,7 @@ exports.changeEmail = (req, res) => {
         if (err.code == "auth/user-not-found") {
             return res.status(400).json({ email: 'Invalid email!' });
         }
+
         if (err.code == "auth/wrong-password") {
             return res.status(400).json({ password: 'Wrong password!' });
         }
@@ -397,7 +400,7 @@ exports.changeUsername = (req, res) => {
         
         userDocument.get()
         .then((doc) => {
-            if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
+            if (!doc.exists) return res.status(404).json({ general: 'User not found!' });
     
             if (doc.data().email !== req.body.email) return res.status(400).json({ error: 'Wrong credentials!' });
 
@@ -511,16 +514,16 @@ exports.changePassword = (req, res) => {
 
     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
-        if (user.newPassword.trim() === '') return res.status(400).json({ password: 'Must not be empty!' });
-        if (user.newPassword.length < 8) return res.status(400).json({ password: 'Must be at least 8 characters long!' });
+        if (user.newPassword.trim() === '') return res.status(400).json({ newPassword: 'Must not be empty!' });
+        if (user.newPassword.length < 8) return res.status(400).json({ newPassword: 'Must be at least 8 characters long!' });
 
         db.collection('users').where('email', '==', user.email).limit(1).get()
         .then((userData) => {
             if (userData.empty) {
-                return res.status(404).json({ error: user.email + ' User not found!' });
+                return res.status(404).json({ general: user.email + ' user not found!' });
             }
 
-            if (userData.docs[0].data().username !== req.user.username) return res.status(400).json({ error: 'Wrong credentials!' });
+            if (userData.docs[0].data().username !== req.user.username) return res.status(400).json({ general: 'Wrong credentials!' });
             return data.user.updatePassword(user.newPassword);
         });
     })
@@ -542,7 +545,7 @@ exports.getUserDetails = (req, res) => {
             userData.user = doc.data();
             return db.collection('books').where('owner', '==', req.params.username).orderBy('createdAt', 'desc').get();
         } else {
-            return res.status(404).json({error: 'User not found!' });
+            return res.status(404).json({general: 'User not found!' });
         }
     })
     .then((data) => {

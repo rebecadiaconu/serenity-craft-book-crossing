@@ -8,8 +8,11 @@ import './css/App.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ResetPassword from './pages/ResetPassword';
 
-// Components
+// Redux
+// import { useDispatch } from 'react-redux';
+// import { getUserData } from './redux/actions/userActions';
 
 // MUI stuff
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
@@ -42,7 +45,7 @@ function App() {
 
   // useEffect(() => {
   //   if (token) {
-  //     const decodedToken = token.split(" ")[1];
+  //     const decodedToken = token.split("Bearer ")[1];
 
   //     if (decodedToken.exp * 1000 < Date.now()) {
   //       // store.dispatch(logoutUser());
@@ -64,6 +67,7 @@ function App() {
             <Route exact path="/" component = {Home}/>
             <Route exact path="/login" component = {Login}/>
             <Route exact path="/signup" component = {Signup}/>
+            <Route exact path="/resetPassword" component = {ResetPassword}/>
           </Switch>
         </Router>
       </Provider>

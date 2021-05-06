@@ -5,7 +5,6 @@ import AppIcon from '../images/icon.png';
 import BackgrImage from '../images/backgr.jpg';
 import '../css/App.css';
 
-
 // Redux stuff
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from '../redux/actions/userActions';
@@ -20,7 +19,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import InputAdornment from '@material-ui/core/InputAdornment';
-
 
 // Styles
 const useStyles = makeStyles({
@@ -78,8 +76,8 @@ const Login = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit } = useForm();
-    const { loading, errors, authenticated } = useSelector((state) => state.user);
-
+    const { loading, authenticated } = useSelector((state) => state.user);
+    const { errors } = useSelector((state) => state.ui);
     const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
@@ -103,7 +101,7 @@ const Login = () => {
     return (
         <Grid container>
             <Grid item xs className={classes.image} />
-            <Grid item xs={5}>
+            <Grid item xs={6}>
                 <div className={classes.form}>
                     <img src={AppIcon} alt="app-icon" className={classes.icon}/>
                     <Typography variant="h3" className={classes.siteName}>Serenity Craft</Typography>
@@ -146,12 +144,10 @@ const Login = () => {
                     />
                     <br />
                     <small className={classes.forgotPassword}>
-                        Forgot your password?
-                        <Link> Reset it here.</Link>
+                        <Link to="/resetPassword">Forgot your password? Reset it here.</Link>
                     </small>
                     <small className={classes.signUp}>
-                        New to Serenity?
-                        <Link to="/signup"> Create an account!</Link>
+                        <Link to="/signup">New to Serenity? Create an account!</Link>
                     </small>
                     <br />
                     {

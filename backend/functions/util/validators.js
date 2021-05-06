@@ -45,7 +45,7 @@ exports.validateSignUpData = (data) => {
     }
 
     if (isEmpty(data.username)) {
-        errors.handle = 'Must not be empty.';
+        errors.username = 'Must not be empty.';
     }
     // else if (data.username.includes('@')) {
     //     errors.username = 'Must not contain  @.';
