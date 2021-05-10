@@ -2,16 +2,19 @@ import axios from "../../util/axios";
 import { Actions } from "../types";
 
 
+export const setAuth = (token) => {
+    const idToken = `Bearer ${token}`;
+    localStorage.setItem("idToken", idToken);
+    axios.defaults.headers.common['Authorization'] = idToken;
+};
+
+
 export const signUp = (userData, history) => (dispatch) => {
     dispatch({ type: Actions.USER.LOADING_USER });
     axios
         .post('/signup', userData)
         .then(({ data }) => {
-            const idToken = `Bearer ${data.token}`;
-            localStorage.setItem("idToken", idToken);
-            axios.defaults.headers.common['Authorization'] = idToken;
-
-            dispatch(getUserData());
+            dispatch(getUserData(data.token));
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
             history.push("/");
         })
@@ -32,11 +35,7 @@ export const loginUser = (userData, history) => (dispatch) => {
     axios
         .post('/login', userData)
         .then(({ data }) => {
-            const idToken = `Bearer ${data.token}`;
-            localStorage.setItem("idToken", idToken);
-            axios.defaults.headers.common['Authorization'] = idToken;
-
-            dispatch(getUserData());
+            dispatch(getUserData(data.token));
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
             history.push("/");
         })
@@ -73,7 +72,9 @@ export const forgotPassword = (userData) => (dispatch) => {
 };
 
 
-export const getUserData = () => (dispatch) => {
+export const getUserData = (token) => (dispatch) => {
+    setAuth(token);
+
     axios
     .get('/user')
     .then((result) => {

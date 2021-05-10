@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import AppIcon from '../images/icon.png';
 import BackgrImage from '../images/backgr.jpg';
@@ -16,14 +16,12 @@ import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
-import Slide from '@material-ui/core/Slide';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 
 // Redux stuff
 import { useSelector, useDispatch } from 'react-redux';
 import { forgotPassword } from '../redux/actions/userActions';
-import store from '../redux/store';
 import { Actions } from "../redux/types";
 
 const useStyles = makeStyles({
@@ -58,6 +56,7 @@ const useStyles = makeStyles({
         width: 150
     },
     pageTitle: {
+        fontFamily: 'Merriweather Sans, sans-serif',
         margin: '60px auto 40px'
     },
     progress: {
@@ -88,7 +87,6 @@ const ResetPassword = () => {
 
     useEffect(() => {
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        console.log('sedfefrg => ',errors);
     }, []);
 
     useEffect(() => {

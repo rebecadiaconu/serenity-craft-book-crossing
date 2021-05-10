@@ -28,7 +28,14 @@ font-family: 'Merriweather Sans', sans-serif;
  */
 
 /* ****************** CLASSES STYLES ******************* */
-
-
+.container {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 0 auto;
+  width: 1000px;
+  min-width: 500px;
+  max-width: 1200px;
+}
 
 /* ****************** MUI CLASSES STYLES ******************* */

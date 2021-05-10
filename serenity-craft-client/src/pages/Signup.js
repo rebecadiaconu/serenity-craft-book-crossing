@@ -44,6 +44,7 @@ const useStyles = makeStyles({
         height: '100vh',
     },
     pageTitle: {
+        fontFamily: 'Merriweather Sans, sans-serif',
         margin: '40px auto 40px'
     },
     progress: {
@@ -76,7 +77,6 @@ const Signup = () => {
 
     useEffect(() => {
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        console.log('sedfefrg => ',errors);
     }, []);
 
     useEffect(() => {

@@ -86,9 +86,9 @@ exports.logIn = (req, res) => {
         console.error(err);
 
         if (err.code == 'auth/wrong-password') {
-            return res.status(403).json({ password: 'Wrong password! Please try again!' });
+            return res.status(403).json({ password: 'Wrong password. Please try again!' });
         } else if (err.code == 'auth/user-not-found') {
-            return res.status(403).json({ email: 'Invalid email! Please try again!' });
+            return res.status(403).json({ email: 'User email address not found. Please try again!' });
         }
 
         return res.status(500).json({ general: 'Something went wrong... Try again!' });

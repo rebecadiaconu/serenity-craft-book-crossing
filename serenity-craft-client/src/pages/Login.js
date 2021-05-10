@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import AppIcon from '../images/icon.png';
@@ -48,6 +48,7 @@ const useStyles = makeStyles({
         height: '100vh',
     },
     pageTitle: {
+        fontFamily: 'Merriweather Sans, sans-serif',
         margin: '60px auto 40px'
     },
     progress: {
@@ -83,12 +84,11 @@ const Login = () => {
 
     useEffect(() => {
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        console.log('sedfefrg => ',errors);
     }, []);
 
     useEffect(() => {
         if (authenticated) {
-            history.push("/");
+            history.push("/admin/dashboard");
         }
     }, [authenticated, errors]);
 
@@ -98,11 +98,11 @@ const Login = () => {
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
-      };
+    };
     
-      const handleMouseDownPassword = (event) => {
+    const handleMouseDownPassword = (event) => {
         event.preventDefault();
-      };
+    };
 
     return (
         <Grid container>

@@ -1,11 +1,17 @@
 import React from 'react';
 
 import Navbar from '../components/Navbar';
+import BooksContainer from '../components/BooksContainer';
+
+import Container from '@material-ui/core/Container';
 
 
 const Home = () => {
     return (
-        <h1>HOME PAGE</h1>
+        <Container>
+            <Navbar />
+            <BooksContainer />
+        </Container>
     );
 }
 
