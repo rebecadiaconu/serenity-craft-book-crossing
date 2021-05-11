@@ -498,6 +498,7 @@ const sidebarStyle = theme => ({
     }
   },
   photo: {
+    objectFit: "cover",
     transition: "all 300ms linear",
     width: "34px",
     height: "34px",

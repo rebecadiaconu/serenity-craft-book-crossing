@@ -2,6 +2,7 @@ import React from "react";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 import cx from "classnames";
+import { useSelector } from "react-redux";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,21 +20,18 @@ import AdminNavbarLinks from "./AdminNavbarLinks";
 import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarStyle.js";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbar(props) {
   const classes = useStyles();
-  const { color, rtlActive, brandText } = props;
+  const { color, brandText } = props;
   const appBarClasses = cx({
     [" " + classes[color]]: color
   });
-  const sidebarMinimize =
-    classes.sidebarMinimize +
-    " " +
-    cx({
-      [classes.sidebarMinimizeRTL]: rtlActive
-    });
+  const sidebarMinimize = classes.sidebarMinimize;
+
   return (
     <AppBar className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.container}>
@@ -43,7 +41,7 @@ export default function AdminNavbar(props) {
               <Button
                 justIcon
                 round
-                color="white"
+                color="rose"
                 onClick={props.sidebarMinimize}
               >
                 <ViewList className={classes.sidebarMiniIcon} />
@@ -52,7 +50,7 @@ export default function AdminNavbar(props) {
               <Button
                 justIcon
                 round
-                color="white"
+                color="rose"
                 onClick={props.sidebarMinimize}
               >
                 <MoreVert className={classes.sidebarMiniIcon} />
@@ -62,12 +60,12 @@ export default function AdminNavbar(props) {
         </Hidden>
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
-          <Button href="#" className={classes.title} color="transparent">
+          <Button component={Link} to={props.location.pathname} className={classes.title} color="transparent">
             {brandText}
           </Button>
         </div>
         <Hidden smDown implementation="css">
-          <AdminNavbarLinks rtlActive={rtlActive} />
+          <AdminNavbarLinks authenticated={props.authenticated} />
         </Hidden>
         <Hidden mdUp implementation="css">
           <Button
@@ -87,7 +85,6 @@ export default function AdminNavbar(props) {
 
 AdminNavbar.propTypes = {
   color: PropTypes.oneOf(["primary", "info", "success", "warning", "danger"]),
-  rtlActive: PropTypes.bool,
   brandText: PropTypes.string,
   miniActive: PropTypes.bool,
   handleDrawerToggle: PropTypes.func,

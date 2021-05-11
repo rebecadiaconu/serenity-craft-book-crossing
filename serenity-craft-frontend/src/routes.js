@@ -30,6 +30,65 @@ import DateRange from "@material-ui/icons/DateRange";
 import GridOn from "@material-ui/icons/GridOn";
 import Image from "@material-ui/icons/Image";
 import WidgetsIcon from "@material-ui/icons/Widgets";
+import PersonAdd from "@material-ui/icons/PersonAdd";
+import Fingerprint from "@material-ui/icons/Fingerprint";
+
+// Components Serenity
+
+
+// @material-ui/icons Serenity
+import MenuBookIcon from '@material-ui/icons/MenuBook';
+import ShareIcon from '@material-ui/icons/Share';
+
+// export default routes = {
+//   dashRoutes: [
+//     {
+//       path: "/books",
+//       name: "All books",
+//       icon: MenuBookIcon,
+//       component: '',
+//       layout: "/admin",
+//       logged: false
+//     },
+//     {
+//       path: "/crossings",
+//       name: "My crossings",
+//       icon: ShareIcon,
+//       component: '',
+//       layout: "/admin",
+//       logged: true
+//     }
+//   ],
+//   authRoutes: [
+//     {
+//       path: "/login",
+//       name: "Login",
+//       icon: '',
+//       component: LoginPage,
+//       layout: "/auth",
+//       logged: false
+//     },
+//     {
+//       path: "/register",
+//       name: "Register",
+//       icon: '',
+//       component: RegisterPage,
+//       layout: "/auth",
+//       logged: false
+//     },
+//     {
+//       path: "/login",
+//       name: "Login",
+//       icon: '',
+//       component: LoginPage,
+//       layout: "/auth",
+//       logged: false
+//     }
+//   ]
+// }
+
+// logged: true -> show only when user is authenticated
+// unauth: true -> show only when user is unauthenticated
 
 var dashRoutes = [
   {
@@ -37,13 +96,17 @@ var dashRoutes = [
     name: "Dashboard",
     icon: DashboardIcon,
     component: Dashboard,
-    layout: "/admin"
+    layout: "/admin",
+    logged: false,  
+    unauth: false   
   },
   {
     collapse: true,
     name: "Pages",
     icon: Image,
     state: "pageCollapse",
+    logged: true,   
+    unauth: false,
     views: [
       {
         path: "/timeline-page",
@@ -94,6 +157,8 @@ var dashRoutes = [
     name: "Components",
     icon: Apps,
     state: "componentsCollapse",
+    logged: false,
+    unauth: false,
     views: [
       {
         collapse: true,
@@ -166,6 +231,8 @@ var dashRoutes = [
     name: "Forms",
     icon: "content_paste",
     state: "formsCollapse",
+    logged: false,
+    unauth: false,
     views: [
       {
         path: "/regular-forms",
@@ -202,6 +269,8 @@ var dashRoutes = [
     name: "Tables",
     icon: GridOn,
     state: "tablesCollapse",
+    logged: false,
+    unauth: false,
     views: [
       {
         path: "/regular-tables",
@@ -231,6 +300,8 @@ var dashRoutes = [
     name: "Widgets",
     icon: WidgetsIcon,
     component: Widgets,
+    logged: true,
+    unauth: false,
     layout: "/admin"
   },
   {
@@ -238,7 +309,27 @@ var dashRoutes = [
     name: "Calendar",
     icon: DateRange,
     component: Calendar,
+    logged: false,
+    unauth: false,  
     layout: "/admin"
+  },
+  {
+    path: "/login-page",
+    name: "Log in",
+    icon: Fingerprint,
+    component: LoginPage,
+    logged: false,
+    unauth: true,   
+    layout: "/auth"
+  },
+  {
+    path: "/register-page",
+    name: "Register",
+    icon: PersonAdd,
+    component: RegisterPage,
+    logged: false,
+    unauth: true,   
+    layout: "/auth"
   }
 ];
 export default dashRoutes;

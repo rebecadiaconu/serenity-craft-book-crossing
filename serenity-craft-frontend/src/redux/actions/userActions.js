@@ -52,6 +52,14 @@ export const loginUser = (userData, history) => (dispatch) => {
 };
 
 
+export const logOutUser = () => (dispatch) => {
+    localStorage.removeItem('idToken');
+    delete axios.defaults.headers.common['Authorization'];
+
+    dispatch({ type: Actions.USER.SET_UNAUTHENTICATED });
+}
+
+
 export const forgotPassword = (userData) => (dispatch) => {
     dispatch({ type: Actions.UI.SEND_EMAIL });
     axios.post('/forgotPassword', userData)

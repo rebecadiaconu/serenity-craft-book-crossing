@@ -1,6 +1,8 @@
 import React, { useState, useEffect, createRef } from "react";
 import cx from "classnames";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -12,13 +14,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
+// import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
 import routes from "routes.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/layouts/adminStyle.js";
 
-var ps;
+let ps;
 
 const useStyles = makeStyles(styles);
 
@@ -26,13 +28,19 @@ const Dashboard = (props) => {
   const { ...rest } = props;
 
   // states and functions
+  const { authenticated, credentials } = useSelector((state) => state.user);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [miniActive, setMiniActive] = useState(false);
-  const [image, setImage] = useState(require("assets/img/backgr.jpg"));
-  const [color, setColor] = useState("blue");
-  const [bgColor, setBgColor] = useState("black");
-  const [fixedClasses, setFixedClasses] = useState("dropdown");
-  const [logo, setLogo] = useState(require("assets/img/logo-white.svg"));
+  const image = require("assets/img/backgr2.jpg");
+  const color = "rose";
+  const bgColor ="black";
+  const logo =require("assets/img/icon-white.png");
+
+  // const [image, setImage] = useState(require("assets/img/backgr2.jpg"));
+  // const [color, setColor] = useState("rose");
+  // const [bgColor, setBgColor] = useState("black");
+  // const [fixedClasses, setFixedClasses] = useState("dropdown");
+  // const [logo, setLogo] = useState(require("assets/img/logo-white.svg"));
   
   // styles
   const classes = useStyles();
@@ -71,34 +79,34 @@ const Dashboard = (props) => {
 
   });
 
-  // functions for changeing the states from components
-  const handleImageClick = image => {
-    setImage(image);
-  };
+  // // functions for changeing the states from components
+  // const handleImageClick = image => {
+  //   setImage(image);
+  // };
 
-  const handleColorClick = color => {
-    setColor(color);
-  };
+  // const handleColorClick = color => {
+  //   setColor(color);
+  // };
 
-  const handleBgColorClick = bgColor => {
-    switch (bgColor) {
-      case "white":
-        setLogo(require("assets/img/logo.svg"));
-        break;
-      default:
-        setLogo(require("assets/img/logo-white.svg"));
-        break;
-    }
-    setBgColor(bgColor);
-  };
+  // const handleBgColorClick = bgColor => {
+  //   switch (bgColor) {
+  //     case "white":
+  //       setLogo(require("assets/img/logo.svg"));
+  //       break;
+  //     default:
+  //       setLogo(require("assets/img/logo-white.svg"));
+  //       break;
+  //   }
+  //   setBgColor(bgColor);
+  // };
 
-  const handleFixedClick = () => {
-    if (fixedClasses === "dropdown") {
-      setFixedClasses("dropdown show");
-    } else {
-      setFixedClasses("dropdown");
-    }
-  };
+  // const handleFixedClick = () => {
+  //   if (fixedClasses === "dropdown") {
+  //     setFixedClasses("dropdown show");
+  //   } else {
+  //     setFixedClasses("dropdown");
+  //   }
+  // };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -110,6 +118,7 @@ const Dashboard = (props) => {
 
   const getActiveRoute = routes => {
     let activeRoute = "Default Brand Text";
+
     for (let i = 0; i < routes.length; i++) {
       if (routes[i].collapse) {
         let collapseActiveRoute = getActiveRoute(routes[i].views);
@@ -124,6 +133,7 @@ const Dashboard = (props) => {
         }
       }
     }
+
     return activeRoute;
   };
   
@@ -160,7 +170,7 @@ const Dashboard = (props) => {
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
-        logoText={"Creative Tim"}
+        logoText={"Serenity Craft"}
         logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}
@@ -168,6 +178,8 @@ const Dashboard = (props) => {
         color={color}
         bgColor={bgColor}
         miniActive={miniActive}
+        authenticated={authenticated}
+        user={authenticated ? credentials : null}
         {...rest}
       />
       <div className={mainPanelClasses} ref={mainPanel}>
@@ -176,6 +188,8 @@ const Dashboard = (props) => {
           miniActive={miniActive}
           brandText={getActiveRoute(routes)}
           handleDrawerToggle={handleDrawerToggle}
+          authenticated={authenticated}
+          user={authenticated ? credentials : null}
           {...rest}
         />
         {/* On the /maps/full-screen-maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}

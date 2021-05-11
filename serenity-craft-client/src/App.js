@@ -11,7 +11,7 @@ import ResetPassword from './pages/ResetPassword';
 // Redux
 import { useDispatch } from 'react-redux';
 import { Actions } from './redux/types';
-import { setAuth, getUserData } from './redux/actions/userActions';
+import { setAuth, getUserData, logOutUser } from './redux/actions/userActions';
 
 // MUI stuff
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
@@ -48,8 +48,8 @@ function App() {
       const decodedToken = token.split(" ")[1];
 
       if (decodedToken.exp * 1000 < Date.now()) {
-        // store.dispatch(logoutUser());
-        window.location.href = "/login";
+        store.dispatch(logOutUser());
+        window.location.href = "/";
         setToken(undefined);
       } else {
         dispatch(getUserData(decodedToken));
