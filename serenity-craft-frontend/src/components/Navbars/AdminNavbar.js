@@ -2,7 +2,6 @@ import React from "react";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 import cx from "classnames";
-import { useSelector } from "react-redux";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
