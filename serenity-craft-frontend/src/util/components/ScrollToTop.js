@@ -14,20 +14,27 @@ import styles from "assets/jss/material-dashboard-pro-react/scrollTopStyle.js";
 import { Actions } from 'redux/types';
 const useStyles = makeStyles(styles);
 
-const ScrollToTop = () => {
+const ScrollToTop = ({ top }) => {
     const dispatch = useDispatch();
     const classes = useStyles();
     const { scrolling } = useSelector((state) => state.ui);
 
-    const handleClick = () => {
-        dispatch({ type: Actions.UI.BACK_UP });
-    };
+    // const handleClick = () => {
+    //     dispatch({ type: Actions.UI.BACK_UP });
+    // };
+
+    
+    const handleClick = (event) => {
+        console.log(top);
+        console.log(top.current);
+        top.current.scrollTo({top: 0, behavior: 'smooth'});
+    }
 
     return (
         <div>
         {
             scrolling && (
-                <IconButton onClick={handleClick} className={classes.toTop}>
+                <IconButton className={classes.toTop} onClick={handleClick}>
                     <ExpandLessIcon />
                 </IconButton>
             )

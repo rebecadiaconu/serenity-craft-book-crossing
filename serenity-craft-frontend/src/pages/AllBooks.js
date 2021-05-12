@@ -25,14 +25,12 @@ import ArtTrack from "@material-ui/icons/ArtTrack";
 import Language from "@material-ui/icons/Language";
 
 // core components
-import ScrollToTop from "../util/components/ScrollToTop";
 import Button from "../components/CustomButtons/Button";
 import BookContainer from "../components serenity/BookContainer";
 import GridContainer from "components/Grid/GridContainer.js";
 
 // Style
 import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
-const useStyles = makeStyles(styles);
 
 const AllBooks = () => {
     const dispatch = useDispatch();
@@ -78,7 +76,6 @@ const AllBooks = () => {
                 }
             </GridContainer> 
             <br /> 
-            <ScrollToTop show={scrolling} />
             <Button 
                 style={{margin: '0 auto', display: "flex"}}
                 disabled={showedBooks >= books.length ? true : false}

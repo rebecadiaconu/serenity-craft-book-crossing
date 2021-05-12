@@ -1,13 +1,17 @@
+import {
+    roseCardHeader
+} from "assets/jss/material-dashboard-pro-react.js";
+
 const scrollTopStyle = {
     toTop: {
-        zIndex: 2,
+        zIndex: 20,
         position: "fixed",
-        bottom: "2vh",
+        bottom: "10vh",
         backgroundColor: "#DCDCDC",
-        color: "black",
+        color: "#BF4A61",
         "&:hover, &.Mui-focusVisible": {
             transition: '0.3s',
-            color: "#397BA6",
+            color: "#BF4A61",
             backgroundColor: "#DCDCDC"
         },
         right: "5%"

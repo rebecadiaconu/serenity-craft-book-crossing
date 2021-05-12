@@ -15,6 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
+import ScrollToTop from "../util/components/ScrollToTop";
 // import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
 import routes from "routes.js";
@@ -75,10 +76,6 @@ const Dashboard = (props) => {
     };
 
   });
-
-  useEffect(() => {
-    if (backUp) console.log('Back up');
-  }, [scrolling, backUp])
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -148,6 +145,7 @@ const Dashboard = (props) => {
 
   return (
     <div className={classes.wrapper} onScroll={handleScroll}>
+      <ScrollToTop top={mainPanel}/>
       <Sidebar
         routes={routes}
         logoText={"Serenity Craft"}
@@ -191,18 +189,6 @@ const Dashboard = (props) => {
           </div>
         )}
         {getRoute() ? <Footer fluid /> : null}
-        {/* <FixedPlugin
-          handleImageClick={handleImageClick}
-          handleColorClick={handleColorClick}
-          handleBgColorClick={handleBgColorClick}
-          color={color}
-          bgColor={bgColor}
-          bgImage={image}
-          handleFixedClick={handleFixedClick}
-          fixedClasses={fixedClasses}
-          sidebarMinimize={sidebarMinimize.bind(this)}
-          miniActive={miniActive}
-        /> */}
       </div>
     </div>
   );
