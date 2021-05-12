@@ -31,7 +31,6 @@ export const signUp = (userData, history) => (dispatch) => {
 
  
 export const loginUser = (userData, history) => (dispatch) => {
-    console.log(userData);
     dispatch({ type: Actions.USER.LOADING_USER });
     axios
         .post('/login', userData)

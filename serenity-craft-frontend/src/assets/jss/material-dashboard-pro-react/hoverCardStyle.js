@@ -7,6 +7,7 @@ const hoverCardStyle = {
     }
   },
   cardHeaderHover: {
+    maxWidth: 400,
     transition: "all 300ms cubic-bezier(0.34, 1.61, 0.7, 1)"
   },
   cardHoverUnder: {

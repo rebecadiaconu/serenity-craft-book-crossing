@@ -7,12 +7,12 @@ import ExtendedTables from "views/Tables/ExtendedTables.js";
 import GridSystem from "views/Components/GridSystem.js";
 import Icons from "views/Components/Icons.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
-import LoginPage from "views/Pages/LoginPage.js";
-import ResetPasswordPage from "views/Pages/ResetPasswordPage.js";
+import LoginPage from "pages/Auth/LoginPage.js";
+import ResetPassword from "pages/Auth/ResetPassword.js";
 import Notifications from "views/Components/Notifications.js";
 import Panels from "views/Components/Panels.js";
 import ReactTables from "views/Tables/ReactTables.js";
-import RegisterPage from "views/Pages/RegisterPage.js";
+import RegisterPage from "pages/Auth/RegisterPage.js";
 import RegularForms from "views/Forms/RegularForms.js";
 import RegularTables from "views/Tables/RegularTables.js";
 import SweetAlert from "views/Components/SweetAlert.js";
@@ -34,79 +34,66 @@ import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 
 // Components Serenity
-
+import AllBooks from "./pages/AllBooks";
+import Crossings from "./pages/Crossings/Crossings";
 
 // @material-ui/icons Serenity
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import ShareIcon from '@material-ui/icons/Share';
 
-// export default routes = {
-//   dashRoutes: [
-//     {
-//       path: "/books",
-//       name: "All books",
-//       icon: MenuBookIcon,
-//       component: '',
-//       layout: "/admin",
-//       logged: false
-//     },
-//     {
-//       path: "/crossings",
-//       name: "My crossings",
-//       icon: ShareIcon,
-//       component: '',
-//       layout: "/admin",
-//       logged: true
-//     }
-//   ],
-//   authRoutes: [
-//     {
-//       path: "/login",
-//       name: "Login",
-//       icon: '',
-//       component: LoginPage,
-//       layout: "/auth",
-//       logged: false
-//     },
-//     {
-//       path: "/register",
-//       name: "Register",
-//       icon: '',
-//       component: RegisterPage,
-//       layout: "/auth",
-//       logged: false
-//     },
-//     {
-//       path: "/login",
-//       name: "Login",
-//       icon: '',
-//       component: LoginPage,
-//       layout: "/auth",
-//       logged: false
-//     }
-//   ]
-// }
 
 // logged: true -> show only when user is authenticated
 // unauth: true -> show only when user is unauthenticated
 
-var dashRoutes = [
+const routes = [
+  {
+    path: "/books",
+    name: "All books",
+    icon: DashboardIcon,
+    component: AllBooks,
+    layout: "/admin",
+    logged: false,
+    unauth: false
+  },
+  {
+    path: "/crossings",
+    name: "My crossings",
+    icon: ShareIcon,
+    component: Crossings,
+    layout: "/auth",
+    logged: true,
+    unauth: false
+  },
+  {
+    path: "/login-page",
+    name: "Log in",
+    icon: Fingerprint,
+    component: LoginPage,
+    logged: false,
+    unauth: true,   
+    layout: "/auth"
+  },
+  {
+    path: "/register-page",
+    name: "Register",
+    icon: PersonAdd,
+    component: RegisterPage,
+    logged: false,
+    unauth: true,   
+    layout: "/auth"
+  },
   {
     path: "/dashboard",
     name: "Dashboard",
     icon: DashboardIcon,
     component: Dashboard,
-    layout: "/admin",
-    logged: false,  
-    unauth: false   
+    layout: "/admin"
   },
   {
     collapse: true,
     name: "Pages",
     icon: Image,
     state: "pageCollapse",
-    logged: true,   
-    unauth: false,
     views: [
       {
         path: "/timeline-page",
@@ -126,7 +113,7 @@ var dashRoutes = [
         path: "/reset-password",
         name: "Reset Password",
         mini: "RP",
-        component: ResetPasswordPage,
+        component: ResetPassword,
         layout: "/auth"
       },
       {
@@ -157,8 +144,6 @@ var dashRoutes = [
     name: "Components",
     icon: Apps,
     state: "componentsCollapse",
-    logged: false,
-    unauth: false,
     views: [
       {
         collapse: true,
@@ -231,8 +216,6 @@ var dashRoutes = [
     name: "Forms",
     icon: "content_paste",
     state: "formsCollapse",
-    logged: false,
-    unauth: false,
     views: [
       {
         path: "/regular-forms",
@@ -269,8 +252,6 @@ var dashRoutes = [
     name: "Tables",
     icon: GridOn,
     state: "tablesCollapse",
-    logged: false,
-    unauth: false,
     views: [
       {
         path: "/regular-tables",
@@ -300,8 +281,6 @@ var dashRoutes = [
     name: "Widgets",
     icon: WidgetsIcon,
     component: Widgets,
-    logged: true,
-    unauth: false,
     layout: "/admin"
   },
   {
@@ -309,27 +288,8 @@ var dashRoutes = [
     name: "Calendar",
     icon: DateRange,
     component: Calendar,
-    logged: false,
-    unauth: false,  
     layout: "/admin"
-  },
-  {
-    path: "/login-page",
-    name: "Log in",
-    icon: Fingerprint,
-    component: LoginPage,
-    logged: false,
-    unauth: true,   
-    layout: "/auth"
-  },
-  {
-    path: "/register-page",
-    name: "Register",
-    icon: PersonAdd,
-    component: RegisterPage,
-    logged: false,
-    unauth: true,   
-    layout: "/auth"
   }
 ];
-export default dashRoutes;
+
+export default routes;

@@ -53,8 +53,8 @@ const cardHeaderStyle = {
       textAlign: "right"
     },
     "&$cardHeaderImage": {
-      marginLeft: "15px",
-      marginRight: "15px",
+      marginLeft: "auto",
+      marginRight: "auto",
       marginTop: "-30px",
       borderRadius: "6px"
     },

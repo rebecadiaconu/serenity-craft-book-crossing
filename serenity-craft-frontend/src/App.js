@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
+import jwtDecode from 'jwt-decode';
 
 // Redux
 import store from './redux/store';
@@ -10,12 +11,10 @@ import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
 
 let token = localStorage.idToken;
+let ps;
 
 if (token) {
-    const decodedToken = token.split(" ")[1];
-
-    console.log(decodedToken);
-
+    const decodedToken = jwtDecode(token.split(" ")[1]);
     if (decodedToken.exp * 1000 < Date.now()) {
         store.dispatch(logOutUser());
         token = undefined;
@@ -35,7 +34,7 @@ const App = () => {
             <Switch>
                 <Route path="/auth" component={AuthLayout} />
                 <Route path="/admin" component={AdminLayout} />
-                <Redirect from="/" to="/admin/dashboard" />
+                <Redirect from="/" to="/admin/books" />
             </Switch>
         </Router>
     )

@@ -291,6 +291,7 @@ class Sidebar extends Component {
       routes,
       bgColor,
     } = this.props;
+
     const itemText =
       classes.itemText +
       " " +
@@ -439,6 +440,7 @@ class Sidebar extends Component {
         </a>
       </div>
     );
+
     const drawerPaper =
       classes.drawerPaper +
       " " +
@@ -446,6 +448,7 @@ class Sidebar extends Component {
         [classes.drawerPaperMini]:
           this.props.miniActive && this.state.miniActive
       });
+
     const sidebarWrapper =
       classes.sidebarWrapper +
       " " +
@@ -455,6 +458,7 @@ class Sidebar extends Component {
         [classes.sidebarWrapperWithPerfectScrollbar]:
           navigator.platform.indexOf("Win") > -1
       });
+
     return (
       <div ref={this.mainPanel}>
         <Hidden mdUp implementation="css">

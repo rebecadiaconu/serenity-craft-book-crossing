@@ -1,7 +1,8 @@
 import React, { useState, useEffect, createRef } from "react";
 import cx from "classnames";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Actions } from "../redux/types";
 
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
@@ -28,6 +29,8 @@ const Dashboard = (props) => {
   const { ...rest } = props;
 
   // states and functions
+  const dispatch = useDispatch();
+  const { scrolling, backUp } = useSelector((state) => state.ui);
   const { authenticated, credentials } = useSelector((state) => state.user);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [miniActive, setMiniActive] = useState(false);
@@ -35,12 +38,6 @@ const Dashboard = (props) => {
   const color = "rose";
   const bgColor ="black";
   const logo =require("assets/img/icon-white.png");
-
-  // const [image, setImage] = useState(require("assets/img/backgr2.jpg"));
-  // const [color, setColor] = useState("rose");
-  // const [bgColor, setBgColor] = useState("black");
-  // const [fixedClasses, setFixedClasses] = useState("dropdown");
-  // const [logo, setLogo] = useState(require("assets/img/logo-white.svg"));
   
   // styles
   const classes = useStyles();
@@ -79,34 +76,9 @@ const Dashboard = (props) => {
 
   });
 
-  // // functions for changeing the states from components
-  // const handleImageClick = image => {
-  //   setImage(image);
-  // };
-
-  // const handleColorClick = color => {
-  //   setColor(color);
-  // };
-
-  // const handleBgColorClick = bgColor => {
-  //   switch (bgColor) {
-  //     case "white":
-  //       setLogo(require("assets/img/logo.svg"));
-  //       break;
-  //     default:
-  //       setLogo(require("assets/img/logo-white.svg"));
-  //       break;
-  //   }
-  //   setBgColor(bgColor);
-  // };
-
-  // const handleFixedClick = () => {
-  //   if (fixedClasses === "dropdown") {
-  //     setFixedClasses("dropdown show");
-  //   } else {
-  //     setFixedClasses("dropdown");
-  //   }
-  // };
+  useEffect(() => {
+    if (backUp) console.log('Back up');
+  }, [scrolling, backUp])
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -166,8 +138,16 @@ const Dashboard = (props) => {
     }
   };
 
+  const handleScroll = (event) => {
+    if (event.target.scrollTop > 100) {
+        if (!scrolling) dispatch({ type: Actions.UI.SCROLLING });
+    } else {
+        if (scrolling) dispatch({ type: Actions.UI.STOP_SCROLLING });
+    }
+};
+
   return (
-    <div className={classes.wrapper}>
+    <div className={classes.wrapper} onScroll={handleScroll}>
       <Sidebar
         routes={routes}
         logoText={"Serenity Craft"}
