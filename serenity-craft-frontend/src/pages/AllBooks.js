@@ -3,29 +3,21 @@ import { booksSort } from "../util/general";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
-import { getAllBooks } from "../redux/actions/booksActions";
+import { getAllBooks, setSearchValue } from "../redux/actions/booksActions";
 import { getFilterData } from "../util/general";
 import { Actions } from "../redux/types";
 
 // @material-ui components
-import { makeStyles } from "@material-ui/core/styles";
-import Tooltip from "@material-ui/core/Tooltip";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Textfield from "@material-ui/core/Textfield";
+
 import Icon from "@material-ui/core/Icon";
 
 // @material-ui/icons
+import Search from "@material-ui/icons/Search";
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Store from "@material-ui/icons/Store";
-import Warning from "@material-ui/icons/Warning";
-import DateRange from "@material-ui/icons/DateRange";
-import LocalOffer from "@material-ui/icons/LocalOffer";
-import Update from "@material-ui/icons/Update";
-import AccessTime from "@material-ui/icons/AccessTime";
-import Refresh from "@material-ui/icons/Refresh";
-import Edit from "@material-ui/icons/Edit";
-import Place from "@material-ui/icons/Place";
-import ArtTrack from "@material-ui/icons/ArtTrack";
-import Language from "@material-ui/icons/Language";
+
 
 // core components
 import SelectInput from "../util/components/SelectInput";
@@ -35,12 +27,10 @@ import BookContainer from "../components serenity/BookContainer";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 
-// Style
-import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle.js";
 
 const AllBooks = () => {
     const dispatch = useDispatch();
-    const { initBooks, books, filterApplied } = useSelector((state) => state.books);
+    const { initBooks, books, filterApplied, searchApplied, searchValue } = useSelector((state) => state.books);
     const { loading } = useSelector((state) => state.ui);
     const booksPerPage = 12;
     const [index, setIndex] = useState(1);
@@ -65,12 +55,37 @@ const AllBooks = () => {
         setShowed(Math.min(booksPerPage * index, books.length));
     };
 
+    const handleSearch = (event) => {
+        if (event.target.value !== searchValue) dispatch(setSearchValue(event.target.value, initBooks));
+    };
+
     const handleRefresh = () => {
         dispatch({ type: Actions.BOOK.REFRESH_FILTER });
     };
 
     return (
         <div>
+            <GridContainer
+                justify="center"
+                alignItems="center"
+                alignItems="center"
+                direction="row"
+                style={{marginBottom: 15}}
+            >
+                <GridItem xs={12} sm={12} md={4}>
+                    <Textfield
+                        id="book-search"
+                        label="SEARCH"
+                        fullWidth
+                        onChange={handleSearch}
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">
+                                <Search />
+                            </InputAdornment>,
+                        }}
+                    />
+                </GridItem>
+            </GridContainer>
             <GridContainer >
                 <GridItem xs={12} sm={12} md={2}>
                     <SelectInput label="Sort By" items={booksSort} defaultValue={0}/>

@@ -154,6 +154,29 @@ export const setFilterData = (books, data, type, filterData) => (dispatch) => {
     dispatch({
         type: Actions.BOOK.SET_BOOKS,
         payload: newbooks
-    });
+    });        
+
     dispatch({ type: Actions.UI.STOP_LOADING_DATA });
-} 
+};
+
+
+export const setSearchValue = (data, books) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+
+    if(!!data) {
+        let newBooks = books.filter((book) => {
+            return (book.title.toLowerCase().includes(data.toLowerCase()) || book.author.toLowerCase().includes(data.toLowerCase()));
+        });
+
+        dispatch({
+            type: Actions.BOOK.SET_BOOKS,
+            payload: newBooks
+        }); 
+        dispatch({
+            type: Actions.BOOK.SET_SEARCH_DATA,
+            payload: data
+        });
+    }
+    else dispatch({ type: Actions.BOOK.STOP_SEARCH });
+    dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+};

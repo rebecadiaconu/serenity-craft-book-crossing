@@ -35,7 +35,6 @@ const FilterMenu = ({ label, items, onlyOne, type }) => {
 
     useEffect(() => {
         if (checked.length !== 0 || filterApplied) {
-            console.log('sdvdrbdb =====>');
             dispatch(setFilterData(initBooks, checked, type, filterData));
         }
     }, [checked]);

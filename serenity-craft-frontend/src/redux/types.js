@@ -26,6 +26,8 @@ export const Actions = {
         SET_FILTER_DATA: "BOOK.SET_FILTER_DATA",
         REFRESH_FILTER: "BOOK.REFRESH_FILTER",
         SORT: "BOOK.SORT",
+        SET_SEARCH_DATA: "BOOK.SET_SEARCH_DATA",
+        STOP_SEARCH: "BOOK.STOP_SEARCH",
         SET_BOOK: "BOOK.SET_BOOK"
     }
 };

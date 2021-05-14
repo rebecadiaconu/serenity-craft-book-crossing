@@ -12,7 +12,9 @@ const initialState = {
         language: [],
         genre: [],
         ratingMin: 0
-    }
+    },
+    searchApplied: false,
+    searchValue: ''
 };
 
 const BookReducer = (state = initialState, action) => {
@@ -46,6 +48,19 @@ const BookReducer = (state = initialState, action) => {
                 filterApplied: false,
                 books: state.initBooks,
                 filterData: null
+            }
+        case Actions.BOOK.SET_SEARCH_DATA:
+            return {
+                ...state,
+                searchApplied: true,
+                searchValue: action.payload
+            }
+        case Actions.BOOK.STOP_SEARCH:
+            return {
+                ...state,
+                searchApplied: false,
+                searchValue: '',
+                books: state.initBooks
             }
         default:
             return state;
