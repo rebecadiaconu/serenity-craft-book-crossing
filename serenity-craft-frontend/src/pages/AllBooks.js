@@ -82,20 +82,15 @@ const AllBooks = () => {
                         )
                     })
                 }
-                {
-                    filterApplied ? (
-                        <Button 
-                            style={{margin: '0 auto', display: "flex"}}
-                            disabled={loading}
-                            color="rose"  
-                            size="lg"
-                            onClick={handleRefresh}
-                        >
-                            <RefreshIcon />
-                            <span>Refresh filters</span>
-                        </Button>
-                    ) : null
-                }
+                <Button 
+                    style={{margin: '0 auto', display: "flex"}}
+                    disabled={loading}
+                    color="rose"  
+                    onClick={handleRefresh}
+                >
+                    <RefreshIcon />
+                    <span>Refresh filters</span>
+                </Button>
             </GridContainer> 
             <br />
             <GridContainer 
