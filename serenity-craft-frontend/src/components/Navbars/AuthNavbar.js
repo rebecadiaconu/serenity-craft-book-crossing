@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import cx from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";

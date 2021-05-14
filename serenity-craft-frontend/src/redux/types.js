@@ -20,7 +20,12 @@ export const Actions = {
         BACK_UP: "UI.BACK_UP"
     },
     BOOK: {
+        SET_INIT: "BOOK.SET_INIT",
         SET_BOOKS: "BOOK.SET_BOOKS",
+        SEARCH: "BOOK.SEARCH",
+        SET_FILTER_DATA: "BOOK.SET_FILTER_DATA",
+        REFRESH_FILTER: "BOOK.REFRESH_FILTER",
+        SORT: "BOOK.SORT",
         SET_BOOK: "BOOK.SET_BOOK"
     }
 };

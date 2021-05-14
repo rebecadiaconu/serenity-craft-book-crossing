@@ -12,20 +12,18 @@ import Paper from "@material-ui/core/Paper";
 import Grow from "@material-ui/core/Grow";
 import Hidden from "@material-ui/core/Hidden";
 import Popper from "@material-ui/core/Popper";
-import Divider from "@material-ui/core/Divider";
 
 // @material-ui/icons
-import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
 import Dashboard from "@material-ui/icons/Dashboard";
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import Search from "@material-ui/icons/Search";
+// import Search from "@material-ui/icons/Search";
 
 // core components
-import CustomInput from "components/CustomInput/CustomInput.js";
+// import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarLinksStyle.js";
@@ -38,7 +36,6 @@ const HeaderLinks = (props) => {
   const classes = useStyles();
   const [openNotification, setOpenNotification] = useState(null);
   const [openRequest, setOpenRequest] = useState(null);
-  const [openProfile, setOpenProfile] = useState(null);
 
   const handleClickNotification = event => {
     if (openNotification && openNotification.contains(event.target)) {
@@ -64,27 +61,15 @@ const HeaderLinks = (props) => {
     setOpenRequest(null);
   };
 
-  const handleClickProfile = event => {
-    if (openProfile && openProfile.contains(event.target)) {
-      setOpenProfile(null);
-    } else {
-      setOpenProfile(event.currentTarget);
-    }
-  };
-
-  const handleCloseProfile = () => {
-    setOpenProfile(null);
-  };
-
   const handleLogOut = () => {
     dispatch(logOutUser());
     window.location.href = "/admin/dashboard";
   };
 
-  const searchButton =
-    classes.top +
-    " " +
-    classes.searchButton;
+  // const searchButton =
+  //   classes.top +
+  //   " " +
+  //   classes.searchButton;
   const dropdownItem = classNames(classes.dropdownItem, classes.primaryHover);
   const wrapper = classNames({
     [classes.wrapperRTL]: false

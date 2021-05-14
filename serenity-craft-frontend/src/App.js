@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
 import jwtDecode from 'jwt-decode';
@@ -11,11 +11,12 @@ import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
 
 let token = localStorage.idToken;
-let ps;
 
 if (token) {
-    const decodedToken = jwtDecode(token.split(" ")[1]);
-    if (decodedToken.exp * 1000 < Date.now()) {
+    const decodedToken = token.split(" ")[1];
+    const jwtToken = jwtDecode(decodedToken);
+
+    if (jwtToken.exp * 1000 < Date.now()) {
         store.dispatch(logOutUser());
         token = undefined;
     } else {

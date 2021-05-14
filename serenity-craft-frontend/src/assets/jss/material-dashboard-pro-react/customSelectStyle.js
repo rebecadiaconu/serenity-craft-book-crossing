@@ -6,6 +6,7 @@ import {
   grayColor,
   hexToRgb
 } from "assets/jss/material-dashboard-pro-react.js";
+import { roseColor } from "../material-dashboard-pro-react";
 
 const customSelectStyle = {
   select: {
@@ -82,13 +83,13 @@ const customSelectStyle = {
     color: grayColor[7],
     paddingRight: "30px",
     "&:hover": {
-      backgroundColor: primaryColor[0],
+      backgroundColor: roseColor[0],
       color: whiteColor,
       ...primaryBoxShadow
     }
   },
   selectMenuItemSelected: {
-    backgroundColor: primaryColor[0] + "!important",
+    backgroundColor: roseColor[0] + "!important",
     color: whiteColor
   },
   selectMenuItemSelectedMultiple: {
