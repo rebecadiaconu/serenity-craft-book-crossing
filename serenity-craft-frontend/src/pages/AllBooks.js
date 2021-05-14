@@ -45,14 +45,14 @@ const AllBooks = () => {
     const booksPerPage = 12;
     const [index, setIndex] = useState(1);
     const [showedBooks, setShowed] = useState(Math.min(booksPerPage, books.length));
-    const [filterData, setFilterData] = useState({});
+    const [filterData, setFilters] = useState({});
 
     useEffect(() => {
         dispatch(getAllBooks());
     }, []);
 
     useEffect(() => {
-        setFilterData(getFilterData(initBooks));
+        setFilters(getFilterData(initBooks));
     }, [initBooks]);
 
     useEffect(() => {
@@ -84,8 +84,8 @@ const AllBooks = () => {
                 }
                 <Button 
                     style={{margin: '0 auto', display: "flex"}}
-                    disabled={loading}
-                    color="rose"  
+                    disabled={loading || !filterApplied}
+                    color="rose"
                     onClick={handleRefresh}
                 >
                     <RefreshIcon />

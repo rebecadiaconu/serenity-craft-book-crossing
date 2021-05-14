@@ -34,13 +34,17 @@ const FilterMenu = ({ label, items, onlyOne, type }) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
-        if (!(!!filterData) || checked !== []) {
+        if (checked.length !== 0 || filterApplied) {
+            console.log('sdvdrbdb =====>');
             dispatch(setFilterData(initBooks, checked, type, filterData));
         }
     }, [checked]);
 
     useEffect(() => {
-        if(!filterApplied) setChecked([]);
+        if(!filterApplied && checked.length !== 0) {
+            setChecked([]);
+            console.log('sdvdrbdb');
+        }
     }, [filterApplied]);
 
     const handleClick = (event) => {
