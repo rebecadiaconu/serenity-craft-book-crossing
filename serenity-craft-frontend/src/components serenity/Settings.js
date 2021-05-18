@@ -1,126 +1,232 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 // Redux
 import { useSelector, useDispatch } from  "react-redux";
+import { useHistory } from "react-router-dom";
+import { changeEmail } from '../redux/actions/userActions';
+import { Actions } from 'redux/types';
+
+// react component used to create sweet alerts
+import SweetAlert from "react-bootstrap-sweetalert";
 
 // @material-ui core
+import Slide from "@material-ui/core/Slide";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { makeStyles } from "@material-ui/styles";
+import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from "@material-ui/core/InputAdornment";
-import Textfield from "@material-ui/core/Textfield";
+import TextField from "@material-ui/core/TextField";
 
 // @material-ui/icons
+import Close from "@material-ui/icons/Close";
 import EmailIcon from '@material-ui/icons/Email';
 import FaceIcon from '@material-ui/icons/Face';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 // components
 import Button from "components/CustomButtons/Button";
 
 // Styles
 import styles from "assets/jss/serenity-craft/pages/settings";
+
 const useStyles = makeStyles(styles);
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="down" ref={ref} {...props} />;
+});
 
 const Settings = () => {
     const classes = useStyles();
-    const { register, handleSubmit } = useForm();
+    const dispatch = useDispatch();
+    const { register, handleSubmit, setValue } = useForm();
     const { credentials } = useSelector((state) => state.user);
     const { errors, message, loading } = useSelector((state) => state.ui);
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [emailAlert, setEmailAlert] = useState(false);
+    const [usernameAlert, setUsernameAlert] = useState(false);
+    const [passwordAlert, setPasswordAlert] = useState(false);
+
+    useEffect(() => {
+        setValue('username', credentials.username);
+        setValue('newEmail', credentials.email);
+    }, [credentials.email, credentials.username]);
+
+    const handleChange = (formData) => {
+        if (formData.newEmail !== credentials.email) {
+            dispatch(changeEmail(formData));
+        }
+    };
+
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
     return (
-       <List>
-        <ListItem>
-            <Textfield
-                color="secondary"
-                name="email" 
-                type="email" 
-                label="Email" 
-                variant="outlined"
-                // error={errors?.email ? true : false}
-                // helperText={errors?.email}
-                // inputRef={register()}
-                InputLabelProps={{ shrink: true }}  
-                fullWidth
-                value={credentials.email}
-                InputProps={{
-                    endAdornment: 
-                        <InputAdornment position="end">
-                            <EmailIcon />
-                        </InputAdornment>,
-                }}
-            />
-            <Button
-                size="lg"
-                round
-                color="info"
-                className={classes.button}
-                // onClick={handleChangeEmail}
+        <div>
+            <List>
+                <ListItem>
+                    <TextField
+                        color="secondary"
+                        name="newEmail" 
+                        type="email" 
+                        label="Email" 
+                        variant="outlined"
+                        error={errors?.newEmail ? true : false}
+                        helperText={errors?.newEmail}
+                        inputRef={register()}
+                        InputLabelProps={{ shrink: true }}  
+                        fullWidth
+                        InputProps={{
+                            endAdornment: 
+                                <InputAdornment position="end">
+                                    <EmailIcon />
+                                </InputAdornment>,
+                        }}
+                    />
+                    <Button
+                        size="lg"
+                        round
+                        color="info"
+                        className={classes.button}
+                        onClick={() => setEmailAlert(true)}
+                    >
+                        CHANGE
+                    </Button>
+                </ListItem>
+                <ListItem>
+                    <TextField
+                        color="secondary"
+                        name="username" 
+                        type="text" 
+                        label="Username"
+                        variant="outlined"
+                        error={errors?.username ? true : false}
+                        helperText={errors?.username}
+                        inputRef={register()}
+                        InputLabelProps={{ shrink: true }}  
+                        fullWidth
+                        type="text"
+                        InputProps={{
+                            endAdornment: 
+                                <InputAdornment position="end">
+                                    <FaceIcon />
+                                </InputAdornment>,
+                        }}
+                    />
+                    <Button
+                        size="lg"
+                        round
+                        color="info"
+                        className={classes.button}
+                    >
+                        CHANGE
+                    </Button>
+                </ListItem>
+                <Divider style={{margin: '10px 0'}} />
+                <ListItem>
+                    <Button
+                        size="lg"
+                        round
+                        color="info"
+                        style={{width: 200}}
+                        className={classes.central}
+                    >
+                        CHANGE PASSWORD
+                    </Button>
+                </ListItem>
+                <ListItem>
+                    <Button
+                        size="lg"
+                        round
+                        color="danger"
+                        style={{width: 200}}
+                        className={classes.central}
+                    >
+                        <HighlightOffIcon />
+                        DELETE ACCOUNT
+                    </Button>
+                </ListItem>
+            </List>
+            <Dialog
+                open={emailAlert}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setEmailAlert(false)}
+                aria-labelledby="email-alert"
+                aria-describedby="email-alert"
             >
-                CHANGE
-            </Button>
-        </ListItem>
-        <ListItem>
-            <Textfield
-                color="secondary"
-                name="username" 
-                type="text" 
-                label="Username"
-                variant="outlined"
-                // error={errors?.email ? true : false}
-                // helperText={errors?.email}
-                // inputRef={register()}
-                InputLabelProps={{ shrink: true }}  
-                fullWidth
-                type="text"
-                value={credentials.username}
-                InputProps={{
-                    endAdornment: 
-                        <InputAdornment position="end">
-                            <FaceIcon />
-                        </InputAdornment>,
-                }}
-            />
-            <Button
-                size="lg"
-                round
-                color="info"
-                className={classes.button}
-                // onClick={handleChangeUsername}
-            >
-                CHANGE
-            </Button>
-        </ListItem>
-        <Divider style={{margin: '10px 0'}} />
-        <ListItem>
-            <Button
-                size="lg"
-                round
-                color="info"
-                // onClick={handleChangePassword}
-                style={{width: 200}}
-                className={classes.central}
-            >
-                CHANGE PASSWORD
-            </Button>
-        </ListItem>
-        <ListItem>
-            <Button
-                size="lg"
-                round
-                color="danger"
-                // onClick={handleDeleteAccount}
-                style={{width: 200}}
-                className={classes.central}
-            >
-                <HighlightOffIcon />
-                DELETE ACCOUNT
-            </Button>
-        </ListItem>
-       </List>
+                <DialogTitle
+                    id="notice-modal-slide-title"
+                    disableTypography
+                >
+                    <Button
+                        justIcon
+                        className={classes.closeButton}
+                        key="close"
+                        aria-label="Close"
+                        color="transparent"
+                        onClick={() => setEmailAlert(false)}
+                    >
+                        <Close />
+                    </Button>
+                    <h4 className={classes.modalTitle}>Type in your password to confirm the changes</h4>
+                </DialogTitle>
+                <DialogContent>
+                    <TextField 
+                        className={classes.textField} 
+                        variant="outlined"
+                        name="password" 
+                        type={showPassword ? "text" : "password"} 
+                        label="Password" 
+                        error={errors?.password ? true : false}
+                        helperText={errors?.password}
+                        inputRef={register()}
+                        InputLabelProps={{ shrink: true }}  
+                        fullWidth
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">
+                                <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>,
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions className={classes.actionContainer}>
+                    <Button
+                        onClick={() => setEmailAlert(false)}
+                        color="danger"
+                        round
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        color="success"
+                        round
+                        onClick={handleSubmit(handleChange)}
+                    >
+                        Sounds Good
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
     )
 }
 

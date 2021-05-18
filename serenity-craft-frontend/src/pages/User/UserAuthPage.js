@@ -26,11 +26,15 @@ import NavPills from "components/NavPills/NavPills.js";
 
 // Style
 import styles from "assets/jss/material-dashboard-pro-react/views/userProfileStyles.js";
+import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
 import { cardTitle } from "assets/jss/material-dashboard-pro-react.js";
 import { defaultUserImage } from 'util/general';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import { Actions } from 'redux/types';
 
 const userStyles = {
     ...styles,
+    ...alertStyles,
     cardTitle,
     cardCategory: {
         margin: "0",
@@ -41,13 +45,15 @@ const userStyles = {
 const useStyles = makeStyles(userStyles);
 
 const UserAuthPage = () => {
+    const dispatch = useDispatch();
     const classes = useStyles();
     const { credentials, books, crossings } = useSelector((state) => state.user);
-    const [userImage, setUserImage] = useState(defaultUserImage);
+    // const [userImage, setUserImage] = useState(defaultUserImage);
 
-    useEffect(() => {
-        setUserImage(credentials.imageUrl);
-    }, [credentials.imageUrl]);
+    // useEffect(() => {
+    //     setUserImage(credentials.imageUrl);
+    // }, [credentials.imageUrl]);
+
 
     return (
         <div>

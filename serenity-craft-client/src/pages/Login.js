@@ -74,7 +74,6 @@ const useStyles = makeStyles({
 
 
 const Login = () => {
-    const history = useHistory();
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit } = useForm();
@@ -93,7 +92,7 @@ const Login = () => {
     }, [authenticated, errors]);
 
     const onSubmit = (formData) => {
-        dispatch(loginUser(formData, history));
+        dispatch(loginUser(formData));
     };
 
     const handleClickShowPassword = () => {

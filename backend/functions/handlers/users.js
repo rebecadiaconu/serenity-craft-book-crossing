@@ -326,51 +326,55 @@ exports.uploadImage = (req, res) => {
 // Change account email
 exports.changeEmail = (req, res) => {
     const user = {
-        email: req.body.email,
+        email: req.user.email,
         newEmail: req.body.newEmail,
         password: req.body.password
     };
 
-    const { valid, errors } = validateLogInData(user);
+    const userDocument = db.doc(`/users/${req.user.username}`);
 
-    if (!valid) return res.status(400).json(errors);
+    console.log(user);
 
     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
+        console.log(data.user);
         const { valid, errors } = validateEmail(user.newEmail);
 
         if (!valid) return res.status(400).json({ newEmail: errors.email });
 
-        db.collection('users').where('email', '==', user.email).limit(1).get()
-        .then((data) => {
-            if (data.empty) {
-                return res.status(404).json({ general: user.email + ' user not found!' });
-            }
-
-            if (data.docs[0].data().username !== req.user.username) return res.status(400).json({ error: 'Wrong credentials!' });
-    
-            return db.doc(`/users/${data.docs[0].id}`).update({ email: user.newEmail });
+        db.collection('users').where('email', '==', user.newEmail).get()
+        .then((userData) => {
+            if (!userData.empty) {
+                return res.status(400).json({ newEmail: 'Email already in use!' });
+            } else {
+                return data.user.updateEmail(user.newEmail)
+                .then(() => {
+                    return userDocument.update({ email: user.newEmail });
+                })
+                .then(() => {
+                    return res.json({ message: 'Email updated successfully' });
+                });
+            } 
         })
-        .then(() => {
-            return data.user.updateEmail(user.newEmail);
+        .catch((err) => {
+            console.error(err);
+    
+            if (err.code == "auth/email-already-in-use") {
+                return res.status(400).json({ newEmail: 'New email is already in use!' });
+            }
+    
+            return res.status(500).json({ error: err.code });
         });
-    })
-    .then(() => {
-        return res.json({ message: 'Email updated successfully' });
     })
     .catch((err) => {
         console.error(err);
-
-        if (err.code == "auth/email-already-in-use") {
-            return res.status(400).json({ newEmail: 'New email is already in use!' });
-        }
 
         if (err.code == "auth/user-not-found") {
             return res.status(400).json({ email: 'Invalid email!' });
         }
 
         if (err.code == "auth/wrong-password") {
-            return res.status(400).json({ password: 'Wrong password!' });
+            return res.status(400).json({ password: 'Wrong credentials!' });
         }
 
         return res.status(500).json({ error: err.code });

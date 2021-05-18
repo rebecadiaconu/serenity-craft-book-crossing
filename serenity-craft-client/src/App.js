@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './css/App.css';
+import { useHistory } from "react-router-dom";
 
 // Pages
 import Home from './pages/Home';
@@ -40,6 +41,7 @@ const theme = createMuiTheme({
 
 
 function App() {
+  const history = useHistory();
   const dispatch = useDispatch();
   const [token, setToken] = useState(localStorage.getItem('idToken'));
 
@@ -48,7 +50,7 @@ function App() {
       const decodedToken = token.split(" ")[1];
 
       if (decodedToken.exp * 1000 < Date.now()) {
-        store.dispatch(logOutUser());
+        store.dispatch(logOutUser(history));
         window.location.href = "/";
         setToken(undefined);
       } else {

@@ -6,7 +6,8 @@ const initialState = {
     loading: false,
     sendingEmail: false,
     errors: null,
-    message: ''
+    message: '',
+    // profileModal: null
 }
 
 const UiReducer = (state = initialState, action) => {
@@ -72,6 +73,16 @@ const UiReducer = (state = initialState, action) => {
                 backUp: true,
                 scrolling: false
             }  
+        // case Actions.UI.SET_MODAL:
+        //     return {
+        //         ...state,
+        //         profileModal: action.payload
+        //     }
+        // case Actions.UI.STOP_MODAL:
+        //     return {
+        //         ...state,
+        //         profileModal: null
+        //     }
         default:
             return state;
     }

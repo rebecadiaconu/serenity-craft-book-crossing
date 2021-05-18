@@ -66,7 +66,7 @@ const LoginPage = () => {
   });
 
   const onSubmit = (formData) => {
-    dispatch(loginUser(formData, history));
+    dispatch(loginUser(formData));
   };
 
   const handleClickShowPassword = () => {

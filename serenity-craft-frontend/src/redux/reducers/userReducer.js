@@ -13,9 +13,7 @@ const initialState = {
 const UserReducer = (state = initialState, action) => {
     switch(action.type) {
         case Actions.USER.SET_UNAUTHENTICATED:
-            return {
-              authenticated: false,
-            };
+            return initialState;
         case Actions.USER.SET_USER:
             return {
               authenticated: true,
@@ -32,6 +30,21 @@ const UserReducer = (state = initialState, action) => {
               loading: false,
               ...state
             };
+        case Actions.USER.CHANGE_EMAIL:
+          return {
+            ...state,
+            loading: false
+          };
+        // case Actions.USER.CHANGE_USERNAME:
+        //   return {
+        //     ...state,
+        //     loading: false
+        //   };
+        case Actions.USER.CHANGE_PASSWORD:
+          return {
+            ...state,
+            loading: false
+          }
         default:
             return state;
     }

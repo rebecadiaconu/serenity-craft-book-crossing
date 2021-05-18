@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect, useHistory } from "react-router-dom";
 import jwtDecode from 'jwt-decode';
+import history from "./util/history";
 
 // Redux
 import store from './redux/store';
@@ -28,12 +29,11 @@ if (token) {
 
 
 const App = () => {
-    const hist = createBrowserHistory();
 
-    if(!token) hist.push("/");
+    if(!token) history.push("/");
 
     return (
-        <Router history={hist}>
+        <Router history={history}>
             <Switch>
                 <Route path="/auth" component={AuthLayout} />
                 <Route path="/admin" component={AdminLayout} />

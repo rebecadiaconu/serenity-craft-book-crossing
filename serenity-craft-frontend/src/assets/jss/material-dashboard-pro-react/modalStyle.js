@@ -43,7 +43,8 @@ const modalStyle = theme => ({
     textShadow: "none",
     fontWeight: "700",
     lineHeight: "1",
-    float: "right"
+    position: "absolute",
+    right: 30
   },
   modalClose: {
     width: "16px",
@@ -54,6 +55,7 @@ const modalStyle = theme => ({
     paddingRight: "24px",
     paddingBottom: "16px",
     paddingLeft: "24px",
+    height: 300,
     position: "relative",
     overflow: "visible"
   },

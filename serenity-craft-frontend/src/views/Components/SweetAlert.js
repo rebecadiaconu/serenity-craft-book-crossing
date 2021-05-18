@@ -23,6 +23,7 @@ export default function SweetAlertPage() {
   const classes = useStyles();
   const [alert, setAlert] = React.useState(null);
   const [inputValue, setInputValue] = React.useState(null);
+
   const basicAlert = () => {
     setAlert(
       <SweetAlert
@@ -34,6 +35,7 @@ export default function SweetAlertPage() {
       />
     );
   };
+
   const titleAndTextAlert = () => {
     setAlert(
       <SweetAlert
@@ -47,6 +49,7 @@ export default function SweetAlertPage() {
       </SweetAlert>
     );
   };
+
   const successAlert = () => {
     setAlert(
       <SweetAlert
@@ -61,6 +64,7 @@ export default function SweetAlertPage() {
       </SweetAlert>
     );
   };
+  
   const htmlAlert = () => {
     setAlert(
       <SweetAlert
@@ -81,6 +85,7 @@ export default function SweetAlertPage() {
       </SweetAlert>
     );
   };
+
   const warningWithConfirmMessage = () => {
     setAlert(
       <SweetAlert
@@ -99,6 +104,7 @@ export default function SweetAlertPage() {
       </SweetAlert>
     );
   };
+
   const warningWithConfirmAndCancelMessage = () => {
     setAlert(
       <SweetAlert
@@ -117,6 +123,7 @@ export default function SweetAlertPage() {
       </SweetAlert>
     );
   };
+
   const autoCloseAlert = () => {
     setAlert(
       <SweetAlert
@@ -130,6 +137,7 @@ export default function SweetAlertPage() {
     );
     setTimeout(hideAlert, 2000);
   };
+
   const inputAlert = () => {
     setAlert(
       <SweetAlert
@@ -146,6 +154,7 @@ export default function SweetAlertPage() {
       />
     );
   };
+
   // const inputConfirmAlert = e => {
   //   console.log(e);
   //   setInputValue(e);
@@ -155,6 +164,7 @@ export default function SweetAlertPage() {
   //     inputConfirmAlertNext();
   //   }, 5000);
   // };
+
   const inputConfirmAlertNext = e => {
     setAlert(e);
     setTimeout(() => {
@@ -173,6 +183,7 @@ export default function SweetAlertPage() {
       );
     }, 200);
   };
+
   const successDelete = () => {
     setAlert(
       <SweetAlert
@@ -187,6 +198,7 @@ export default function SweetAlertPage() {
       </SweetAlert>
     );
   };
+
   const cancelDetele = () => {
     setAlert(
       <SweetAlert
@@ -201,9 +213,11 @@ export default function SweetAlertPage() {
       </SweetAlert>
     );
   };
+
   const hideAlert = () => {
     setAlert(null);
   };
+
   return (
     <div>
       <Heading

@@ -56,7 +56,7 @@ const RegisterPage = () => {
   // }, [authenticated, errors]);
 
   const onSubmit = (formData) => {
-      dispatch(signUp(formData, history));
+      dispatch(signUp(formData));
   };
 
   const handleClickShowPassword = (event) => {

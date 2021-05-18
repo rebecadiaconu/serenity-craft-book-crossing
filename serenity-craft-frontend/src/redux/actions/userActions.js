@@ -1,5 +1,6 @@
 import axios from "../../util/axios";
 import { Actions } from "../types";
+import history from "../../util/history";
 
 
 export const setAuth = (token) => {
@@ -9,13 +10,14 @@ export const setAuth = (token) => {
 };
 
 
-export const signUp = (userData, history) => (dispatch) => {
+export const signUp = (userData) => (dispatch) => {
     dispatch({ type: Actions.USER.LOADING_USER });
     axios
         .post('/signup', userData)
         .then(({ data }) => {
             dispatch(getUserData(data.token));
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
+            dispatch({ type: Actions.USER.STOP_LOADING_USER });
             history.push("/");
         })
         .catch((err) => {
@@ -30,7 +32,7 @@ export const signUp = (userData, history) => (dispatch) => {
 };
 
  
-export const loginUser = (userData, history) => (dispatch) => {
+export const loginUser = (userData) => (dispatch) => {
     dispatch({ type: Actions.USER.LOADING_USER });
     axios
         .post('/login', userData)
@@ -52,10 +54,11 @@ export const loginUser = (userData, history) => (dispatch) => {
 
 
 export const logOutUser = () => (dispatch) => {
+    dispatch({ type: Actions.USER.SET_UNAUTHENTICATED });
     localStorage.removeItem('idToken');
     delete axios.defaults.headers.common['Authorization'];
-
-    dispatch({ type: Actions.USER.SET_UNAUTHENTICATED });
+    console.log('Inside the function2...');
+    history.push('/auth/login-page');
 }
 
 
@@ -93,6 +96,30 @@ export const getUserData = (token) => (dispatch) => {
     })
     .catch((err) => {
         dispatch({
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
+export const changeEmail = (formData) => (dispatch) => {
+    dispatch({ type: Actions.USER.LOADING_USER });
+
+    axios.post('/user/email', formData)
+    .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(logOutUser());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+    
+        console.log('Logged out...');
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
         });
