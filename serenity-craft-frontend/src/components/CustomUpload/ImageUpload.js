@@ -8,11 +8,9 @@ import Button from "components/CustomButtons/Button.js";
 import defaultImage from "assets/img/image_placeholder.jpg";
 import defaultAvatar from "assets/img/placeholder.jpg";
 
-export default function ImageUpload(props) {
+export default function ImageUpload({ image, avatar, addButtonProps, changeButtonProps, removeButtonProps }) {
   const [file, setFile] = React.useState(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = React.useState(
-    props.avatar ? defaultAvatar : defaultImage
-  );
+  const [imagePreviewUrl, setImagePreviewUrl] = React.useState(image);
   let fileInput = React.createRef();
   const handleImageChange = e => {
     e.preventDefault();
@@ -26,6 +24,7 @@ export default function ImageUpload(props) {
       reader.readAsDataURL(file);
     }
   };
+
   // eslint-disable-next-line
   const handleSubmit = e => {
     e.preventDefault();
@@ -33,20 +32,24 @@ export default function ImageUpload(props) {
     // in this function you can save the image (file) on form submit
     // you have to call it yourself
   };
+
   const handleClick = () => {
     fileInput.current.click();
   };
+
   const handleRemove = () => {
     setFile(null);
-    setImagePreviewUrl(props.avatar ? defaultAvatar : defaultImage);
+    setImagePreviewUrl(avatar ? defaultAvatar : defaultImage);
     fileInput.current.value = null;
   };
-  let { avatar, addButtonProps, changeButtonProps, removeButtonProps } = props;
+
+  console.log(image);
+
   return (
     <div className="fileinput text-center">
       <input type="file" onChange={handleImageChange} ref={fileInput} />
       <div className={"thumbnail" + (avatar ? " img-circle" : "")}>
-        <img src={imagePreviewUrl} alt="..." />
+        <img src={imagePreviewUrl} alt="user" />
       </div>
       <div>
         {file === null ? (

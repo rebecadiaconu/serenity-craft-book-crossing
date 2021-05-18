@@ -11,8 +11,8 @@ const cardAvatarStyle = {
     }
   },
   cardAvatarProfile: {
-    maxWidth: "130px",
-    maxHeight: "130px",
+    width: "130px",
+    height: "130px",
     margin: "-50px auto 0",
     borderRadius: "50%",
     overflow: "hidden",

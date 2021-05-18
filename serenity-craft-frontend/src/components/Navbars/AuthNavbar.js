@@ -46,10 +46,10 @@ export default function AuthNavbar(props) {
   var list = (
     <List className={classes.list}>
       <ListItem className={classes.listItem}>
-        <NavLink to={"/admin/dashboard"} className={classes.navLink}>
+        <NavLink to={"/admin/books"} className={classes.navLink}>
           <Dashboard className={classes.listItemIcon} />
           <ListItemText
-            primary={"Dashboard"}
+            primary={"All books"}
             disableTypography={true}
             className={classes.listItemText}
           />
@@ -100,7 +100,7 @@ export default function AuthNavbar(props) {
           />
         </NavLink>
       </ListItem>
-      <ListItem className={classes.listItem}>
+      {/* <ListItem className={classes.listItem}>
         <NavLink
           to={"/auth/lock-screen-page"}
           className={cx(classes.navLink, {
@@ -114,7 +114,7 @@ export default function AuthNavbar(props) {
             className={classes.listItemText}
           />
         </NavLink>
-      </ListItem>
+      </ListItem> */}
     </List>
   );
   return (

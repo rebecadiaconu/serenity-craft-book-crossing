@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBrowserHistory } from "history";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { Router, Route, Switch, Redirect, useHistory } from "react-router-dom";
 import jwtDecode from 'jwt-decode';
 
 // Redux
@@ -29,6 +29,8 @@ if (token) {
 
 const App = () => {
     const hist = createBrowserHistory();
+
+    if(!token) hist.push("/");
 
     return (
         <Router history={hist}>

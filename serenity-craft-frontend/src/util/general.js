@@ -6,6 +6,9 @@
 //     filterByRating
 // } from "../redux/actions/booksActions";
 
+const defaultUserImage = "https://firebasestorage.googleapis.com/v0/b/serenity-craft-liceapp.appspot.com/o/no-image.jpg?alt=media";
+const defaultBookImage = "https://firebasestorage.googleapis.com/v0/b/serenity-craft-liceapp.appspot.com/o/nobook-image2.png?alt=media";
+
 const booksSort = [
     'Just added in',    // Desc
     'Last added in',    // Asc
@@ -101,4 +104,4 @@ const getFilterData = (books) => {
 };
 
 
-export { booksSort, getFilterData };
+export { booksSort, allGenres, getFilterData, defaultUserImage, defaultBookImage };

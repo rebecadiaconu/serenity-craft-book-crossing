@@ -34,11 +34,12 @@ import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 
 // Components Serenity
+import UserAuthPage from "./pages/User/UserAuthPage";
 import AllBooks from "./pages/AllBooks";
 import Crossings from "./pages/Crossings/Crossings";
 
 // @material-ui/icons Serenity
-import MenuBookIcon from '@material-ui/icons/MenuBook';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import ShareIcon from '@material-ui/icons/Share';
 
 
@@ -46,6 +47,36 @@ import ShareIcon from '@material-ui/icons/Share';
 // unauth: true -> show only when user is unauthenticated
 
 const routes = [
+  {
+    path: "/user",
+    name: "My profile",
+    icon: AccountBoxIcon,
+    component: UserAuthPage,
+    layout: "/admin",
+    profile: true,
+    logged: false,
+    unauth: false 
+  },
+  // {
+  //   path: "/edit",
+  //   name: "Edit profile",
+  //   icon: DashboardIcon,
+  //   component: EditDetails,
+  //   layout: "/admin",
+  //   profile: true,
+  //   logged: false,
+  //   unauth: false 
+  // },
+  // {
+  //   path: "/settings",
+  //   name: "Settings",
+  //   icon: DashboardIcon,
+  //   component: Settings,
+  //   layout: "/admin",
+  //   profile: true,
+  //   logged: false,
+  //   unauth: false 
+  // },
   {
     path: "/books",
     name: "All books",
@@ -60,7 +91,7 @@ const routes = [
     name: "My crossings",
     icon: ShareIcon,
     component: Crossings,
-    layout: "/auth",
+    layout: "/admin",
     logged: true,
     unauth: false
   },

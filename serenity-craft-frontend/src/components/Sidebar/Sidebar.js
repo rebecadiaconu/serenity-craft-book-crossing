@@ -117,6 +117,8 @@ class Sidebar extends Component {
         return null;
       }
 
+      if (!!prop.profile) return null;
+
       if (!this.props.authenticated && prop.logged) return null;
 
       if (this.props.authenticated && prop.unauth) return null;
@@ -289,6 +291,7 @@ class Sidebar extends Component {
       logoText,
       routes,
       bgColor,
+      color
     } = this.props;
 
     const itemText =
@@ -312,10 +315,11 @@ class Sidebar extends Component {
       cx({
         [classes.whiteAfter]: bgColor === "white"
       });
-      
-    const caret = classes.caret;
+
     const collapseItemMini = classes.collapseItemMini;
+    const caret = classes.caret;
     const photo = classes.photo;
+    const itemIcon = classes.itemIcon;
 
     var user = this.props.authenticated ? (
       <div className={userWrapperClass}>
@@ -326,7 +330,9 @@ class Sidebar extends Component {
           <ListItem className={classes.item + " " + classes.userItem}>
             <NavLink
               to={"#"}
-              className={classes.itemLink + " " + classes.userCollapseButton}
+              className={
+                classes.itemLink + " " + classes.userCollapseLinks
+              }
               onClick={() => this.openCollapse("openAvatar")}
             >
               <ListItemText
@@ -348,57 +354,48 @@ class Sidebar extends Component {
             </NavLink>
             <Collapse in={this.state.openAvatar} unmountOnExit>
               <List className={classes.list + " " + classes.collapseList}>
-                <ListItem className={classes.collapseItem}>
-                  <NavLink
-                    to="#"
-                    className={
-                      classes.itemLink + " " + classes.userCollapseLinks
-                    }
-                  >
-                    <span className={collapseItemMini}>
-                      {"MP"}
-                    </span>
-                    <ListItemText
-                      primary={"My Profile"}
-                      disableTypography={true}
-                      className={collapseItemText}
-                    />
-                  </NavLink>
-                </ListItem>
-                <ListItem className={classes.collapseItem}>
-                  <NavLink
-                    to="#"
-                    className={
-                      classes.itemLink + " " + classes.userCollapseLinks
-                    }
-                  >
-                    <span className={collapseItemMini}>
-                      {"EP"}
-                    </span>
-                    <ListItemText
-                      primary={"Edit Profile"}
-                      disableTypography={true}
-                      className={collapseItemText}
-                    />
-                  </NavLink>
-                </ListItem>
-                <ListItem className={classes.collapseItem}>
-                  <NavLink
-                    to="#"
-                    className={
-                      classes.itemLink + " " + classes.userCollapseLinks
-                    }
-                  >
-                    <span className={collapseItemMini}>
-                      {"S"}
-                    </span>
-                    <ListItemText
-                      primary={"Settings"}
-                      disableTypography={true}
-                      className={collapseItemText}
-                    />
-                  </NavLink>
-                </ListItem>
+              {
+                routes.map((route, index) => {
+                  const innerNavLinkClasses =
+                    classes.collapseItemLink +
+                    " " +
+                    cx({
+                      [" " + classes[color]]: this.activeRoute(route.path)
+                    });
+
+                  const navLinkClasses =
+                    classes.itemLink +
+                    " " +
+                    cx({
+                      [" " + classes[color]]: this.activeRoute(route.path)
+                    });
+
+                  return !!route.profile ? (
+                      <ListItem key={index} className={classes.collapseItem}>
+                        <NavLink
+                          to={route.layout + route.path}
+                          className={cx(
+                          { [navLinkClasses]: route.icon !== undefined },
+                          { [innerNavLinkClasses]: route.icon === undefined }
+                          )}
+                        >
+                          {route.icon !== undefined && (
+                            typeof route.icon === "string" ? (
+                              <Icon className={itemIcon}>{route.icon}</Icon>
+                            ) : (
+                              <route.icon className={itemIcon} />
+                            )
+                          )}
+                          <ListItemText
+                            primary={route.name}
+                            disableTypography={true}
+                            className={collapseItemText}
+                          />
+                        </NavLink>
+                      </ListItem>
+                  ) : null
+                })
+              }
               </List>
             </Collapse>
           </ListItem>
