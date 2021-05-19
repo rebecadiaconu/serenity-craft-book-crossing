@@ -32,31 +32,26 @@ import AdminLayout from "layouts/Admin.js";
 
 
 const App = () => {
-    const [token, setToken] = useState(undefined);
-    if(!token) history.push("/");
-
     useEffect(() => {
         let token = localStorage.idToken;
-        setToken(token);
-    }, []);
 
-    useEffect(() => {
         if (token) {
             let decodedToken = token.split(" ")[1];
             let jwtToken = jwtDecode(decodedToken);
         
             if (jwtToken.exp * 1000 < Date.now()) {
                 store.dispatch(logOutUser());
-                setToken(undefined);
+                token = undefined;
             } else {
                 axios.defaults.headers.common['Authorization'] = token;
                 store.dispatch(getUserData(decodedToken));
             }
         } else {
             store.dispatch(logOutUser());
-            setToken(undefined);
+            token = undefined;
         }
-    }, [token]);
+
+    }, []);
 
     return (
         <Router history={history}>

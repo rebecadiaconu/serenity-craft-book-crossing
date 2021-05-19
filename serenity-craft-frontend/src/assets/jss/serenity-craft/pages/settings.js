@@ -18,8 +18,7 @@ const settingsStyle = {
     },
     toolTip: {
         color: 'red',
-        marginRight: 0,
-        backgroundColor: 'white'
+        marginRight: 0
     }
 };
 

@@ -25,7 +25,7 @@ import { makeStyles } from "@material-ui/styles";
 
 // @material-ui/icons
 import Close from "@material-ui/icons/Close";
-import InfoIcon from '@material-ui/icons/Info';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import EmailIcon from '@material-ui/icons/Email';
 import FaceIcon from '@material-ui/icons/Face';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -91,7 +91,7 @@ const Settings = () => {
                     className={classes.toolTip}
                 >
                     <IconButton aria-label="Every time you make an account change you will be logged out for validation!">
-                        <InfoIcon />
+                        <ErrorOutlineIcon />
                     </IconButton>
                 </Tooltip>
                 <ListItem>
