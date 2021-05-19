@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
+import { Actions } from 'redux/types';
 
 // @material-ui components
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,36 +26,7 @@ import CardBody from "components/Card/CardBody.js";
 import Card from "components/Card/Card.js";
 import NavPills from "components/NavPills/NavPills.js";
 
-// Style
-import styles from "assets/jss/material-dashboard-pro-react/views/userProfileStyles.js";
-import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
-import { cardTitle } from "assets/jss/material-dashboard-pro-react.js";
-import { defaultUserImage } from 'util/general';
-import SweetAlert from 'react-bootstrap-sweetalert';
-import { Actions } from 'redux/types';
-
-const userStyles = {
-    ...styles,
-    ...alertStyles,
-    cardTitle,
-    cardCategory: {
-        margin: "0",
-        color: "#999999"
-    }
-}
-
-const useStyles = makeStyles(userStyles);
-
 const UserAuthPage = () => {
-    const dispatch = useDispatch();
-    const classes = useStyles();
-    const { credentials, books, crossings } = useSelector((state) => state.user);
-    const [userImage, setUserImage] = useState(defaultUserImage);
-
-    useEffect(() => {
-    }, [credentials.imageUrl, credentials.username]);
-
-
     return (
         <div>
             <GridContainer
@@ -62,7 +35,7 @@ const UserAuthPage = () => {
                 alignItems="center"
                 alignContent="center"
             >   
-                <UserCard credentials={credentials} />
+                <UserCard />
                 <GridItem xs={12} sm={12} md={8}>
                     <Card>
                         <CardBody>

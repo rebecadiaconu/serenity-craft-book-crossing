@@ -30,7 +30,7 @@ import GridItem from "components/Grid/GridItem.js";
 
 const AllBooks = () => {
     const dispatch = useDispatch();
-    const { initBooks, books, filterApplied, searchApplied, searchValue } = useSelector((state) => state.books);
+    const { initBooks, books, filterApplied, searchValue } = useSelector((state) => state.books);
     const { loading } = useSelector((state) => state.ui);
     const booksPerPage = 12;
     const [index, setIndex] = useState(1);

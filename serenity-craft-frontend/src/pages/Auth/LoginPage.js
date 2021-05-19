@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
-
+import history from "util/history";
 
 // Redux stuff
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,7 +13,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-
 
 // @material-ui/icons
 import { Visibility, VisibilityOff } from '@material-ui/icons';
@@ -36,30 +35,29 @@ import AppIcon from "assets/img/icon.png";
 const useStyles = makeStyles(styles);
 
 const LoginPage = () => {
-  const [cardAnimaton, setCardAnimation] = useState("cardHidden");
   const classes = useStyles();
-  const history = useHistory();
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const { authenticated } = useSelector((state) => state.user);
   const { errors } = useSelector((state) => state.ui);
   const [showPassword, setShowPassword] = useState(false);
+  const [cardAnimaton, setCardAnimation] = useState("cardHidden");
 
   useEffect(() => {
     dispatch({ type: Actions.UI.CLEAR_ERRORS });
   }, []);
 
   useEffect(() => {
-      if (authenticated) {
-          history.push("/");
-      }
+    if (authenticated) {
+      history.push("/");
+    }
   }, [authenticated, errors]);
 
   useEffect(() => {
     let id = setTimeout(function() {
       setCardAnimation("");
     }, 700);
-    // Specify how to clean up after this effect:
+    
     return function cleanup() {
       window.clearTimeout(id);
     };
@@ -112,60 +110,61 @@ const LoginPage = () => {
               </CardHeader>
               <CardBody>
                 <TextField                         
-                        className={classes.textField} 
-                        variant="outlined"
-                        name="email" 
-                        type="email" 
-                        label="Email" 
-                        error={errors?.email ? true : false}
-                        helperText={errors?.email}
-                        inputRef={register()}
-                        InputLabelProps={{ shrink: true }}  
-                        fullWidth
-                    />
-                    <br />
-                    <TextField 
-                        className={classes.textField} 
-                        variant="outlined"
-                        name="password" 
-                        type={showPassword ? "text" : "password"} 
-                        label="Password" 
-                        error={errors?.password ? true : false}
-                        helperText={errors?.password}
-                        inputRef={register()}
-                        InputLabelProps={{ shrink: true }}  
-                        fullWidth
-                        InputProps={{
-                            endAdornment: <InputAdornment position="end">
-                                <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                >
-                                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                            </InputAdornment>,
-                        }}
-                    />
-              <br />
-              <Typography className={classes.forgotPassword}>
+                  className={classes.textField} 
+                  variant="outlined"
+                  name="email" 
+                  type="email" 
+                  label="Email" 
+                  error={errors?.email ? true : false}
+                  helperText={errors?.email}
+                  inputRef={register()}
+                  InputLabelProps={{ shrink: true }}  
+                  fullWidth
+                />
+                <br />
+                <TextField 
+                  className={classes.textField} 
+                  variant="outlined"
+                  name="password" 
+                  type={showPassword ? "text" : "password"} 
+                  label="Password" 
+                  error={errors?.password ? true : false}
+                  helperText={errors?.password}
+                  inputRef={register()}
+                  InputLabelProps={{ shrink: true }}  
+                  fullWidth
+                  InputProps={{
+                      endAdornment: 
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>,
+                  }}
+                />
+                <br />
+                <Typography className={classes.forgotPassword}>
                   <Link to="/auth/reset-password">Forgot your password?</Link>
-              </Typography>
-              <Typography className={classes.signUp}>
+                </Typography>
+                <Typography className={classes.signUp}>
                   <Link to="/auth/register-page">New to Serenity? Sign up!</Link>
-              </Typography>
+                </Typography>
                 <br />
                 {
-                    errors?.general && (
-                        <TypographyDanger variant="body2">
-                            {errors.general}
-                        </TypographyDanger>
-                    )
+                  errors?.general && (
+                    <TypographyDanger variant="body2">
+                      {errors.general}
+                    </TypographyDanger>
+                  )
                 }
               </CardBody>
               <CardFooter className={classes.justifyContentCenter}>
                 <Button onClick={handleSubmit(onSubmit)} type="submit" color="rose" simple size="lg" block>
-                 Let{`'`}s go!
+                  Let{`'`}s go!
                 </Button>
               </CardFooter>
             </Card>

@@ -335,7 +335,6 @@ exports.changeEmail = (req, res) => {
 
     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
-        console.log(data.user);
         const { valid, errors } = validateEmail(user.newEmail);
 
         if (!valid) return res.status(400).json({ newEmail: errors.email });
@@ -383,19 +382,21 @@ exports.changeEmail = (req, res) => {
 exports.changeUsername = (req, res) => {
     const user = {
         email: req.user.email,
-        newUsername: req.body.newUsername
+        newUsername: req.body.newUsername,
+        password: req.body.password
     };
 
-    console.log(user);
-
-    if (user.newUsername.trim() === '') return res.status(400).json({ username: 'Must not be empty!' });
+    if (user.newUsername.trim() === '') return res.status(400).json({ newUsername: 'Must not be empty!' });
 
     let userData = {};
     let oldUsername = req.user.username;
 
     const userDocument = db.doc(`/users/${oldUsername}`);
 
-    userDocument.get()
+    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+    .then(() => {
+        return userDocument.get();
+    })
     .then((doc) => {
         if (!doc.exists) return res.status(404).json({ general: 'User not found!' });
 
@@ -498,6 +499,11 @@ exports.changeUsername = (req, res) => {
     })
     .catch((err) => {
         console.error(err);
+
+        if (err.code == "auth/wrong-password") {
+            return res.status(400).json({ password: 'Wrong credentials!' });
+        }
+
         return res.status(500).json({ error: err.code });
     });
 
@@ -506,10 +512,12 @@ exports.changeUsername = (req, res) => {
 // Change account password
 exports.changePassword = (req, res) => {
     const user = {
-        email: req.body.email,
+        email: req.user.email,
         password: req.body.password,
         newPassword: req.body.newPassword
     };
+
+    console.log(user);
 
     const { valid, errors } = validateLogInData(user);
 
@@ -523,18 +531,24 @@ exports.changePassword = (req, res) => {
         db.collection('users').where('email', '==', user.email).limit(1).get()
         .then((userData) => {
             if (userData.empty) {
-                return res.status(404).json({ general: user.email + ' user not found!' });
+                return res.status(404).json({ general:' User not found!' });
             }
 
             if (userData.docs[0].data().username !== req.user.username) return res.status(400).json({ general: 'Wrong credentials!' });
-            return data.user.updatePassword(user.newPassword);
+
+            return data.user.updatePassword(user.newPassword)
+            .then(() => {
+                return res.json({ message: 'Password updated successfully' });
+            });
         });
-    })
-    .then(()=> {
-        return res.json({ message: 'Password updated successfully' });
     })
     .catch((err) => {
         console.error(err);
+
+        if (err.code == "auth/wrong-password") {
+            return res.status(400).json({ password: 'Wrong credentials!' });
+        }
+
         return res.status(500). json({ error: err.code });
     });
 };

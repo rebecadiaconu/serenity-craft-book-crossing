@@ -133,8 +133,31 @@ export const changeUsername = (formData) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
-        dispatch(getUserData());
-        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch(logOutUser());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
+
+export const changePassword = (formData) => (dispatch) => {
+    dispatch({ type: Actions.USER.LOADING_USER });
+    
+    axios.post('/user/password', formData)
+    .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(logOutUser());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {

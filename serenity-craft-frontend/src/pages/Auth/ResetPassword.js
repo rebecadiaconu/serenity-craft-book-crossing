@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
+import history from "util/history";
 
 // react component used to create sweet alerts
 import SweetAlert from "react-bootstrap-sweetalert";
@@ -39,15 +40,13 @@ const useStyles = makeStyles(styles);
 const alertStyles = makeStyles(stylesSweet);
 
 const ResetPassword = () => {
-const [cardAnimaton, setCardAnimation] = useState("cardHidden");
-const history = useHistory();
 const classes = useStyles();
 const sweetClasses = alertStyles();
 const dispatch = useDispatch();
 const { register, handleSubmit } = useForm();
 const { authenticated } = useSelector((state) => state.user);
 const { errors, message, sendingEmail } = useSelector((state) => state.ui);
-
+const [cardAnimaton, setCardAnimation] = useState("cardHidden");
 
   useEffect(() => {
     dispatch({ type: Actions.UI.CLEAR_ERRORS });
@@ -59,16 +58,16 @@ const { errors, message, sendingEmail } = useSelector((state) => state.ui);
   }, [errors, message]);
 
   useEffect(() => {
-      if (authenticated) {
-          history.push("/");
-      }
+    if (authenticated) {
+        history.push("/");
+    }
   }, [authenticated, errors]);
 
   useEffect(() => {
     let id = setTimeout(function() {
       setCardAnimation("");
     }, 700);
-    // Specify how to clean up after this effect:
+
     return function cleanup() {
       window.clearTimeout(id);
     };
@@ -80,7 +79,6 @@ const { errors, message, sendingEmail } = useSelector((state) => state.ui);
 
   const handleClose = () => {
     dispatch({ type: Actions.UI.CLEAR_ACTION });
-    console.log(message);
     history.push('/auth/login-page');
   };
 
@@ -102,55 +100,55 @@ const { errors, message, sendingEmail } = useSelector((state) => state.ui);
               </CardHeader>
               <CardBody>
                 <TextField                         
-                    className={classes.textField} 
-                    variant="outlined"
-                    name="email" 
-                    type="email" 
-                    label="Email" 
-                    error={errors?.email ? true : false}
-                    helperText={errors?.email}
-                    inputRef={register()}
-                    InputLabelProps={{ shrink: true }}  
-                    fullWidth
-                    InputProps={{
-                            endAdornment: (<InputAdornment position="end">
-                                <EmailIcon />
-                            </InputAdornment>)
-                    }}
+                  className={classes.textField} 
+                  variant="outlined"
+                  name="email" 
+                  type="email" 
+                  label="Email" 
+                  error={errors?.email ? true : false}
+                  helperText={errors?.email}
+                  inputRef={register()}
+                  InputLabelProps={{ shrink: true }}  
+                  fullWidth
+                  InputProps={{
+                    endAdornment: (<InputAdornment position="end">
+                      <EmailIcon />
+                    </InputAdornment>)
+                  }}
                 />
                 <br />
                 {
-                    errors?.general && (
-                        <TypographyDanger variant="body2" className={classes.justifyContentCenter}>
-                            {errors.general}
-                        </TypographyDanger>
-                    )
+                  errors?.general && (
+                    <TypographyDanger variant="body2" className={classes.justifyContentCenter}>
+                      {errors.general}
+                    </TypographyDanger>
+                  )
                 }
               </CardBody>
               <CardFooter className={classes.justifyContentCenter}>
                 <Button onClick={handleSubmit(onSubmit)} type="submit" color="rose" simple size="lg" block>
-                    Send password reset email
-                    {
-                        sendingEmail && (
-                            <CircularProgress className={classes.progress} size={32} color='secondary' />
-                        )
-                    }
+                  Send password reset email
+                  {
+                    sendingEmail && (
+                      <CircularProgress className={classes.progress} size={32} color='secondary' />
+                    )
+                  }
                 </Button>
               </CardFooter>
             </Card>
             {
-                !!message && (
-                    <SweetAlert
-                        success
-                        style={{ display: "block", marginTop: "-100px" }}
-                        title="Email sent!"
-                        onConfirm={() => handleClose()}
-                        onCancel={() => handleClose()}
-                        confirmBtnCssClass={sweetClasses.button + " " + sweetClasses.success}
-                    >
-                        Go check it!
-                    </SweetAlert>
-                )
+              !!message && (
+                <SweetAlert
+                  success
+                  style={{ display: "block", marginTop: "-100px" }}
+                  title="Email sent!"
+                  onConfirm={() => handleClose()}
+                  onCancel={() => handleClose()}
+                  confirmBtnCssClass={sweetClasses.button + " " + sweetClasses.success}
+                >
+                  Go check it!
+                </SweetAlert>
+              )
             }
           </form>
         </GridItem>

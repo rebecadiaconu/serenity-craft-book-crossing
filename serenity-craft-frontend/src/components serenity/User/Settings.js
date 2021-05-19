@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import SweetAlert from "react-bootstrap-sweetalert";
 
 // Redux
 import { useSelector, useDispatch } from  "react-redux";
-import { useHistory } from "react-router-dom";
-import { changeEmail, changeUsername } from '../../redux/actions/userActions';
+import { changeEmail, changeUsername, changePassword } from '../../redux/actions/userActions';
 import { Actions } from 'redux/types';
-
-// react component used to create sweet alerts
-import SweetAlert from "react-bootstrap-sweetalert";
 
 // @material-ui core
 import Slide from "@material-ui/core/Slide";
@@ -19,13 +16,16 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import { makeStyles } from "@material-ui/styles";
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from "@material-ui/core/InputAdornment";
+import Tooltip from '@material-ui/core/Tooltip';
 import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/styles";
+
 
 // @material-ui/icons
 import Close from "@material-ui/icons/Close";
+import InfoIcon from '@material-ui/icons/Info';
 import EmailIcon from '@material-ui/icons/Email';
 import FaceIcon from '@material-ui/icons/Face';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -51,6 +51,7 @@ const Settings = () => {
     const { errors, loading } = useSelector((state) => state.ui);
 
     const [showPassword, setShowPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
     const [emailAlert, setEmailAlert] = useState(false);
     const [usernameAlert, setUsernameAlert] = useState(false);
     const [passwordAlert, setPasswordAlert] = useState(false);
@@ -58,7 +59,7 @@ const Settings = () => {
     useEffect(() => {
         setValue('newUsername', credentials.username);
         setValue('newEmail', credentials.email);
-    }, [credentials.email, credentials.username]);
+    }, [credentials]);
 
     const handleEmailChange = (formData) => {
         if (formData.newEmail !== credentials.email) {
@@ -72,9 +73,9 @@ const Settings = () => {
         }
     };
 
-    const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
-    };
+    const handlePasswordChange = (formData) => {
+        dispatch(changePassword(formData));
+    }
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
@@ -83,6 +84,16 @@ const Settings = () => {
     return (
         <div>
             <List>
+                <Tooltip 
+                    arrow
+                    interactive
+                    title="After every change you will pe logged out for validation"
+                    className={classes.toolTip}
+                >
+                    <IconButton aria-label="Every time you make an account change you will be logged out for validation!">
+                        <InfoIcon />
+                    </IconButton>
+                </Tooltip>
                 <ListItem>
                     <TextField
                         color="secondary"
@@ -150,6 +161,7 @@ const Settings = () => {
                         color="info"
                         style={{width: 200}}
                         className={classes.central}
+                        onClick={() => setPasswordAlert(true)}
                     >
                         CHANGE PASSWORD
                     </Button>
@@ -167,6 +179,7 @@ const Settings = () => {
                     </Button>
                 </ListItem>
             </List>
+            {/* Confirm changes modals */}
             <Dialog
                 open={emailAlert}
                 TransitionComponent={Transition}
@@ -207,7 +220,7 @@ const Settings = () => {
                             endAdornment: <InputAdornment position="end">
                                 <IconButton
                                 aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
+                                onClick={() => setShowPassword(!showPassword)}
                                 onMouseDown={handleMouseDownPassword}
                                 >
                                     {showPassword ? <Visibility /> : <VisibilityOff />}
@@ -254,8 +267,34 @@ const Settings = () => {
                     >
                         <Close />
                     </Button>
-                    <h4 className={classes.modalTitle}>Are you sure?</h4>
+                    <h4 className={classes.modalTitle}>Type in your password to confirm the changes</h4>
                 </DialogTitle>
+                <DialogContent>
+                    <TextField 
+                        required
+                        className={classes.textField} 
+                        variant="outlined"
+                        name="password" 
+                        type={showPassword ? "text" : "password"} 
+                        label="Password" 
+                        error={errors?.password ? true : false}
+                        helperText={errors?.password}
+                        inputRef={register()}
+                        InputLabelProps={{ shrink: true }}  
+                        fullWidth
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">
+                                <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={() => setShowPassword(!showPassword)}
+                                onMouseDown={handleMouseDownPassword}
+                                >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>,
+                        }}
+                    />
+                </DialogContent>
                 <DialogActions className={classes.actionContainer}>
                     <Button
                         onClick={() => setUsernameAlert(false)}
@@ -269,10 +308,99 @@ const Settings = () => {
                         round
                         onClick={handleSubmit(handleUsernameChange)}
                     >
-                        Let's do this!
+                        Sounds good
                     </Button>
                 </DialogActions>
             </Dialog>
+            <Dialog
+                open={passwordAlert}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setEmailAlert(false)}
+                aria-labelledby="password-alert"
+                aria-describedby="password-alert"
+            >
+                <DialogTitle
+                    disableTypography
+                >
+                    <Button
+                        justIcon
+                        className={classes.closeButton}
+                        key="close"
+                        aria-label="Close"
+                        color="transparent"
+                        onClick={() => setPasswordAlert(false)}
+                    >
+                        <Close />
+                    </Button>
+                    <h4 className={classes.modalTitle}>Type in your new password and confirm the changes</h4>
+                </DialogTitle>
+                <DialogContent>
+                    <TextField 
+                        className={classes.textField} 
+                        variant="outlined"
+                        name="password" 
+                        type={showPassword ? "text" : "password"} 
+                        label="Old Password" 
+                        error={errors?.password ? true : false}
+                        helperText={errors?.password}
+                        inputRef={register()}
+                        InputLabelProps={{ shrink: true }}  
+                        fullWidth
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">
+                                <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={() => setShowPassword(!showPassword)}
+                                onMouseDown={handleMouseDownPassword}
+                                >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>,
+                        }}
+                    />
+                    <TextField 
+                        className={classes.textField} 
+                        variant="outlined"
+                        name="newPassword" 
+                        type={showNewPassword ? "text" : "password"} 
+                        label="New Password" 
+                        error={errors?.newPassword ? true : false}
+                        helperText={errors?.newPassword}
+                        inputRef={register()}
+                        InputLabelProps={{ shrink: true }}  
+                        fullWidth
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">
+                                <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={() => setShowNewPassword(!showNewPassword)}
+                                onMouseDown={handleMouseDownPassword}
+                                >
+                                    {showNewPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>,
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions className={classes.actionContainer}>
+                    <Button
+                        onClick={() => setPasswordAlert(false)}
+                        color="danger"
+                        round
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        color="success"
+                        round
+                        onClick={handleSubmit(handlePasswordChange)}
+                    >
+                        Sounds Good
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            
         </div>
     )
 }

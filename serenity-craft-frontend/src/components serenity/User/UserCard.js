@@ -1,18 +1,16 @@
 import React from 'react';
 
+// React
+import { useSelector } from "react-redux";
+
 // @material-ui components
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
 
 // core components
 import Button from "components/CustomButtons/Button.js";
-import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import CardBody from "components/Card/CardBody.js";
 import Card from "components/Card/Card.js";
-import NavPills from "components/NavPills/NavPills.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 
 // @material-ui icons
@@ -64,8 +62,9 @@ const userStyles = {
 
 const useStyles = makeStyles(userStyles);
 
-const UserCard = ({ credentials }) => {
+const UserCard = () => {
     const classes = useStyles();
+    const { credentials } = useSelector(state => state.user);
 
     return (
         <GridItem xs={12} sm={12} md={4}>

@@ -12,6 +12,14 @@ const settingsStyle = {
     actionContainer: {
         display: 'flex',
         justifyContent: "center"
+    },
+    textField: {
+        margin: '10px auto'
+    },
+    toolTip: {
+        color: 'red',
+        marginRight: 0,
+        backgroundColor: 'white'
     }
 };
 
