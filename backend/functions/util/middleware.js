@@ -22,6 +22,7 @@ exports.fbAuth = (req, res, next) => {
         .get();
     })
     .then((data) => { 
+        req.user.email = data.docs[0].data().email;
         req.user.username = data.docs[0].data().username;
         req.user.imageUrl = data.docs[0].data().imageUrl;
         
@@ -55,6 +56,7 @@ exports.bookOwnerAuth = (req, res, next) => {
         .get();
     })
     .then((data) => { 
+        req.user.email = data.docs[0].data().email;
         req.user.username = data.docs[0].data().username;
         req.user.imageUrl = data.docs[0].data().imageUrl;
 

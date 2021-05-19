@@ -35,11 +35,11 @@ const UserReducer = (state = initialState, action) => {
             ...state,
             loading: false
           };
-        // case Actions.USER.CHANGE_USERNAME:
-        //   return {
-        //     ...state,
-        //     loading: false
-        //   };
+        case Actions.USER.CHANGE_USERNAME:
+          return {
+            ...state,
+            loading: false
+          };
         case Actions.USER.CHANGE_PASSWORD:
           return {
             ...state,

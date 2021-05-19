@@ -13,11 +13,11 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import EditIcon from '@material-ui/icons/Edit';
 
 // core components
-import Settings from "../../components serenity/Settings";
-import EditProfile from "../../components serenity/EditProfile";
-import BooksCarousel from "../../components serenity/BooksCarousel";
-import CrossingsCarousel from "../../components serenity/CrossingsCarousel";
-import UserCard from "../../components serenity/UserCard";
+import Settings from "../../components serenity/User/Settings";
+import EditProfile from "../../components serenity/User/EditProfile";
+import BooksCarousel from "../../components serenity/Book/BooksCarousel";
+import CrossingsCarousel from "../../components serenity/Crossing/CrossingsCarousel";
+import UserCard from "../../components serenity/User/UserCard";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import CardBody from "components/Card/CardBody.js";
@@ -48,11 +48,10 @@ const UserAuthPage = () => {
     const dispatch = useDispatch();
     const classes = useStyles();
     const { credentials, books, crossings } = useSelector((state) => state.user);
-    // const [userImage, setUserImage] = useState(defaultUserImage);
+    const [userImage, setUserImage] = useState(defaultUserImage);
 
-    // useEffect(() => {
-    //     setUserImage(credentials.imageUrl);
-    // }, [credentials.imageUrl]);
+    useEffect(() => {
+    }, [credentials.imageUrl, credentials.username]);
 
 
     return (

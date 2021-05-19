@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 // Redux
 import { useSelector, useDispatch } from  "react-redux";
 import { useHistory } from "react-router-dom";
-import { changeEmail } from '../redux/actions/userActions';
+import { changeEmail, changeUsername } from '../../redux/actions/userActions';
 import { Actions } from 'redux/types';
 
 // react component used to create sweet alerts
@@ -48,7 +48,7 @@ const Settings = () => {
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
     const { credentials } = useSelector((state) => state.user);
-    const { errors, message, loading } = useSelector((state) => state.ui);
+    const { errors, loading } = useSelector((state) => state.ui);
 
     const [showPassword, setShowPassword] = useState(false);
     const [emailAlert, setEmailAlert] = useState(false);
@@ -56,13 +56,19 @@ const Settings = () => {
     const [passwordAlert, setPasswordAlert] = useState(false);
 
     useEffect(() => {
-        setValue('username', credentials.username);
+        setValue('newUsername', credentials.username);
         setValue('newEmail', credentials.email);
     }, [credentials.email, credentials.username]);
 
-    const handleChange = (formData) => {
+    const handleEmailChange = (formData) => {
         if (formData.newEmail !== credentials.email) {
             dispatch(changeEmail(formData));
+        }
+    };
+
+    const handleUsernameChange = (formData) => {
+        if (formData.newUsername !== credentials.username) {
+            dispatch(changeUsername(formData));
         }
     };
 
@@ -109,12 +115,12 @@ const Settings = () => {
                 <ListItem>
                     <TextField
                         color="secondary"
-                        name="username" 
+                        name="newUsername" 
                         type="text" 
                         label="Username"
                         variant="outlined"
-                        error={errors?.username ? true : false}
-                        helperText={errors?.username}
+                        error={errors?.newUsername ? true : false}
+                        helperText={errors?.newUsername}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
@@ -131,6 +137,7 @@ const Settings = () => {
                         round
                         color="info"
                         className={classes.button}
+                        onClick={() => setUsernameAlert(true)}
                     >
                         CHANGE
                     </Button>
@@ -220,9 +227,49 @@ const Settings = () => {
                     <Button
                         color="success"
                         round
-                        onClick={handleSubmit(handleChange)}
+                        onClick={handleSubmit(handleEmailChange)}
                     >
                         Sounds Good
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={usernameAlert}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setUsernameAlert(false)}
+                aria-labelledby="username-alert"
+                aria-describedby="username-alert"
+            >
+                <DialogTitle
+                    disableTypography
+                >
+                    <Button
+                        justIcon
+                        className={classes.closeButton}
+                        key="close"
+                        aria-label="Close"
+                        color="transparent"
+                        onClick={() => setUsernameAlert(false)}
+                    >
+                        <Close />
+                    </Button>
+                    <h4 className={classes.modalTitle}>Are you sure?</h4>
+                </DialogTitle>
+                <DialogActions className={classes.actionContainer}>
+                    <Button
+                        onClick={() => setUsernameAlert(false)}
+                        color="danger"
+                        round
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        color="success"
+                        round
+                        onClick={handleSubmit(handleUsernameChange)}
+                    >
+                        Let's do this!
                     </Button>
                 </DialogActions>
             </Dialog>

@@ -333,8 +333,6 @@ exports.changeEmail = (req, res) => {
 
     const userDocument = db.doc(`/users/${req.user.username}`);
 
-    console.log(user);
-
     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
         console.log(data.user);
@@ -384,10 +382,11 @@ exports.changeEmail = (req, res) => {
 // Change username
 exports.changeUsername = (req, res) => {
     const user = {
-        email: req.body.email,
-        password: req.body.password,
+        email: req.user.email,
         newUsername: req.body.newUsername
     };
+
+    console.log(user);
 
     if (user.newUsername.trim() === '') return res.status(400).json({ username: 'Must not be empty!' });
 
@@ -396,96 +395,96 @@ exports.changeUsername = (req, res) => {
 
     const userDocument = db.doc(`/users/${oldUsername}`);
 
-    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
-    .then((data) => { 
-        const { valid, errors } = validateLogInData(user);
+    userDocument.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ general: 'User not found!' });
 
-        if (!valid) return res.status(400).json(errors);
+        if (doc.data().email !== req.user.email) return res.status(400).json({ password: 'Wrong credentials!' });
+
+        userData = doc.data();
+        userData.username = user.newUsername;
+
+        console.log(userData);
+
+        return db.doc(`/users/${user.newUsername}`).get();
+    })
+    .then((doc) => {
+        if (doc.exists) return res.status(400).json({ newUsername: 'Username already used!' });
         
-        userDocument.get()
-        .then((doc) => {
-            if (!doc.exists) return res.status(404).json({ general: 'User not found!' });
-    
-            if (doc.data().email !== req.body.email) return res.status(400).json({ error: 'Wrong credentials!' });
+        const batch = db.batch();
 
-            userData = doc.data();
-            userData.username = user.newUsername;
-
-            const batch = db.batch();
-
-            return db.collection('books').where('owner', '==', req.user.username)
-            .get()
-            .then((data) => {
-                data.forEach((doc) => {
-                    batch.update(db.doc(`/books/${doc.id}`), { owner: user.newUsername });
-                });
-
-                return db.collection('reviews').where('username', '==', req.user.username).get();
-            })
-            .then((data) => {
-                data.forEach((doc) => {
-                    batch.update(db.doc(`/reviews/${doc.id}`), {username: user.newUsername });
-                });
-
-                return db.collection('crossings').where('sender', '==', req.user.username).get();
-            })
-            .then((data) => {
-                data.forEach((doc) => {
-                    let sender = user.newUsername;
-                    batch.update(db.doc(`/crossings/${doc.id}`), {sender});
-                });
-
-                return db.collection('crossings').where('recipient', '==', req.user.username).get();
-            })
-            .then((data) => {
-                data.forEach((doc) => {
-                    let recipient = user.newUsername;
-                    batch.update(db.doc(`/crossings/${doc.id}`), {recipient});
-                });
-
-                return realtime.ref(`/topics/`).orderByChild("username").equalTo(req.user.username).get();
-            })
-            .then((data) => {
-                let topicData = [];
-                let promises = [];
-
-                if (data.exists()) {
-                    topicData = Object.values(data.val()).reverse();
-                    console.log(topicData);
-                    topicData.forEach((doc) => {
-                        console.log(doc.id);
-                        let updates = {};
-                        updates['username'] = user.newUsername;
-                        promises.push(realtime.ref(`/topics/${doc.topicId}`).update(updates));
-                    });
-    
-                }
-
-                return Promise.all(promises);
-            })
-            .then(() => {
-                return realtime.ref(`/replies/`).orderByChild("username").equalTo(req.user.username).get();
-            })
-            .then((data) => {
-                let replyData = [];
-                let promises = [];
-                if (data.exists()) {
-                    replyData = Object.values(data.val()).reverse();
-                    console.log(replyData);
-
-                    replyData.forEach((doc) => {
-                        console.log(doc.id);
-                        let updates = {};
-                        updates['username'] = user.newUsername;
-                        promises.push(realtime.ref(`/replies/${doc.replyId}`).update(updates));
-                    });
-                }
-
-                return Promise.all(promises);
-            })
-            .then(() => {
-                return batch.commit();
+        db.collection('books').where('owner', '==', req.user.username)
+        .get()
+        .then((data) => {
+            data.forEach((doc) => {
+                batch.update(db.doc(`/books/${doc.id}`), { owner: user.newUsername });
             });
+    
+            return db.collection('reviews').where('username', '==', req.user.username).get();
+        })
+        .then((data) => {
+            data.forEach((doc) => {
+                batch.update(db.doc(`/reviews/${doc.id}`), {username: user.newUsername });
+            });
+    
+            return db.collection('crossings').where('sender', '==', req.user.username).get();
+        })
+        .then((data) => {
+            data.forEach((doc) => {
+                let sender = user.newUsername;
+                batch.update(db.doc(`/crossings/${doc.id}`), {sender});
+            });
+    
+            return db.collection('crossings').where('recipient', '==', req.user.username).get();
+        })
+        .then((data) => {
+            data.forEach((doc) => {
+                let recipient = user.newUsername;
+                batch.update(db.doc(`/crossings/${doc.id}`), {recipient});
+            });
+    
+            return realtime.ref(`/topics/`).orderByChild("username").equalTo(req.user.username).get();
+        })
+        .then((data) => {
+            let topicData = [];
+            let promises = [];
+    
+            if (data.exists()) {
+                topicData = Object.values(data.val()).reverse();
+                console.log(topicData);
+                topicData.forEach((doc) => {
+                    console.log(doc.id);
+                    let updates = {};
+                    updates['username'] = user.newUsername;
+                    promises.push(realtime.ref(`/topics/${doc.topicId}`).update(updates));
+                });
+    
+            }
+    
+            return Promise.all(promises);
+        })
+        .then(() => {
+            return realtime.ref(`/replies/`).orderByChild("username").equalTo(req.user.username).get();
+        })
+        .then((data) => {
+            let replyData = [];
+            let promises = [];
+            if (data.exists()) {
+                replyData = Object.values(data.val()).reverse();
+                console.log(replyData);
+    
+                replyData.forEach((doc) => {
+                    console.log(doc.id);
+                    let updates = {};
+                    updates['username'] = user.newUsername;
+                    promises.push(realtime.ref(`/replies/${doc.replyId}`).update(updates));
+                });
+            }
+    
+            return Promise.all(promises);
+        })
+        .then(() => {
+            return batch.commit();
         })
         .then(() => {
             return userDocument.delete();

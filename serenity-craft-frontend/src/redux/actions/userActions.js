@@ -15,9 +15,10 @@ export const signUp = (userData) => (dispatch) => {
     axios
         .post('/signup', userData)
         .then(({ data }) => {
-            dispatch(getUserData(data.token));
+            setAuth(data.token);
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
             dispatch({ type: Actions.USER.STOP_LOADING_USER });
+            dispatch(getUserData());
             history.push("/");
         })
         .catch((err) => {
@@ -37,8 +38,9 @@ export const loginUser = (userData) => (dispatch) => {
     axios
         .post('/login', userData)
         .then(({ data }) => {
-            dispatch(getUserData(data.token));
+            setAuth(data.token);
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
+            dispatch(getUserData());
             history.push("/");
         })
         .catch((err) => {
@@ -57,7 +59,6 @@ export const logOutUser = () => (dispatch) => {
     dispatch({ type: Actions.USER.SET_UNAUTHENTICATED });
     localStorage.removeItem('idToken');
     delete axios.defaults.headers.common['Authorization'];
-    console.log('Inside the function2...');
     history.push('/auth/login-page');
 }
 
@@ -83,9 +84,7 @@ export const forgotPassword = (userData) => (dispatch) => {
 };
 
 
-export const getUserData = (token) => (dispatch) => {
-    setAuth(token);
-
+export const getUserData = () => (dispatch) => {
     axios
     .get('/user')
     .then((result) => {
@@ -114,8 +113,29 @@ export const changeEmail = (formData) => (dispatch) => {
         dispatch(logOutUser());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
-    
-        console.log('Logged out...');
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
+
+export const changeUsername = (formData) => (dispatch) => {
+    dispatch({ type: Actions.USER.LOADING_USER });
+
+    axios.post('/user/username', formData)
+    .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(getUserData());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {
         dispatch({ type: Actions.USER.STOP_LOADING_USER });

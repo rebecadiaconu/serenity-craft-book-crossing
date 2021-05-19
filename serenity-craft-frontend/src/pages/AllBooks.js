@@ -23,7 +23,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SelectInput from "../util/components/SelectInput";
 import FilterMenu from "../util/components/FilterMenu";
 import Button from "../components/CustomButtons/Button";
-import BookContainer from "../components serenity/BookContainer";
+import BookContainer from "../components serenity/Book/BookContainer";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 

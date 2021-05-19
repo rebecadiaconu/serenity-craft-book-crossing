@@ -56,11 +56,6 @@ const userStyles = {
           marginRight: "3px"
         }
       },
-    // pageSubcategoriesTitle: {
-    //     color: "#3C4858",
-    //     textDecoration: "none",
-    //     textAlign: "center"
-    // },
     cardCategory: {
         margin: "0 auto",
         color: "#999999"

@@ -1,8 +1,8 @@
 import React from 'react';
-import { createBrowserHistory } from "history";
-import { Router, Route, Switch, Redirect, useHistory } from "react-router-dom";
+import { Router, Route, Switch, Redirect } from "react-router-dom";
 import jwtDecode from 'jwt-decode';
 import history from "./util/history";
+import axios from "./util/axios";
 
 // Redux
 import store from './redux/store';
@@ -13,6 +13,8 @@ import AdminLayout from "layouts/Admin.js";
 
 let token = localStorage.idToken;
 
+console.log(token);
+
 if (token) {
     const decodedToken = token.split(" ")[1];
     const jwtToken = jwtDecode(decodedToken);
@@ -21,9 +23,11 @@ if (token) {
         store.dispatch(logOutUser());
         token = undefined;
     } else {
+        axios.defaults.headers.common['Authorization'] = token;
         store.dispatch(getUserData(decodedToken));
     }
 } else {
+    store.dispatch(logOutUser());
     token = undefined;
 }
 
