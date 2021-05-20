@@ -41,6 +41,7 @@ const CrossingsCarousel = () => {
             <Carousel 
                 additionalTransfrom={0}
                 arrows
+                autoPlay
                 autoPlaySpeed={3000}
                 centerMode={false}
                 className=""
@@ -49,7 +50,7 @@ const CrossingsCarousel = () => {
                 draggable
                 partialVisible
                 focusOnSelect={false}
-                infinite={false}
+                infinite={true}
                 itemClass=""
                 keyBoardControl
                 minimumTouchDrag={80}
@@ -58,7 +59,7 @@ const CrossingsCarousel = () => {
                 responsive={responsive}
                 showDots={false}
                 sliderClass=""
-                slidesToSlide={2}
+                slidesToSlide={1}
                 swipeable
             >
                 {

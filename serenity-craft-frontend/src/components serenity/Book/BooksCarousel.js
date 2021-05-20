@@ -41,6 +41,7 @@ const BooksCarousel = () => {
             <Carousel 
                 additionalTransfrom={0}
                 arrows
+                autoPlay
                 autoPlaySpeed={3000}
                 centerMode={false}
                 className=""
@@ -49,7 +50,7 @@ const BooksCarousel = () => {
                 draggable
                 partialVisible
                 focusOnSelect={false}
-                infinite={false}
+                infinite={true}
                 itemClass=""
                 keyBoardControl
                 minimumTouchDrag={80}
@@ -58,7 +59,7 @@ const BooksCarousel = () => {
                 responsive={responsive}
                 showDots={false}
                 sliderClass=""
-                slidesToSlide={2}
+                slidesToSlide={1}
                 swipeable
             >
                 {
