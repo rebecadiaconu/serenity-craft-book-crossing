@@ -17,8 +17,6 @@ const ScrollToTop = ({ top }) => {
     const { scrolling } = useSelector((state) => state.ui);
     
     const handleClick = () => {
-        console.log(top);
-        console.log(top.current);
         top.current.scrollTo({top: 0, behavior: 'smooth'});
     }
 

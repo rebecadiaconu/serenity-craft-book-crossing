@@ -149,7 +149,7 @@ export const changeUsername = (formData) => (dispatch) => {
 
 export const changePassword = (formData) => (dispatch) => {
     dispatch({ type: Actions.USER.LOADING_USER });
-    
+
     axios.post('/user/password', formData)
     .then(({ data }) => {
         dispatch({ 
@@ -157,6 +157,52 @@ export const changePassword = (formData) => (dispatch) => {
             payload: data.message
         });
         dispatch(logOutUser());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
+
+export const editDetails = (formData) => (dispatch) => {
+    dispatch({ type: Actions.USER.LOADING_USER });
+
+    axios.post('/user', formData)
+    .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(getUserData());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
+
+export const changeImage = (formData) => (dispatch) => {
+    dispatch({ type: Actions.USER.LOADING_USER });
+
+    axios.post('/user/image', formData)
+    .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(getUserData());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })

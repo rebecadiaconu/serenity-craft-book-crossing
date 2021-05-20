@@ -97,10 +97,14 @@ const UserCard = () => {
                         <AlternateEmailIcon />
                         <span>{credentials.email}</span>
                     </div>
-                    <div className={classes.location}>
-                        <LocationOnIcon />
-                        <span>{credentials.location}</span>
-                    </div>
+                    {
+                        credentials?.location ? (
+                            <div className={classes.location}>
+                                <LocationOnIcon />
+                                <span>{credentials.location}</span>
+                            </div>
+                        ) : null
+                    }
                 </CardFooter>
             </Card>
         </GridItem>

@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { useForm } from 'react-hook-form';
-import SweetAlert from "react-bootstrap-sweetalert";
 
 // Redux
 import { useSelector, useDispatch } from  "react-redux";
 import { changeEmail, changeUsername, changePassword } from '../../redux/actions/userActions';
-import { Actions } from 'redux/types';
 
 // @material-ui core
 import Slide from "@material-ui/core/Slide";
@@ -35,11 +33,11 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 import Button from "components/CustomButtons/Button";
 
 // Styles
-import styles from "assets/jss/serenity-craft/pages/settings";
+import styles from "assets/jss/serenity-craft/components/settings";
 
 const useStyles = makeStyles(styles);
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
@@ -48,7 +46,7 @@ const Settings = () => {
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
     const { credentials } = useSelector((state) => state.user);
-    const { errors, loading } = useSelector((state) => state.ui);
+    const { errors } = useSelector((state) => state.ui);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -87,7 +85,7 @@ const Settings = () => {
                 <Tooltip 
                     arrow
                     interactive
-                    title="After every change you will pe logged out for validation"
+                    title="After every change you will be logged out for validation"
                     className={classes.toolTip}
                 >
                     <IconButton aria-label="Every time you make an account change you will be logged out for validation!">

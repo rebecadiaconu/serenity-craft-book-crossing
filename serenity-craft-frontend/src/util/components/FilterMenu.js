@@ -42,7 +42,6 @@ const FilterMenu = ({ label, items, onlyOne, type }) => {
     useEffect(() => {
         if(!filterApplied && checked.length !== 0) {
             setChecked([]);
-            console.log('sdvdrbdb');
         }
     }, [filterApplied]);
 

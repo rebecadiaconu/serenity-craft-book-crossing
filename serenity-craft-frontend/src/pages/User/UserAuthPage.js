@@ -47,7 +47,7 @@ const UserAuthPage = () => {
                                 }}
                                 tabs={[
                                     {
-                                        tabButton: "Edit profile",
+                                        tabButton: "Edit",
                                         tabIcon: EditIcon,
                                         tabContent: (
                                             <EditProfile />
@@ -72,8 +72,8 @@ const UserAuthPage = () => {
                 alignItems="center"
                 alignContent="center"
             >
-                <BooksCarousel />
                 <CrossingsCarousel />
+                <BooksCarousel />
             </GridContainer>
         </div>
     );

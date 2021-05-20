@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState, useEffect, createRef } from "react";
 // used for making the prop types of this component
 import PropTypes from "prop-types";
+
+// Redux
+import { useSelector, useDispatch } from  "react-redux";
 
 // core components
 import Button from "components/CustomButtons/Button.js";
@@ -8,10 +11,17 @@ import Button from "components/CustomButtons/Button.js";
 import defaultImage from "assets/img/image_placeholder.jpg";
 import defaultAvatar from "assets/img/placeholder.jpg";
 
-export default function ImageUpload({ image, avatar, addButtonProps, changeButtonProps, removeButtonProps }) {
-  const [file, setFile] = React.useState(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = React.useState(image);
-  let fileInput = React.createRef();
+export default function ImageUpload({ avatar, addButtonProps, changeButtonProps, removeButtonProps }) {
+  const { credentials } = useSelector((state) => state.user);
+  const [file, setFile] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  let fileInput = createRef();
+
+  useEffect(() => {
+    setFile(credentials.imageUrl);
+    setImagePreviewUrl(credentials.imageUrl);
+  }, [credentials]);
+
   const handleImageChange = e => {
     e.preventDefault();
     let reader = new FileReader();
@@ -42,8 +52,6 @@ export default function ImageUpload({ image, avatar, addButtonProps, changeButto
     setImagePreviewUrl(avatar ? defaultAvatar : defaultImage);
     fileInput.current.value = null;
   };
-
-  console.log(image);
 
   return (
     <div className="fileinput text-center">

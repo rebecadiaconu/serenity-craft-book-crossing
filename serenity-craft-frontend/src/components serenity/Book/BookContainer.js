@@ -28,12 +28,12 @@ import styles from "assets/jss/material-dashboard-pro-react/views/bookStyle.js";
 
 const useStyles = makeStyles(styles);
 
-const BookContainer = ({ book }) => {
+const BookContainer = ({ book, carousel }) => {
     const classes = useStyles();
     const { authenticated, credentials } = useSelector((state) => state.user);
 
     return (
-        <GridItem xs={12} sm={12} md={4}>
+        <GridItem xs={12} sm={12} md={carousel ? 12 : 4}>
             <Card product className={classes.cardHover}>
                 <CardHeader image className={classes.cardHeaderHover}>
                     <a href="#pablo" onClick={e => e.preventDefault()}>
