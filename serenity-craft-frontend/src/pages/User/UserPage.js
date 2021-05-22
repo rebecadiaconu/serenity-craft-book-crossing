@@ -56,33 +56,38 @@ const UserPage = () => {
         >
             <UserCard user={user} search />
             <GridItem xs={12} sm={12} md={8}>
-            {
-                books.length === 0 ?
-                (
-                    searchApplied ?
-                        <h2 style={{margin: '0 auto'}}>No book found by your custom search...</h2> : 
-                        <h2>No books added by {username}...</h2>
-                ) : (
-                    books.slice(0, showedBooks).map((book, index) => {
-                        return book.available ? <BookContainer key={index} book={book} /> :   null
-                    })
-                )
-            }
-            {
-                (showedBooks < books.length) ? (
-                    <Button 
-                        style={{margin: '0 auto', display: "flex"}}
-                        disabled={showedBooks >= books.length ? true : false}
-                        color="primary" 
-                        round 
-                        size="lg"
-                        onClick={handleShowMore}
-                    >
-                        <ExpandMoreIcon />
-                        <span>Show more</span>
-                    </Button>
-                ) : null
-            } 
+                <GridContainer
+                    display="flex"
+                    alignContent="center"
+                >
+                    {
+                        books.length === 0 ?
+                        (
+                            searchApplied ?
+                                <h2 style={{margin: '0 auto'}}>No book found by your custom search...</h2> : 
+                                <h2>No books added by {username}...</h2>
+                        ) : (
+                            books.slice(0, showedBooks).map((book, index) => {
+                                return book.available ? <BookContainer key={index} book={book} /> :   null
+                            })
+                        )
+                    }
+                    {
+                        (showedBooks < books.length) ? (
+                            <Button 
+                                style={{margin: '0 auto', display: "flex"}}
+                                disabled={showedBooks >= books.length ? true : false}
+                                color="primary" 
+                                round 
+                                size="lg"
+                                onClick={handleShowMore}
+                            >
+                                <ExpandMoreIcon />
+                                <span>Show more</span>
+                            </Button>
+                        ) : null
+                    } 
+                </GridContainer>
             </GridItem>
         </GridContainer>
     )

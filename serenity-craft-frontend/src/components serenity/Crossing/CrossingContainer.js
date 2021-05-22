@@ -55,8 +55,8 @@ const CrossingContainer = ({ crossing }) => {
                     <NavLink
                         to={`users/${crossing.recipient}`}
                     >
-                        <CardAvatar>
-                            <img className={classes.avatar} src={crossing.recipientData.userImage} />
+                        <CardAvatar profile className={classes.avatar}>
+                            <img src={crossing.recipientData.userImage} style={{width: 150, height: 150}} />
                         </CardAvatar>
                     </NavLink>
                     <CardFooter>

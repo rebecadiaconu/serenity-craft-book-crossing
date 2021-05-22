@@ -13,6 +13,7 @@ import { getUserData, logOutUser } from './redux/actions/userActions';
 import UserPage from "pages/User/UserPage";
 import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
+import { Actions } from 'redux/types';
 
 let token = localStorage.idToken;
 
@@ -34,14 +35,19 @@ if (token) {
 
 
 const App = () => {
-    if (!token) history.push("/");
-
     const dispatch = useDispatch();
-    const { authenticated } = useSelector((state) => state.user);
 
     useEffect(() => {
-        if (!authenticated) dispatch(logOutUser());
-    }, [authenticated]);
+        let token = localStorage.idToken;
+        if (!token) {
+          history.push("/");  
+          dispatch({ type: Actions.USER.SET_UNAUTHENTICATED });
+        } 
+    }, []);
+
+    // useEffect(() => {
+    //     if (!authenticated) dispatch(logOutUser());
+    // }, [authenticated]);
 
     return (
         <Router history={history}>

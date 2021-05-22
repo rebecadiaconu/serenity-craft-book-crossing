@@ -10,8 +10,7 @@ const crossingContainer = {
     avatar: {
         display: 'flex',
         margin: '0 auto',
-        height: 160,
-        borderRadius: 100
+        marginTop: 20
     },
     cover: {
         minHeight: 300,

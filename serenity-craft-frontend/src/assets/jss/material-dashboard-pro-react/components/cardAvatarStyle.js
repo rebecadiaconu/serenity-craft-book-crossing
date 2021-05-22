@@ -5,7 +5,7 @@ import {
 
 const cardAvatarStyle = {
   cardAvatar: {
-    "&$cardAvatarProfile img,&$cardAvatarTestimonial img": {
+    "&$cardAvatarProfile img, &$cardAvatarTestimonial img": {
       width: "100%",
       height: "auto"
     }

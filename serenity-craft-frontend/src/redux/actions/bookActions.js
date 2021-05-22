@@ -19,6 +19,7 @@ export const getAllBooks = () => (dispatch) => {
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
+        console.error(err);
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({
             type: Actions.BOOK.SET_INIT,
@@ -27,6 +28,25 @@ export const getAllBooks = () => (dispatch) => {
     });
 };
 
+export const getBook = (bookId) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.get(`/books/${bookId}`)
+    .then(({ data }) => {
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({
+            type: Actions.BOOK.SET_BOOK,
+            payload: data
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS, 
+            payload: err.response.data 
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    });
+};
 
 export const sortBooks = (value, books) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
@@ -78,7 +98,6 @@ export const sortBooks = (value, books) => (dispatch) => {
     dispatch({ type: Actions.UI.STOP_LOADING_DATA });
 };  
 
-
 export const getFilterBooks = (books, filterData) => {
     let newBooks = [...books];
 
@@ -119,7 +138,6 @@ export const getFilterBooks = (books, filterData) => {
 
     return newBooks;
 };
-
 
 export const setFilterData = (books, data, type, filterData) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
@@ -165,7 +183,6 @@ export const setFilterData = (books, data, type, filterData) => (dispatch) => {
 
     dispatch({ type: Actions.UI.STOP_LOADING_DATA });
 };
-
 
 export const setSearchValue = (data, books) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });

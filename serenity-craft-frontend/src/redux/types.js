@@ -33,7 +33,7 @@ export const Actions = {
         SORT: "BOOK.SORT",
         SET_SEARCH_DATA: "BOOK.SET_SEARCH_DATA",
         STOP_SEARCH: "BOOK.STOP_SEARCH",
-        SET_ACTUAL: "BOOK.SET_ACTUAL"
-        // SET_BOOK: "BOOK.SET_BOOK"
+        SET_ACTUAL: "BOOK.SET_ACTUAL",
+        SET_BOOK: "BOOK.SET_BOOK"
     }
 };

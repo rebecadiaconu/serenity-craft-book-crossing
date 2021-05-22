@@ -15,7 +15,8 @@ const initialState = {
     },
     searchApplied: false,
     searchValue: '',
-    actual: '' // book/user/auth
+    actual: '', // book/user/auth
+    book: {}
 };
 
 const BookReducer = (state = initialState, action) => {
@@ -67,6 +68,11 @@ const BookReducer = (state = initialState, action) => {
             return {
                 ...state,
                 actual: action.payload
+            }
+        case Actions.BOOK.SET_BOOK:
+            return {
+                ...state,
+                book: action.payload
             }
         default:
             return state;

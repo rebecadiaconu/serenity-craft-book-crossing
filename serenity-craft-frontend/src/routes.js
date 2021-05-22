@@ -24,6 +24,7 @@ import Widgets from "views/Widgets/Widgets.js";
 import Wizard from "views/Forms/Wizard.js";
 
 // @material-ui/icons
+import BookIcon from '@material-ui/icons/Book';
 import Apps from "@material-ui/icons/Apps";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import DateRange from "@material-ui/icons/DateRange";
@@ -34,6 +35,7 @@ import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 
 // Components Serenity
+import BookPage from "pages/Books/BookPage";
 import UserPage from "./pages/User/UserPage";
 import UserAuthPage from "./pages/User/UserAuthPage";
 import AllBooks from "./pages/AllBooks";
@@ -51,9 +53,19 @@ import ShareIcon from '@material-ui/icons/Share';
 const routes = [
   {
     path: '/users/:username',
-    name: 'Serenity User',
+    name: '',
     icon: AccountBoxIcon,
     component: UserPage,
+    layout: "/admin",
+    invisible:  true,
+    logged: false,
+    unauth: false 
+  },
+  {
+    path: '/books/:bookId',
+    name: '',
+    icon: BookIcon,
+    component: BookPage,
     layout: "/admin",
     invisible:  true,
     logged: false,

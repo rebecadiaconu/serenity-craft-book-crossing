@@ -19,7 +19,7 @@ const bookStyle = {
     },
     cardImage: {
         maxHeight: 400,
-        objectFit: "fill"
+        objectFit: "cover"
     },
     backUp: {
         position: 'fixed',
@@ -32,6 +32,18 @@ const bookStyle = {
     },
     ratingIcon: {
         color: warningColor[0]
+    },
+    coverContainer: {
+        display: 'flex',
+        margin: '0 auto',
+        marginTop: 15,
+        marginBottom: 15
+    },
+    coverImage: {
+        height: 650,
+        width: 400,
+        objectFit: "cover",
+        margin: '0 auto'
     }
 };
   

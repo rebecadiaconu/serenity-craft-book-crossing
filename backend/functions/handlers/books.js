@@ -17,6 +17,7 @@ exports.getAllBooks = (req, res) => {
             let books = [];
             data.forEach((doc) => {
                 let bookData = doc.data();
+                bookData.bookId = doc.id;
                 books.push(bookData);
             });
 

@@ -1,4 +1,5 @@
 import React from "react";
+import history from "util/history";
 
 // Redux
 import { useSelector } from "react-redux";
@@ -33,14 +34,14 @@ const BookContainer = ({ book, carousel }) => {
     const { authenticated, credentials } = useSelector((state) => state.user);
 
     const handleViewClick = () => {
-        console.log('View book');
+        history.push(`/admin/books/${book.bookId}`);
     };
 
     return (
         <GridItem xs={12} sm={12} md={carousel ? 12 : 4}>
             <Card product className={classes.cardHover}>
                 <CardHeader image className={classes.cardHeaderHover}>
-                    <a href="#pablo" onClick={e => e.preventDefault()}>
+                    <a href="#" onClick={e => e.preventDefault()}>
                         <img src={book.coverImage} className={classes.cardImage} alt="book-cover" />
                     </a>
                 </CardHeader>
@@ -55,16 +56,6 @@ const BookContainer = ({ book, carousel }) => {
                         >
                             <Button color="primary" simple justIcon>
                                 <ArtTrack className={classes.underChartIcons} />
-                            </Button>
-                        </Tooltip>
-                        <Tooltip
-                            id="tooltip-top"
-                            title="Add review"
-                            placement="bottom"
-                            classes={{ tooltip: classes.tooltip }}
-                        >
-                            <Button color="rose" simple justIcon>
-                                <CommentIcon className={classes.underChartIcons} />
                             </Button>
                         </Tooltip>
                         {

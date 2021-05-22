@@ -133,7 +133,9 @@ exports.getAuthenticatedUser = (req, res) => {
     .then((data) => {
         userData.books = [];
         data.forEach(doc => {
-            userData.books.push(doc.data());
+            let bookData = doc.data();
+            bookData.bookId = doc.id;
+            userData.books.push(bookData);
         });
 
         const recipientCross = db.collection("crossings").orderBy('createdAt', 'desc').where("recipient", "==", req.user.username).get();
