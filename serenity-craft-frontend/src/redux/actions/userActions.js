@@ -214,3 +214,28 @@ export const changeImage = (formData) => (dispatch) => {
         });
     });
 };
+
+
+export const getAnyUser = (username) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.get(`/user/${username}`)
+    .then(({ data }) => {
+        dispatch({
+            type: Actions.BOOK.SET_ACTUAL,
+            payload: 'user'
+        });
+        dispatch({
+            type: Actions.UI.SET_USER,
+            payload: data
+        });
+        dispatch({ 
+            type: Actions.BOOK.SET_INIT,
+            payload: data.books    
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        console.error(err.response.data);
+    });
+};

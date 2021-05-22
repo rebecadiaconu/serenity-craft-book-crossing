@@ -14,7 +14,8 @@ const initialState = {
         ratingMin: 0
     },
     searchApplied: false,
-    searchValue: ''
+    searchValue: '',
+    actual: '' // book/user/auth
 };
 
 const BookReducer = (state = initialState, action) => {
@@ -33,8 +34,8 @@ const BookReducer = (state = initialState, action) => {
         case Actions.BOOK.SORT:
             return {
                 ...state,
-                sort: true,
-                sorValue: action.payload
+                sortApplied: true,
+                sortValue: action.payload
             };
         case Actions.BOOK.SET_FILTER_DATA:
             return {
@@ -61,6 +62,11 @@ const BookReducer = (state = initialState, action) => {
                 searchApplied: false,
                 searchValue: '',
                 books: state.initBooks
+            }
+        case Actions.BOOK.SET_ACTUAL:
+            return {
+                ...state,
+                actual: action.payload
             }
         default:
             return state;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
-import { setFilterData } from "../../redux/actions/booksActions";
+import { setFilterData } from "../../redux/actions/bookActions";
 
 // @material-ui components
 import { makeStyles } from '@material-ui/core/styles';

@@ -1,7 +1,11 @@
 import React from 'react';
+import history from "util/history";
+
+// React
+import { useDispatch } from "react-redux";
 
 // @material-ui core
-import { Typography } from "@material-ui/core";
+import { Typography, Tooltip } from "@material-ui/core";
 
 // Components
 import Card from "components/Card/Card";
@@ -15,6 +19,7 @@ import GridItem from 'components/Grid/GridItem';
 // Styles
 import styles from "assets/jss/serenity-craft/components/crossingContainer";
 import { makeStyles } from '@material-ui/core';
+import { NavLink } from 'react-router-dom';
 
 const useStyles = makeStyles(styles);
 
@@ -30,7 +35,7 @@ const CrossingContainer = ({ crossing }) => {
     };
 
     const handleUserClick = () => {
-
+        history.push(`/admin/users/${crossing.recipient}`);
     };
     
     return (
@@ -41,15 +46,19 @@ const CrossingContainer = ({ crossing }) => {
                 alignContent="center"
             >
                 <GridItem xs={6} sm={6} md={6}>
-                    <CardHeader color={crossing.status === "pending" ? "warning" : "success"} text>
+                    <CardHeader text>
                         <CardText color={crossing.status === "pending" ? "warning" : "success"}>
                             <h5>{crossing.reqBook.title}</h5>
                             <p>{crossing.reqBook.author}</p> 
                         </CardText>
                     </CardHeader>
-                    <CardAvatar  onClick={handleUserClick}>
-                        <img className={classes.avatar} src={crossing.recipientData.userImage} />
-                    </CardAvatar>
+                    <NavLink
+                        to={`users/${crossing.recipient}`}
+                    >
+                        <CardAvatar>
+                            <img className={classes.avatar} src={crossing.recipientData.userImage} />
+                        </CardAvatar>
+                    </NavLink>
                     <CardFooter>
                         <Typography className={classes.info} variant="body2" >{crossing.recipient}</Typography>
                     </CardFooter>

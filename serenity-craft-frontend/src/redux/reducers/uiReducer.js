@@ -7,7 +7,8 @@ const initialState = {
     sendingEmail: false,
     errors: null,
     message: '',
-    // profileModal: null
+    user: {},
+    userBooks: []
 }
 
 const UiReducer = (state = initialState, action) => {
@@ -73,16 +74,18 @@ const UiReducer = (state = initialState, action) => {
                 backUp: true,
                 scrolling: false
             }  
-        // case Actions.UI.SET_MODAL:
-        //     return {
-        //         ...state,
-        //         profileModal: action.payload
-        //     }
-        // case Actions.UI.STOP_MODAL:
-        //     return {
-        //         ...state,
-        //         profileModal: null
-        //     }
+        case Actions.UI.SET_USER: 
+            return {
+                ...state,
+                user: action.payload.user,
+                userBooks: action.payload.books,
+            }
+        case Actions.UI.REMOVE_USER: 
+            return {
+                ...state,
+                user: {},
+                userBooks: [],
+            }
         default:
             return state;
     }

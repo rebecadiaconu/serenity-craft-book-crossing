@@ -86,7 +86,7 @@ const Dashboard = (props) => {
   };
 
   const getActiveRoute = routes => {
-    let activeRoute = "Default Brand Text";
+    let activeRoute = "";
 
     for (let i = 0; i < routes.length; i++) {
       if (routes[i].collapse) {
@@ -96,7 +96,7 @@ const Dashboard = (props) => {
         }
       } else {
         if (
-          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
+            window.location.href.split("http://localhost:3000")[1] === routes[i].layout + routes[i].path
         ) {
           return routes[i].name;
         }
@@ -176,7 +176,7 @@ const Dashboard = (props) => {
             <div className={classes.container}>
               <Switch>
                 {getRoutes(routes)}
-                <Redirect from="/admin" to="/admin/dashboard" />
+                <Redirect from="/admin" to="/admin/books" />
               </Switch>
             </div>
           </div>
@@ -184,7 +184,7 @@ const Dashboard = (props) => {
           <div className={classes.map}>
             <Switch>
               {getRoutes(routes)}
-              <Redirect from="/admin" to="/admin/dashboard" />
+              <Redirect from="/admin" to="/admin/books" />
             </Switch>
           </div>
         )}

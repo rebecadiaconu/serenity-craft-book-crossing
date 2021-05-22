@@ -100,7 +100,7 @@ class Sidebar extends Component {
 
   // verifies if routeName is the one active (in browser input)
   activeRoute = routeName => {
-    return window.location.href.indexOf(routeName) > -1 ? "active" : "";
+    return window.location.href.split("http://localhost:3000")[1] === routeName ? "active" : "";
   };
 
   openCollapse(collapse) {
@@ -117,7 +117,7 @@ class Sidebar extends Component {
         return null;
       }
 
-      if (!!prop.profile) return null;
+      if (!!prop.invisible) return null;
 
       if (!this.props.authenticated && prop.logged) return null;
 
@@ -214,7 +214,7 @@ class Sidebar extends Component {
         classes.collapseItemLink +
         " " +
         cx({
-          [" " + classes[color]]: this.activeRoute(prop.path)
+          [" " + classes[color]]: this.activeRoute(prop.layout + prop.path)
         });
 
       const collapseItemMini = classes.collapseItemMini;
@@ -222,7 +222,7 @@ class Sidebar extends Component {
         classes.itemLink +
         " " +
         cx({
-          [" " + classes[color]]: this.activeRoute(prop.path)
+          [" " + classes[color]]: this.activeRoute(prop.layout + prop.path)
         });
 
       const itemText =
@@ -329,7 +329,7 @@ class Sidebar extends Component {
         <List className={classes.list}>
           <ListItem className={classes.item + " " + classes.userItem}>
             <NavLink
-              to={"#"}
+              to={"/admin/user"}
               className={
                 classes.itemLink + " " + classes.userCollapseLinks
               }
@@ -337,22 +337,22 @@ class Sidebar extends Component {
             >
               <ListItemText
                 primary={this.props.user.username}
-                secondary={
-                  <b
-                    className={
-                      caret +
-                      " " +
-                      classes.userCaret +
-                      " " +
-                      (this.state.openAvatar ? classes.caretActive : "")
-                    }
-                  />
-                }
+                // secondary={
+                //   <b
+                //     className={
+                //       caret +
+                //       " " +
+                //       classes.userCaret +
+                //       " " +
+                //       (this.state.openAvatar ? classes.caretActive : "")
+                //     }
+                //   />
+                // }
                 disableTypography={true}
                 className={itemText + " " + classes.userItemText}
               />
             </NavLink>
-            <Collapse in={this.state.openAvatar} unmountOnExit>
+            {/* <Collapse in={this.state.openAvatar} unmountOnExit>
               <List className={classes.list + " " + classes.collapseList}>
               {
                 routes.map((route, index) => {
@@ -397,7 +397,7 @@ class Sidebar extends Component {
                 })
               }
               </List>
-            </Collapse>
+            </Collapse> */}
           </ListItem>
         </List>
       </div>

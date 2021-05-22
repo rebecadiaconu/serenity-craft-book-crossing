@@ -34,11 +34,13 @@ import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 
 // Components Serenity
+import UserPage from "./pages/User/UserPage";
 import UserAuthPage from "./pages/User/UserAuthPage";
 import AllBooks from "./pages/AllBooks";
 import Crossings from "./pages/Crossings/Crossings";
 
 // @material-ui/icons Serenity
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import ShareIcon from '@material-ui/icons/Share';
 
@@ -48,53 +50,43 @@ import ShareIcon from '@material-ui/icons/Share';
 
 const routes = [
   {
+    path: '/users/:username',
+    name: 'Serenity User',
+    icon: AccountBoxIcon,
+    component: UserPage,
+    layout: "/admin",
+    invisible:  true,
+    logged: false,
+    unauth: false 
+  },
+  {
     path: "/user",
     name: "My profile",
     icon: AccountBoxIcon,
     component: UserAuthPage,
     layout: "/admin",
-    profile: true,
+    invisible: true,
     logged: false,
     unauth: false 
   },
-  // {
-  //   path: "/edit",
-  //   name: "Edit profile",
-  //   icon: DashboardIcon,
-  //   component: EditDetails,
-  //   layout: "/admin",
-  //   profile: true,
-  //   logged: false,
-  //   unauth: false 
-  // },
-  // {
-  //   path: "/settings",
-  //   name: "Settings",
-  //   icon: DashboardIcon,
-  //   component: Settings,
-  //   layout: "/admin",
-  //   profile: true,
-  //   logged: false,
-  //   unauth: false 
-  // },
   {
-    path: "/books",
+    path: "/all-books",
     name: "All books",
     icon: DashboardIcon,
     component: AllBooks,
-    layout: "/admin",
+    layout: "/admin",    
     logged: false,
     unauth: false
   },
-  {
-    path: "/crossings",
-    name: "My crossings",
-    icon: ShareIcon,
-    component: Crossings,
-    layout: "/admin",
-    logged: true,
-    unauth: false
-  },
+  // {
+  //   path: "/crossings",
+  //   name: "My crossings",
+  //   icon: ShareIcon,
+  //   component: Crossings,
+  //   layout: "/admin",
+  //   logged: true,
+  //   unauth: false
+  // },
   {
     path: "/login-page",
     name: "Log in",

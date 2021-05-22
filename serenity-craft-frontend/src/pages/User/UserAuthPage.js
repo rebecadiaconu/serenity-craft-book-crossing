@@ -27,6 +27,8 @@ import Card from "components/Card/Card.js";
 import NavPills from "components/NavPills/NavPills.js";
 
 const UserAuthPage = () => {
+    const { credentials } = useSelector(state => state.user);
+
     return (
         <div>
             <GridContainer
@@ -35,7 +37,7 @@ const UserAuthPage = () => {
                 alignItems="center"
                 alignContent="center"
             >   
-                <UserCard />
+                <UserCard user={credentials} />
                 <GridItem xs={12} sm={12} md={8}>
                     <Card>
                         <CardBody>

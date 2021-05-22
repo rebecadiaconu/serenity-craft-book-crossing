@@ -32,6 +32,10 @@ const BookContainer = ({ book, carousel }) => {
     const classes = useStyles();
     const { authenticated, credentials } = useSelector((state) => state.user);
 
+    const handleViewClick = () => {
+        console.log('View book');
+    };
+
     return (
         <GridItem xs={12} sm={12} md={carousel ? 12 : 4}>
             <Card product className={classes.cardHover}>
@@ -47,6 +51,7 @@ const BookContainer = ({ book, carousel }) => {
                             title="View"
                             placement="bottom"
                             classes={{ tooltip: classes.tooltip }}
+                            onClick={handleViewClick}
                         >
                             <Button color="primary" simple justIcon>
                                 <ArtTrack className={classes.underChartIcons} />

@@ -575,6 +575,7 @@ exports.getUserDetails = (req, res) => {
                 publicationYear: doc.data().publicationYear,
                 createdAt: doc.data().createdAt,
                 owner: doc.data().owner,
+                coverImage: doc.data().coverImage,
                 ownerImage: doc.data().ownerImage,
                 numReviews: doc.data().numReviews,
                 numExchanges: doc.data().numExchanges,

@@ -1,10 +1,17 @@
+import { SwitchVideo } from "@material-ui/icons";
 import axios from "../../util/axios";
 import { Actions } from "../types";
+
+// BOOKS
 
 export const getAllBooks = () => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.get('/books')
     .then(({ data }) => {
+        dispatch({
+            type: Actions.BOOK.SET_ACTUAL,
+            payload: 'book'
+        });
         dispatch({ 
             type: Actions.BOOK.SET_INIT,
             payload: data 
@@ -180,3 +187,4 @@ export const setSearchValue = (data, books) => (dispatch) => {
     else dispatch({ type: Actions.BOOK.STOP_SEARCH });
     dispatch({ type: Actions.UI.STOP_LOADING_DATA });
 };
+ 

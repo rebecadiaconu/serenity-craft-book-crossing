@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createRef } from "react";
 import { defaultUserImage } from "util/general";
+// import defaultImage from "asstes/img/no-image.jpg";
 
 // Redux
 import { useSelector, useDispatch } from  "react-redux";
@@ -28,7 +29,6 @@ const UploadImage = ({ changeButtonProps, removeButtonProps }) => {
         event.preventDefault();
         let reader = new FileReader();
         let file = event.target.files[0];
-        console.log(file);
 
         reader.onloadend = () => {
             setFile(file);

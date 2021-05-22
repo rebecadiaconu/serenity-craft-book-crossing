@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { booksSort } from "../util/general";
+import { booksSort } from "util/general";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
-import { getAllBooks, setSearchValue } from "../redux/actions/booksActions";
-import { getFilterData } from "../util/general";
-import { Actions } from "../redux/types";
+import { getAllBooks, setSearchValue } from "redux/actions/bookActions";
+import { getFilterData } from "util/general";
+import { Actions } from "redux/types";
 
 // @material-ui components
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -20,7 +20,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 // core components
-import SelectInput from "../util/components/SelectInput";
+import SelectInput from "../util/components/SortInput";
 import FilterMenu from "../util/components/FilterMenu";
 import Button from "../components/CustomButtons/Button";
 import BookContainer from "../components serenity/Book/BookContainer";
@@ -30,9 +30,9 @@ import GridItem from "components/Grid/GridItem.js";
 
 const AllBooks = () => {
     const dispatch = useDispatch();
-    const { initBooks, books, filterApplied, searchValue } = useSelector((state) => state.books);
+    const { actual, initBooks, books, filterApplied, searchValue, searchApplied } = useSelector((state) => state.books);
     const { loading } = useSelector((state) => state.ui);
-    const booksPerPage = 12;
+    const booksPerPage = 9;
     const [index, setIndex] = useState(1);
     const [showedBooks, setShowed] = useState(Math.min(booksPerPage, books.length));
     const [filterData, setFilters] = useState({});
@@ -42,7 +42,7 @@ const AllBooks = () => {
     }, []);
 
     useEffect(() => {
-        setFilters(getFilterData(initBooks));
+        if (actual === 'book') setFilters(getFilterData(initBooks));
     }, [initBooks]);
 
     useEffect(() => {
@@ -67,7 +67,7 @@ const AllBooks = () => {
         <div>
             <GridContainer
                 justify="center"
-                alignItems="center"
+                alignContent="center"
                 alignItems="center"
                 direction="row"
                 style={{marginBottom: 15}}
@@ -109,14 +109,15 @@ const AllBooks = () => {
             </GridContainer> 
             <br />
             <GridContainer 
-                justify="space-between"
-                alignItems="center"
+                justify="flex-start"
                 direction="row"
+                alignContent="center"
+                alignItems="center"
             >
                 {
                     books.length === 0 ? 
                     (
-                        filterApplied ?
+                        (filterApplied || searchApplied) ?
                         <h2 style={{margin: '0 auto'}}>No book found by your custom search...</h2> : 
                         <h2 style={{margin: '0 auto'}}>No books added yet...</h2>
                     ) : (
