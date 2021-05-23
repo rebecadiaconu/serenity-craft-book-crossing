@@ -10,11 +10,8 @@ import { allGenres } from "util/general";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
-import CardBody from "components/Card/CardBody.js";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
 import UploadImage from "components serenity/User/UploadImage";
-import ImageUpload from "components/CustomUpload/ImageUpload.js";
+
 
 // @material-ui core
 import Chip from '@material-ui/core/Chip';
@@ -32,10 +29,8 @@ import { IconButton } from '@material-ui/core';
 import { makeStyles } from "@material-ui/styles";
 
 // @material-ui/icons
-import EditIcon from '@material-ui/icons/Edit';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
-import AnnouncementIcon from '@material-ui/icons/Announcement';
 import TextsmsIcon from '@material-ui/icons/Textsms';
 
 // Styles

@@ -111,7 +111,7 @@ exports.validateBookData = (data) => {
     if (isEmpty(data.publisher)) errors.publisher = 'Must not be empty!';
     else if (data.publisher.trim().length < 2) errors.publisher = 'Must be at least 2 characters long!';
 
-    if (typeof(data.numPages) !== 'number') errors.numPages = 'Must be a number!';
+    if (!!data.numPages !== true) errors.numPages = 'Must not be empty!';
     else if (data.numPages === 0) errors.numPages = 'Must not be zero!';
     else if (data.numPages < 0) errors.numPages = 'Must be greater than zero!';
 
@@ -120,31 +120,35 @@ exports.validateBookData = (data) => {
     if (isEmpty(data.language)) errors.language = 'Must not be empty!';
     else if (data.language.trim().length < 2) errors.language = 'Must be at least 2 characters long!';
 
-    if (data.hasOwnProperty('ownerRating')) {
+    if (!!data.ownerRating) {
         if (typeof(data.ownerRating) !== 'number') errors.ownerRating = 'Must be a number!';
         else if (data.ownerRating < 0 ) errors.ownerRating = 'Must be greater than 0!';
         else if (data.ownerRating > 5) errors.ownerRating = 'Must be less than 5!';
     }
 
-    if (typeof(data.bookQuality) !== 'number') errors.bookQuality = 'Must be a number!';
-    else if (data.bookQuality < 0 ) errors.bookQuality = 'Must be greater than 0!';
-    else if (data.bookQuality > 10) errors.bookQuality = 'Must be less than 10!';
+    if (!!data.bookQuality) {
+        if (data.bookQuality < 0 ) errors.bookQuality = 'Must be greater than 0!';
+        else if (data.bookQuality > 10) errors.bookQuality = 'Must be less than 10!';
+    
+    }
 
-    if (data.hasOwnProperty('publicationYear')) {
+    if (!!data.publicationYear) {
         if (typeof(data.publicationYear) !== 'number') errors.publicationYear = 'Must be a number!';
         else if (data.publicationYear < 0 ) errors.publicationYear = 'Must be greater than 0!';
         else if (data.publicationYear > new Date().getFullYear()) errors.publicationYear = 'Must be a valid year!';
     }
 
-    if (data.hasOwnProperty('summary')) {
+    if (!!data.summary) {
         if (isEmpty(data.summary)) errors.summary = 'Must not be empty!';
         else if (data.summary.length > 400 ) errors.summary = 'Maximum length reached!';
     }
 
-    if (data.hasOwnProperty('ownerReview')) {
+    if (!!data.ownerReview) {
         if (isEmpty(data.ownerReview)) errors.ownerReview = 'Must not be empty!';
         else if (data.ownerReview.length > 500 ) errors.ownerReview = 'Maximum length reached!';
     }
+
+    if (!!data.ownerReview && !(!!data.ownerRating)) errors.ownerRating = "Your review is incomplete!";
 
     return {
         errors,

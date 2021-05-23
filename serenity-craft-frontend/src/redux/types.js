@@ -34,6 +34,7 @@ export const Actions = {
         SET_SEARCH_DATA: "BOOK.SET_SEARCH_DATA",
         STOP_SEARCH: "BOOK.STOP_SEARCH",
         SET_ACTUAL: "BOOK.SET_ACTUAL",
-        SET_BOOK: "BOOK.SET_BOOK"
+        SET_BOOK: "BOOK.SET_BOOK",
+        DELETE_BOOK: "BOOK.DELETE_BOOK"
     }
 };

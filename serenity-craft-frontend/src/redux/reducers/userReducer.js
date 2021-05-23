@@ -13,7 +13,10 @@ const initialState = {
 const UserReducer = (state = initialState, action) => {
     switch(action.type) {
         case Actions.USER.SET_UNAUTHENTICATED:
-            return initialState;
+            return {
+              ...initialState,
+              authenticated: !!localStorage.getItem('idToken')
+            }
         case Actions.USER.SET_USER:
             return {
               authenticated: true,

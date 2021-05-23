@@ -14,25 +14,30 @@ import Textfield from "@material-ui/core/Textfield";
 import Icon from "@material-ui/core/Icon";
 
 // @material-ui/icons
+import AddIcon from '@material-ui/icons/Add';
 import Search from "@material-ui/icons/Search";
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 // core components
+import AddBook from "components serenity/Book/AddBook";
 import SelectInput from "../util/components/SortInput";
 import FilterMenu from "../util/components/FilterMenu";
 import Button from "../components/CustomButtons/Button";
 import BookContainer from "../components serenity/Book/BookContainer";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
+import { Tooltip } from "@material-ui/core";
 
 
 const AllBooks = () => {
     const dispatch = useDispatch();
     const { actual, initBooks, books, filterApplied, searchValue, searchApplied } = useSelector((state) => state.books);
     const { loading } = useSelector((state) => state.ui);
+    const { authenticated } = useSelector((state) => state.user);
     const booksPerPage = 9;
+    const [open, setOpen] = useState(false);
     const [index, setIndex] = useState(1);
     const [showedBooks, setShowed] = useState(Math.min(booksPerPage, books.length));
     const [filterData, setFilters] = useState({});
@@ -63,6 +68,10 @@ const AllBooks = () => {
         dispatch({ type: Actions.BOOK.REFRESH_FILTER });
     };
 
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
         <div>
             <GridContainer
@@ -72,6 +81,9 @@ const AllBooks = () => {
                 direction="row"
                 style={{marginBottom: 15}}
             >
+                {
+                    open && <AddBook open={open} handleClose={handleClose} />
+                }
                 <GridItem xs={12} sm={12} md={4}>
                     <Textfield
                         id="book-search"
@@ -97,16 +109,37 @@ const AllBooks = () => {
                         )
                     })
                 }
-                <Button 
-                    style={{margin: '0 auto', display: "flex"}}
-                    disabled={loading || !filterApplied}
-                    color="rose"
-                    onClick={handleRefresh}
-                >
-                    <RefreshIcon />
-                    <span>Refresh filters</span>
-                </Button>
             </GridContainer> 
+            <GridContainer justify="flex-end" style={{position: 'relative'}}>
+                <GridItem xs={12} sm={12} md={12}>
+                    <Button 
+                        style={{margin: '0 auto', display: "flex"}}
+                        disabled={loading || !filterApplied}
+                        color="rose"
+                        onClick={handleRefresh}
+                    >
+                        <RefreshIcon />
+                        <span>Refresh filters</span>
+                    </Button>
+                </GridItem>
+                <GridItem>
+                {
+                    authenticated && (
+                        <Tooltip title="Add new book">
+                            <Button
+                                style={{position: 'absolute', right: 10, top: 0}}
+                                round
+                                color="rose"
+                                justIcon
+                                onClick={() => setOpen(true)}
+                            >
+                                <AddIcon />
+                            </Button>
+                        </Tooltip>
+                    )
+                }
+                </GridItem>
+            </GridContainer>
             <br />
             <GridContainer 
                 justify="flex-start"

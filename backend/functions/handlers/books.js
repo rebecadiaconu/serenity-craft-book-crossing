@@ -242,7 +242,6 @@ exports.deleteBook = (req, res) => {
             });
         })
         .then(() => {
-            console.log("COMMIT!");
             return batch.commit();
         })
         .then(() => {

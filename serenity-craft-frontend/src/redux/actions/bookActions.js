@@ -1,6 +1,6 @@
-import { SwitchVideo } from "@material-ui/icons";
 import axios from "../../util/axios";
 import { Actions } from "../types";
+import history from "util/history";
 
 // BOOKS
 
@@ -47,6 +47,51 @@ export const getBook = (bookId) => (dispatch) => {
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
+
+
+export const deleteBook = (bookId) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.delete(`/books/${bookId}`)
+    .then(({ data }) => {
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(getAllBooks());
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS, 
+            payload: err.response.data 
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    });
+};
+
+
+export const addBook = (formData) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post('/book', formData)
+    .then(({ data }) => {
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({
+            type: Actions.BOOK.SET_BOOK,
+            payload: data
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        history.push(`/admin/books/${data.bookId}`);
+    })
+    .catch((err) => {
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS, 
+            payload: err.response.data 
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    });
+};
+
 
 export const sortBooks = (value, books) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });

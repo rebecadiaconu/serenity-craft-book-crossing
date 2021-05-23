@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, NavLink } from "react-router-dom";
+import SweetAlert from "react-bootstrap-sweetalert";
+import history from "util/history";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
-import { getBook } from "redux/actions/bookActions";
+import { getBook, deleteBook } from "redux/actions/bookActions";
 
 // Components
+import ReviewContainer from "components serenity/Book/ReviewContainer";
 import ReviewCard from "components serenity/Book/ReviewCard";
 import Card from 'components/Card/Card';
 import Button from "components/CustomButtons/Button.js";
@@ -15,7 +18,8 @@ import CardFooter from 'components/Card/CardFooter';
 import Accordion from "components/Accordion/Accordion";
 import GridContainer from 'components/Grid/GridContainer';
 import GridItem from 'components/Grid/GridItem';
-import { Divider, List, ListItem, makeStyles, Tooltip, Typography } from '@material-ui/core';
+import CardHeader from 'components/Card/CardHeader';
+import { List, ListItem, makeStyles, Tooltip, Typography } from '@material-ui/core';
 
 // @material-ui icons
 import Edit from "@material-ui/icons/Edit";
@@ -25,13 +29,13 @@ import GradeIcon from '@material-ui/icons/Grade';
 import GradeOutlinedIcon from '@material-ui/icons/GradeOutlined';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 
-// @material-ui components
-
 // Styles
 import styles from "assets/jss/serenity-craft/components/bookStyle";
-import CardHeader from 'components/Card/CardHeader';
+import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
+import { Actions } from 'redux/types';
 
 const useStyles = makeStyles(styles);
+const useAlert = makeStyles(alertStyles);
 
 const Details = ({ numPages, language, publisher, bookQuality, publicationYear, ownerRating }) => {
     return (
@@ -107,18 +111,94 @@ const OwnerReview = ({ content, owner, ownerImage }) => {
 };
 
 const BookPage = () => {
+    const alertClasses = useAlert();
     const classes = useStyles();
     const dispatch = useDispatch();
     const { bookId } = useParams();
     const { book } = useSelector((state) => state.books);
     const { credentials } = useSelector((state) => state.user);
+    const { message, errors } = useSelector((state) => state.ui);
+    const [alert, setAlert] = useState(null);
 
     useEffect(() => {
         dispatch(getBook(bookId));
+        return () => dispatch({ type: Actions.UI.CLEAR_ACTION });
     }, []);
+
+    useEffect(() => {
+        if (message) successDelete();
+    }, [message]);
+
+    useEffect(() => {
+        if (errors?.error) errorDelete(errors.error);
+    }, [errors])
+
+    const handleDelete = () => {
+        dispatch(deleteBook(bookId));
+    }
+
+    const successDelete = () => {
+        setAlert(
+            <SweetAlert
+                success
+                style={{ display: "block", marginTop: "-100px" }}
+                title="Deleted!"
+                onConfirm={() => {
+                    hideAlert();
+                    history.push("/");
+                }}
+                onCancel={() => hideAlert()}
+                confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
+            >
+                Your book has been deleted.
+            </SweetAlert>
+        );
+    };
+
+    const errorDelete = (error) => {
+        setAlert(
+            <SweetAlert
+                danger
+                style={{ display: "block", marginTop: "-100px" }}
+                title="Error"
+                onConfirm={() => {
+                    hideAlert();
+                }}
+                onCancel={() => hideAlert()}
+                confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
+            >
+                {error}
+            </SweetAlert>
+        );
+    };
+    
+    const hideAlert = () => {
+        setAlert(null);
+    };
+    
+
+    const confirmDelete = () => {
+        setAlert(
+            <SweetAlert
+                warning
+                style={{ display: "block", marginTop: "-100px" }}
+                title="Are you sure?"
+                onConfirm={() => handleDelete()}
+                onCancel={() => hideAlert()}
+                confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
+                cancelBtnCssClass={alertClasses.button + " " + alertClasses.danger}
+                confirmBtnText="Yes, delete it!"
+                cancelBtnText="Cancel"
+                showCancel
+            >
+                You will not be able to recover this book and the rest of the data associate with it!
+            </SweetAlert>
+        );
+    };
 
     return (
         <GridContainer className={classes.root}>
+            {alert}
             <GridItem xs={12} sm={12} md={12}>
                 <Card testimonial>
                     <GridContainer
@@ -215,41 +295,29 @@ const BookPage = () => {
                             )
                         }
                         {
-                            book.ownerReview && (
-                                <OwnerReview rating={book.ownerRating ?? null} content={book.ownerReview ?? ""} owner={book.owner} ownerImage={book.ownerImage} />
-                            ) 
+                            book.ownerReview ? (
+                                <OwnerReview content={book.ownerReview ?? ""} owner={book.owner} ownerImage={book.ownerImage} />
+                            ) : (
+                                <OwnerReview content="Added by" owner={book.owner} ownerImage={book.ownerImage} />
+                            )
                         }
                         </GridItem>
                     </GridContainer>
                     {
-                        (credentials.username === book.owner) && (
+                        (book.owner === credentials.username) && (
                             <div className={classes.actions}>
                                 <Tooltip title="Edit" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
                                     <Button color="success" simple justIcon><Edit /></Button>
                                 </Tooltip>
                                 <Tooltip title="Delete" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
-                                    <Button color="danger" simple justIcon><HighlightOffIcon /></Button>
+                                    <Button color="danger" simple justIcon onClick={confirmDelete}><HighlightOffIcon /></Button>
                                 </Tooltip>
                             </div>
                         )
                     }
                 </Card>
             </GridItem> 
-            <GridItem xs={12} sm={12} md={12}>
-                <Card>
-                {/* <Tooltip
-                            id="tooltip-top"
-                            title="Add review"
-                            placement="bottom"
-                            classes={{ tooltip: classes.tooltip }}
-                        >
-                            <Button color="rose" simple justIcon>
-                                <CommentIcon className={classes.underChartIcons} />
-                            </Button>
-                        </Tooltip> */}
-                    <h2>Book reviews...</h2>
-                </Card>
-            </GridItem>
+            <ReviewContainer classes={classes} />
         </GridContainer>
     )
 }

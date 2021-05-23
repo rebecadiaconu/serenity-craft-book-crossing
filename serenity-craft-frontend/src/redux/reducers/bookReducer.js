@@ -74,6 +74,11 @@ const BookReducer = (state = initialState, action) => {
                 ...state,
                 book: action.payload
             }
+        case Actions.BOOK.DELETE_BOOK: 
+            return {
+                ...state,
+                book: {}
+            }
         default:
             return state;
     }

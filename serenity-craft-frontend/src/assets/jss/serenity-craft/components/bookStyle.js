@@ -15,18 +15,38 @@ const bookStyle = {
     details: {
         textAlign: 'none'
     },
+    left: {
+        textAlign: 'left'
+    },
+    reviewContainer: {
+        maxHeight: 600,
+        minHeight: 150
+    },
+    userImage: {
+        margin: 10
+    },
+    review: {
+        width: '95%',
+        padding: '10px 0',
+        maxHeight: 150,
+        margin: '0 auto',
+        position: 'relative'
+    },
     rating: {
         margin: '0 auto',
         textAlign: "center"
+    },
+    message: {
+        margin: '0 auto',
+        textAlign: "center",
+        marginTop: "50px"
     },
     ratingIcon: {
         color: warningColor[0]
     },
     coverContainer: {
         display: 'flex',
-        margin: '0 auto',
-        marginTop: 15,
-        marginBottom: 15
+        margin: '0 auto'
     },
     coverImage: {
         height: 600,
