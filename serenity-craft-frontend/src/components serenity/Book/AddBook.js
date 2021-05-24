@@ -44,7 +44,7 @@ const AddBook = ({ open, handleClose }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
-    const { errors, message } = useSelector((state) => state.ui);
+    const { errors } = useSelector((state) => state.ui);
     const [ genres, setGenres ] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
 

@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 // Components
-import ReviewCard from "components serenity/Book/ReviewCard";
+import ReviewCard from "./ReviewCard";
 import Card from 'components/Card/Card';
 import GridItem from 'components/Grid/GridItem';
 import NavPills from 'components/NavPills/NavPills';

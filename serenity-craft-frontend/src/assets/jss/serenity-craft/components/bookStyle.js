@@ -44,6 +44,33 @@ const bookStyle = {
     ratingIcon: {
         color: warningColor[0]
     },
+    reviewRightButton: {
+        position: 'absolute',
+        left: 10,
+        visibility: 'hidden',
+        transition: "all 100ms ease 0s"
+    },
+    reviewLeftButton: {
+        position: 'absolute',
+        right: 10,
+        visibility: 'hidden',
+        transition: "all 100ms ease 0s"
+    },
+    reviewWrapper: {
+        position: 'relative',
+        "&:hover": {
+            "& $reviewRightButton": {
+                transition: "all 100ms ease 0s",
+                left: -30,
+                visibility: 'visible'
+            },
+            "& $reviewLeftButton": {
+                transition: "all 100ms ease 0s",
+                right: -30,
+                visibility: 'visible'
+            }
+        }
+    },
     coverContainer: {
         display: 'flex',
         margin: '0 auto'
@@ -53,7 +80,7 @@ const bookStyle = {
         width: 350,
         objectFit: "cover",
         margin: '0 auto',
-        borderRadius: 30
+        borderRadius: 15
     },
     special: {
         marginTop: 20,

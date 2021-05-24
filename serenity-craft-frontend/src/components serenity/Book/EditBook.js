@@ -2,11 +2,11 @@ import React, { useState, forwardRef, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import featherLogo from "assets/img/feather-logo.png";
 import { allGenres } from "util/general";
-import { useParams } from "react-router-dom";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux"; 
 import { editBook } from "redux/actions/bookActions";
+import { Actions } from 'redux/types';
 
 // @material-ui core
 import Chip from '@material-ui/core/Chip';
@@ -34,24 +34,48 @@ import Button from "components/CustomButtons/Button";
 
 // Styles
 import styles from "assets/jss/serenity-craft/components/addForm"
-import { Actions } from 'redux/types';
+import UploadImage from 'util/components/UploadImage';
 const useStyles = makeStyles(styles);
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
   });
 
-const EditBook = ({ open, handleClose }) => {
+const EditBook = ({ open }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
     const { errors, message } = useSelector((state) => state.ui);
-    const [ genres, setGenres ] = useState([]);
+    const { book } = useSelector((state) => state.books);
+    const [ genres, setGenres ] = useState(book.genres);
+    const [dialog, setDialog] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
-        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        setDialog(true);
+
+        return () => {
+            dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        }
     }, [])
+
+    useEffect(() => {
+        if (dialog) {
+            setValue('title', book.title);
+            setValue('author', book.author);
+            setValue('publisher', book.publisher);
+            setValue('language', book.language);
+            setValue('numPages', book.numPages);
+            setValue('genres', book.genres);
+            if (!!book?.publicationYear) setValue('publicationYear', book.publicationYear);
+            if (!!book?.summary) setValue('summary', book.summary);
+            if (!!book?.bookQuality) setValue('bookQuality', book.bookQuality);
+            if (!!book?.ownerRating) setValue('ownerRating', book.ownerRating);
+            if (!!book?.ownerReview) setValue('ownerReview', book.ownerReview);
+
+        }
+        
+    }, [dialog]);
 
     useEffect(() => {
         setValue('genres', genres);
@@ -73,6 +97,10 @@ const EditBook = ({ open, handleClose }) => {
         setGenres(newChecked);
     };
 
+    const handleClose = () => {
+        dispatch({ type: Actions.BOOK.STOP_EDIT });
+    };
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -90,7 +118,12 @@ const EditBook = ({ open, handleClose }) => {
             ownerRating: parseInt(formData.ownerRating),
             genres: genres
         };
-        dispatch(addBook(bookData));
+        if (bookData.ownerRating === book.ownerRating && bookData.ownerReview === book.ownerReview) {
+            delete bookData.ownerReview;
+            delete bookData.ownerRating;
+        }
+
+        dispatch(editBook(bookData, book.bookId));
     };
 
     return (
@@ -107,17 +140,14 @@ const EditBook = ({ open, handleClose }) => {
                 justify="center"
                 alignItems="flex-start"
                 alignContent="center"
-                style={{width: '95%', position: 'relative', marginLeft: 10, width: 900}}
+                style={{width: '95%', position: 'relative', marginLeft: 10}}
             >
                 <GridItem xs={2} sm={2} md={2}>
                     <img src={featherLogo} className={classes.logo} />
                 </GridItem>
                 <GridItem xs={10} sm={10} md={10}>
                     <Typography variant="h2" className={classes.header}>
-                    Add a new book to Serenity
-                    </Typography>
-                    <Typography variant="h4" className={classes.header}>
-                    Make people happy by sharing your books!
+                    Edit "{book.title}"
                     </Typography>
                 </GridItem>           
                 <GridItem xs={12} sm={12} md={6} style={{marginTop: 30, position: 'relative'}}>
@@ -282,6 +312,7 @@ const EditBook = ({ open, handleClose }) => {
                         className={classes.textField} 
                         variant="outlined"
                         name="summary" 
+                        type="text"
                         multiline
                         rows={4}
                         label="Book's summary" 
@@ -291,7 +322,20 @@ const EditBook = ({ open, handleClose }) => {
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
                     />
-                    <TextField 
+                    <UploadImage 
+                        changeButtonProps={{
+                            color: "info",
+                            round: true,
+                            className: classes.submitButton
+                        }}
+                        removeButtonProps={{
+                            color: "danger",
+                            round: true,
+                            className: classes.submitButton
+                        }}  
+                        bookCover
+                    />
+                    {/* <TextField 
                         className={classes.textField} 
                         variant="outlined"
                         name="ownerRating" 
@@ -308,6 +352,7 @@ const EditBook = ({ open, handleClose }) => {
                         className={classes.textField} 
                         variant="outlined"
                         name="ownerReview" 
+                        type="text"
                         multiline
                         rows={4}
                         label="Your review" 
@@ -316,14 +361,14 @@ const EditBook = ({ open, handleClose }) => {
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
-                    />
+                    /> */}
                 </GridItem>
                 <Button 
                     color="rose"
                     onClick={handleSubmit(onSubmit)}
                     className={classes.submitButton}
                 >
-                    ADD BOOK
+                    UPDATE DETAILS
                 </Button>
             </GridContainer> 
         </Dialog>

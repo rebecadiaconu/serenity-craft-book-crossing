@@ -15,10 +15,11 @@ const initialState = {
     },
     searchApplied: false,
     searchValue: '',
-    actual: '', // book/user/auth
+    actual: '', // book | user | auth
     book: {},
     justAdded: false,
-    edit: false
+    edit: false,
+    deleteBookNow: false
 };
 
 const BookReducer = (state = initialState, action) => {
@@ -90,6 +91,26 @@ const BookReducer = (state = initialState, action) => {
             return {
                 ...state,
                 justAdded: false
+            }
+        case Actions.BOOK.DELETE:
+            return {
+                ...state,
+                deleteBookNow: true
+            }
+        case Actions.BOOK.STOP_DELETE:
+            return {
+                ...state,
+                deleteBookNow: false
+            }
+        case Actions.BOOK.EDIT:
+            return {
+                ...state,
+                edit: true
+            }
+        case Actions.BOOK.STOP_EDIT:
+            return {
+                ...state,
+                edit: false
             }
         default:
             return state;

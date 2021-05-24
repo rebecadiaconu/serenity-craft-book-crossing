@@ -104,7 +104,8 @@ exports.addBook = (req, res) => {
                 if (req.body.hasOwnProperty("ownerRating")) reviewData.rating = req.body.ownerRating;
 
                 return db.collection('reviews').add(reviewData)
-                .then(() => {
+                .then((doc) => {
+                    resBook.ownerReviewId = doc.id;
                     return res.json(resBook);
                 });
             } else {

@@ -99,6 +99,10 @@ export const changeCoverImage = (formData, bookId, justAdded) => (dispatch) => {
 
     axios.post(`/book/${bookId}/cover`, formData)
     .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
         dispatch(getBook(bookId));
         if (justAdded) dispatch({ type: Actions.BOOK.DONE_ADDED });
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
@@ -113,8 +117,26 @@ export const changeCoverImage = (formData, bookId, justAdded) => (dispatch) => {
     });
 };
 
-export const editBook = (formData) => (dispatch) => {
-
+export const editBook = (formData, bookId) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post(`/books/${bookId}`, formData)
+    .then(({ data }) =>{
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(getBook(bookId));
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.BOOK.STOP_EDIT });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
 };
 
 

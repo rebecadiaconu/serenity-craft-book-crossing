@@ -8,9 +8,9 @@ import {
 const addForm = {
     tooltip,
     header: {
-        margin: '5px 0',
+        margin: '15px 0',
         fontFamily: "'Sacramento', cursive",
-        textAlign: "left",
+        textAlign: "center",
     },
     logo: {
         position: 'absolute',

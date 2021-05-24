@@ -10,7 +10,7 @@ import { allGenres } from "util/general";
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "components/CustomButtons/Button.js";
-import UploadImage from "components serenity/User/UploadImage";
+import UploadImage from "util/components/UploadImage";
 
 
 // @material-ui core
