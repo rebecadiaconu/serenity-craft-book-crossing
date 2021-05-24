@@ -16,7 +16,9 @@ const initialState = {
     searchApplied: false,
     searchValue: '',
     actual: '', // book/user/auth
-    book: {}
+    book: {},
+    justAdded: false,
+    edit: false
 };
 
 const BookReducer = (state = initialState, action) => {
@@ -78,6 +80,16 @@ const BookReducer = (state = initialState, action) => {
             return {
                 ...state,
                 book: {}
+            }
+        case Actions.BOOK.ADD_BOOK:
+            return {
+                ...state,
+                justAdded: true
+            }
+        case Actions.BOOK.DONE_ADDED:
+            return {
+                ...state,
+                justAdded: false
             }
         default:
             return state;

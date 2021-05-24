@@ -1,8 +1,8 @@
 import axios from "../../util/axios";
 import { Actions } from "../types";
 import history from "util/history";
+import { getUserData } from "./userActions";
 
-// BOOKS
 
 export const getAllBooks = () => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
@@ -27,6 +27,7 @@ export const getAllBooks = () => (dispatch) => {
         });
     });
 };
+
 
 export const getBook = (bookId) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
@@ -81,6 +82,7 @@ export const addBook = (formData) => (dispatch) => {
             payload: data
         });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ type: Actions.BOOK.ADD_BOOK });
         history.push(`/admin/books/${data.bookId}`);
     })
     .catch((err) => {
@@ -90,6 +92,29 @@ export const addBook = (formData) => (dispatch) => {
         });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
+};
+
+export const changeCoverImage = (formData, bookId, justAdded) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+
+    axios.post(`/book/${bookId}/cover`, formData)
+    .then(({ data }) => {
+        dispatch(getBook(bookId));
+        if (justAdded) dispatch({ type: Actions.BOOK.DONE_ADDED });
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
+export const editBook = (formData) => (dispatch) => {
+
 };
 
 
@@ -143,6 +168,7 @@ export const sortBooks = (value, books) => (dispatch) => {
     dispatch({ type: Actions.UI.STOP_LOADING_DATA });
 };  
 
+
 export const getFilterBooks = (books, filterData) => {
     let newBooks = [...books];
 
@@ -183,6 +209,7 @@ export const getFilterBooks = (books, filterData) => {
 
     return newBooks;
 };
+
 
 export const setFilterData = (books, data, type, filterData) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
@@ -228,6 +255,7 @@ export const setFilterData = (books, data, type, filterData) => (dispatch) => {
 
     dispatch({ type: Actions.UI.STOP_LOADING_DATA });
 };
+
 
 export const setSearchValue = (data, books) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });

@@ -36,7 +36,6 @@ import TextsmsIcon from '@material-ui/icons/Textsms';
 // Styles
 import styles from "assets/jss/serenity-craft/components/editProfile";
 
-
 const useStyles = makeStyles(styles);
 
 const EditProfile = () => {

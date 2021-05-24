@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { useParams, NavLink } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import history from "util/history";
+import featherLogo from "assets/img/feather-logo.png";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { getBook, deleteBook } from "redux/actions/bookActions";
+import { Actions } from 'redux/types';
 
 // Components
+import UploadImage from 'components serenity/User/UploadImage';
 import ReviewContainer from "components serenity/Book/ReviewContainer";
-import ReviewCard from "components serenity/Book/ReviewCard";
 import Card from 'components/Card/Card';
 import Button from "components/CustomButtons/Button.js";
 import CardAvatar from 'components/Card/CardAvatar';
@@ -18,7 +20,9 @@ import CardFooter from 'components/Card/CardFooter';
 import Accordion from "components/Accordion/Accordion";
 import GridContainer from 'components/Grid/GridContainer';
 import GridItem from 'components/Grid/GridItem';
+import Slide from "@material-ui/core/Slide";
 import CardHeader from 'components/Card/CardHeader';
+import Dialog from "@material-ui/core/Dialog";
 import { List, ListItem, makeStyles, Tooltip, Typography } from '@material-ui/core';
 
 // @material-ui icons
@@ -32,10 +36,15 @@ import StarHalfIcon from '@material-ui/icons/StarHalf';
 // Styles
 import styles from "assets/jss/serenity-craft/components/bookStyle";
 import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
-import { Actions } from 'redux/types';
+import upload from "assets/jss/serenity-craft/components/editProfile";
+import formStyles from "assets/jss/serenity-craft/components/addForm"
 
 const useStyles = makeStyles(styles);
 const useAlert = makeStyles(alertStyles);
+const uploadStyles = makeStyles({
+    ...upload,
+    ...formStyles
+});
 
 const Details = ({ numPages, language, publisher, bookQuality, publicationYear, ownerRating }) => {
     return (
@@ -110,12 +119,62 @@ const OwnerReview = ({ content, owner, ownerImage }) => {
     )
 };
 
+const Transition = forwardRef(function Transition(props, ref) {
+    return <Slide direction="down" ref={ref} {...props} />;
+});
+
+const UploadOnJustAdded = ({ justAdded, handleClose }) => {
+    const classes = uploadStyles();
+    return (
+        <Dialog
+            fullWidth={false}
+            maxWidth="sm"
+            open={justAdded}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleClose}
+        >
+            <GridContainer
+                display="flex"
+                justify="center"
+                alignItems="center"
+                alignContent="center"
+                style={{width: '95%', position: 'relative', marginLeft: 10, height: 800}}
+            >
+                <GridItem xs={2} sm={2} md={2}>
+                    <img src={featherLogo} className={classes.logo} />
+                </GridItem>
+                <GridItem xs={10} sm={10} md={6}>
+                    <Typography variant="h4" className={classes.header}>
+                        Upload a cover image for you book to make it more atractive!
+                    </Typography>
+                </GridItem>   
+                <GridItem xs={12} sm={12} md={6} style={{marginTop: 30, position: 'relative'}}>
+                    <UploadImage 
+                        changeButtonProps={{
+                            color: "info",
+                            round: true,
+                            className: classes.submitButton
+                        }}
+                        removeButtonProps={{
+                            color: "danger",
+                            round: true,
+                            className: classes.submitButton
+                        }}  
+                        bookCover
+                    />
+                </GridItem>        
+            </GridContainer>
+        </Dialog>
+    );
+};
+
 const BookPage = () => {
     const alertClasses = useAlert();
     const classes = useStyles();
     const dispatch = useDispatch();
     const { bookId } = useParams();
-    const { book } = useSelector((state) => state.books);
+    const { book, justAdded } = useSelector((state) => state.books);
     const { credentials } = useSelector((state) => state.user);
     const { message, errors } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
@@ -136,6 +195,10 @@ const BookPage = () => {
     const handleDelete = () => {
         dispatch(deleteBook(bookId));
     }
+
+    const handleJustAdded = (event) => {
+        dispatch({ type: Actions.BOOK.DONE_ADDED });
+    };
 
     const successDelete = () => {
         setAlert(
@@ -199,6 +262,7 @@ const BookPage = () => {
     return (
         <GridContainer className={classes.root}>
             {alert}
+            <UploadOnJustAdded justAdded={justAdded} handleClose={handleJustAdded} />
             <GridItem xs={12} sm={12} md={12}>
                 <Card testimonial>
                     <GridContainer

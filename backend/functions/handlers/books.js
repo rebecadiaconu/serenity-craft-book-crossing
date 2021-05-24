@@ -53,17 +53,17 @@ exports.addBook = (req, res) => {
         inAuction: false
     }
 
-    if (req.body.hasOwnProperty("publicationYear")) newBook.publicationYear = req.body.publicationYear;
+    if (req.body.publicationYear) newBook.publicationYear = req.body.publicationYear;
 
-    if (req.body.hasOwnProperty("summary")) newBook.summary = req.body.summary.trim();
+    if (req.body.summary) newBook.summary = req.body.summary.trim();
 
-    if (req.body.hasOwnProperty("ownerReview")) {
+    if (req.body.ownerReview) {
         hasReview = true;
         newBook.numReviews = 1;
         newBook.ownerReview = req.body.ownerReview.trim();
     }
 
-    if (req.body.hasOwnProperty("ownerRating")) {
+    if (req.body.ownerRating) {
         hasReview = true;
         newBook.numReviews = 1;
         newBook.averageRating = req.body.ownerRating;

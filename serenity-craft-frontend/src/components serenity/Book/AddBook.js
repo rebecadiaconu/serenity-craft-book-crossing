@@ -1,11 +1,12 @@
 import React, { useState, forwardRef, useEffect } from 'react';
-import { useForm } from "react-hook-form";
 import featherLogo from "assets/img/feather-logo.png";
+import { useForm } from "react-hook-form";
 import { allGenres } from "util/general";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux"; 
 import { addBook } from "redux/actions/bookActions";
+import { Actions } from 'redux/types';
 
 // @material-ui core
 import Chip from '@material-ui/core/Chip';
@@ -33,12 +34,11 @@ import Button from "components/CustomButtons/Button";
 
 // Styles
 import styles from "assets/jss/serenity-craft/components/addForm"
-import { Actions } from 'redux/types';
 const useStyles = makeStyles(styles);
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
-  });
+});
 
 const AddBook = ({ open, handleClose }) => {
     const classes = useStyles();

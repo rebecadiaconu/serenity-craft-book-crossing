@@ -1,28 +1,31 @@
 import React, { useState, useEffect, createRef } from "react";
-import { defaultUserImage } from "util/general";
+import { defaultUserImage, defaultBookImage } from "util/general";
 // import defaultImage from "asstes/img/no-image.jpg";
 
 // Redux
 import { useSelector, useDispatch } from  "react-redux";
 import { changeImage } from '../../redux/actions/userActions';
+import { changeCoverImage } from '../../redux/actions/bookActions';
 
 // components
 import Button from "components/CustomButtons/Button.js";
+import { Actions } from "redux/types";
 
 // Styles
 
-const UploadImage = ({ changeButtonProps, removeButtonProps }) => {
+const UploadImage = ({ changeButtonProps, removeButtonProps, bookCover }) => {
     const dispatch = useDispatch();
     const { credentials } = useSelector((state) => state.user);
+    const { book, justAdded } = useSelector((state) => state.books);
     const [file, setFile] = useState(null);
     const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
     const [noImage, setNoImage] = useState(false);
     let fileInput = createRef();
 
     useEffect(() => {
-        setFile(credentials.imageUrl);
-        setImagePreviewUrl(credentials.imageUrl);
-        setNoImage(credentials.imageUrl === defaultUserImage);
+        setFile();
+        setImagePreviewUrl(bookCover ? book.coverImage : credentials.imageUrl);
+        setNoImage(bookCover ? book.coverImage === defaultBookImage : credentials.imageUrl === defaultUserImage);
     }, [credentials]);
 
     const handleImageChange = (event) => {
@@ -45,12 +48,13 @@ const UploadImage = ({ changeButtonProps, removeButtonProps }) => {
         const formData = new FormData();
         formData.append('image', file, file.name);
 
-        if(imagePreviewUrl !== credentials.imageUrl) dispatch(changeImage(formData));
+        if (bookCover && imagePreviewUrl !== book.coverImage) dispatch(changeCoverImage(formData, book.bookId, justAdded));
+        else if (imagePreviewUrl !== credentials.imageUrl) dispatch(changeImage(formData));
     };
 
     const handleRemove = () => {
         setFile(null);
-        setImagePreviewUrl(defaultUserImage);
+        setImagePreviewUrl(bookCover ? defaultBookImage : defaultUserImage);
         setNoImage(true);
         fileInput.current.value = null;
     };
@@ -74,7 +78,7 @@ const UploadImage = ({ changeButtonProps, removeButtonProps }) => {
                     </span>
                     )
                 }
-                <Button {...changeButtonProps} disabled={imagePreviewUrl === credentials.imageUrl} onClick={() => handleSubmit()}>
+                <Button {...changeButtonProps} disabled={bookCover ? imagePreviewUrl === book.coverImage : imagePreviewUrl === credentials.imageUrl} onClick={() => handleSubmit()}>
                     UPDATE
                 </Button>
             </div>

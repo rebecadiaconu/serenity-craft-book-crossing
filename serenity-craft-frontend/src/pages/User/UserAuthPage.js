@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import SweetAlert from 'react-bootstrap-sweetalert';
+import React, { useEffect } from 'react';
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
-import { Actions } from 'redux/types';
+import { getUserData } from "redux/actions/userActions";
 
-// @material-ui components
-import { makeStyles } from "@material-ui/core/styles";
 
 // @material-ui icons
-import MenuBookIcon from '@material-ui/icons/MenuBook';
-import ShareIcon from '@material-ui/icons/Share';
 import SettingsIcon from '@material-ui/icons/Settings';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -27,7 +22,12 @@ import Card from "components/Card/Card.js";
 import NavPills from "components/NavPills/NavPills.js";
 
 const UserAuthPage = () => {
+    const dispatch = useDispatch();
     const { credentials } = useSelector(state => state.user);
+
+    useEffect(() => {
+        dispatch(getUserData());
+    }, [])
 
     return (
         <div>
