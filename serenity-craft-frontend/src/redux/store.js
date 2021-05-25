@@ -4,6 +4,7 @@ import thunk from "redux-thunk";
 import UserReducer from "./reducers/userReducer";
 import UiReducer from "./reducers/uiReducer";
 import BookReducer from "./reducers/bookReducer";
+import ReviewReducer from "./reducers/reviewReducer";
 
 
 const initialState = {};
@@ -13,7 +14,8 @@ const middleware = [thunk];
 const reducers = combineReducers({
   user: UserReducer,
   books: BookReducer,
-  ui: UiReducer
+  ui: UiReducer,
+  review: ReviewReducer
 });
 
 const store = createStore(

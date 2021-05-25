@@ -50,7 +50,7 @@ const AddBook = ({ open, handleClose }) => {
 
     useEffect(() => {
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-    }, [])
+    }, []);
 
     useEffect(() => {
         setValue('genres', genres);

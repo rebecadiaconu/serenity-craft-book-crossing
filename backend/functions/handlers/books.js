@@ -106,6 +106,9 @@ exports.addBook = (req, res) => {
                 return db.collection('reviews').add(reviewData)
                 .then((doc) => {
                     resBook.ownerReviewId = doc.id;
+                    return db.doc(`/books/${resBook.bookId}`).update(resBook);
+                })
+                .then(() => {
                     return res.json(resBook);
                 });
             } else {
@@ -136,7 +139,9 @@ exports.getBook = (req, res) => {
     .then((data) => {
         bookData.reviews = [];
         data.forEach(doc => {
-            bookData.reviews.push(doc.data());
+            let review = doc.data();
+            review.reviewId = doc.id;
+            bookData.reviews.push(review);
         });
 
         return res.json(bookData);
@@ -436,6 +441,30 @@ exports.reviewBook = (req, res) => {
     });
 };
 
+// Get review
+exports.getReview = (req, res) => {
+    const reviewDoc = db.doc(`/reviews/${req.params.reviewId}`);
+
+    let reviewData = {};
+
+    reviewDoc.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'Review not found!' });
+
+        reviewData = doc.data();
+        reviewData.reviewId = doc.id;
+
+        console.log(reviewData);
+        return res.json(reviewData);
+    })
+    .catch(err => {
+        console.error(err);
+
+        return res.status(500).json({ error: err.code });
+    });
+
+};
+
 // Edit book review
 exports.editReview = (req, res) => {
     const bookDoc = db.doc(`/books/${req.params.bookId}`);
@@ -536,7 +565,7 @@ exports.deleteReview = (req, res) => {
             });
         })
         .then(() => {
-            return res.json(bookData);
+            return res.json({ message: 'Review deleted successfully! '});
         });
     })
     .catch((err) => {

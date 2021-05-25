@@ -5,7 +5,7 @@ var cors = require('cors');
 app.use(cors());
 
 const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationRead } = require('./handlers/users');
-const { addBook, uploadCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, editReview, deleteReview } = require('./handlers/books');
+const { addBook, uploadCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, getReview, editReview, deleteReview } = require('./handlers/books');
 const { sendCrossingReq, acceptCrossing, rejectCrossing, cancelCrossing, changeCrossingStatus, getCrossingDetails, deleteCrossing } = require('./handlers/crossings');
 const { addTopic, getTopic, editTopic, deleteTopic, addReply, deleteReply } = require('./handlers/topics');
 
@@ -39,6 +39,7 @@ app.get('/books/:bookId', getBook);     // Get book details
 app.post('/books/:bookId', bookOwnerAuth, editBook);       // Add/edit book details
 app.delete('/books/:bookId', bookOwnerAuth, deleteBook);          // Delete book
 
+app.get('/reviews/:reviewId', fbAuth, getReview);       // Get review
 
 // Crossing routes
 app.post('/crossing/:bookId', fbAuth, sendCrossingReq);       // Send crossing request + add crossing

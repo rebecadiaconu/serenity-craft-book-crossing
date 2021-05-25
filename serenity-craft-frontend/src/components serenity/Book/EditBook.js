@@ -45,7 +45,7 @@ const EditBook = ({ open }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
-    const { errors, message } = useSelector((state) => state.ui);
+    const { errors } = useSelector((state) => state.ui);
     const { book } = useSelector((state) => state.books);
     const [ genres, setGenres ] = useState(book.genres);
     const [dialog, setDialog] = useState(false);
@@ -57,7 +57,7 @@ const EditBook = ({ open }) => {
         return () => {
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (dialog) {
@@ -72,9 +72,7 @@ const EditBook = ({ open }) => {
             if (!!book?.bookQuality) setValue('bookQuality', book.bookQuality);
             if (!!book?.ownerRating) setValue('ownerRating', book.ownerRating);
             if (!!book?.ownerReview) setValue('ownerReview', book.ownerReview);
-
         }
-        
     }, [dialog]);
 
     useEffect(() => {

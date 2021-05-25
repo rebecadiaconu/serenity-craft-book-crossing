@@ -103,5 +103,22 @@ const getFilterData = (books) => {
     return filterData;
 };
 
+const userReviewFirst = (reviews, username) => {
+    console.log(username);
+    let data = {};
+    let indexData;
 
-export { booksSort, allGenres, getFilterData, defaultUserImage, defaultBookImage };
+    reviews.map((review, index) => {
+        if (review.username === username) {
+            indexData = index;
+            data = review;
+        }
+    });
+
+    reviews.splice(indexData, 1);
+    reviews.unshift(data);
+    console.log(data);
+    return reviews;
+};
+
+export { booksSort, allGenres, getFilterData, userReviewFirst, defaultUserImage, defaultBookImage };

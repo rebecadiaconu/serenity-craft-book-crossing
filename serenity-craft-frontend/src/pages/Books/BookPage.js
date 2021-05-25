@@ -2,13 +2,17 @@ import React, { useState, useEffect, forwardRef } from 'react';
 import { useParams, NavLink } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import history from "util/history";
+import { userReviewFirst } from "util/general";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { getBook, deleteBook } from "redux/actions/bookActions";
+import { getReview, reviewDelete } from "redux/actions/reviewActions";
 import { Actions } from 'redux/types';
 
 // Components
+import AddReview from 'components serenity/Review/AddReview';
+import EditReview from 'components serenity/Review/EditReview';
 import ChangeCoverImage from "components serenity/Book/ChangeCoverImage";
 import EditBook from "components serenity/Book/EditBook";
 import ReviewContainer from "components serenity/Review/ReviewContainer";
@@ -21,7 +25,7 @@ import Accordion from "components/Accordion/Accordion";
 import GridContainer from 'components/Grid/GridContainer';
 import GridItem from 'components/Grid/GridItem';
 import CardHeader from 'components/Card/CardHeader';
-import { IconButton, List, ListItem, makeStyles, Tooltip, Typography } from '@material-ui/core';
+import { List, ListItem, makeStyles, Tooltip, Typography } from '@material-ui/core';
 
 // @material-ui icons
 import RateReviewIcon from '@material-ui/icons/RateReview';
@@ -38,7 +42,6 @@ import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAler
 
 const useStyles = makeStyles(styles);
 const useAlert = makeStyles(alertStyles);
-
 
 const Details = ({ numPages, language, publisher, bookQuality, publicationYear, ownerRating }) => {
     return (
@@ -88,30 +91,48 @@ const Details = ({ numPages, language, publisher, bookQuality, publicationYear, 
     );
 }
 
-const OwnerReview = ({ content, owner, ownerImage }) => {
+const OwnerReview = ({ content, owner, ownerImage, ownerReviewId }) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const { credentials } = useSelector((state) => state.user);
     const { book } = useSelector((state) => state.books);
+    const { reviewId } = useSelector((state) => state.review);
+
+    useEffect(() => {
+        if (reviewId) dispatch(getReview(reviewId));
+    }, [reviewId]);
+
+    const handleAddReview = () => {
+        dispatch({ type: Actions.REVIEW.REVIEW });
+    };
+
+    const handleEditReview = () => {
+        dispatch({ type: Actions.REVIEW.EDIT_REVIEW, payload: ownerReviewId });
+    };
+
+    const handleDeleteReview = () => {
+        dispatch({ type: Actions.REVIEW.DELETE_REVIEW, payload: ownerReviewId  });
+    };
 
     return (
         <div>
             <div className={classes.testimonialIcon + " " + classes.reviewWrapper} style={{width: 140, margin: '0 auto'}}>
                 <FormatQuote />
                 {
-                    (!!book.ownerReview || !!book.ownerRating) ? (
+                    ( credentials.username === owner && ((!!book.ownerReview || !!book.ownerRating) ? (
                         <>
                             <Tooltip title="Edit review" classes={{ tooltip: classes.tooltip }}>
-                                <Button justIcon size="sm" color="success" simple className={classes.reviewLeftButton} ><Edit /></Button>
+                                <Button justIcon size="sm" color="success" simple className={classes.reviewLeftButton} onClick={handleEditReview} ><Edit /></Button>
                             </Tooltip>
                             <Tooltip title="Delete review" classes={{ tooltip: classes.tooltip }}>
-                                <Button justIcon size="sm" color="danger" simple className={classes.reviewRightButton} ><HighlightOffIcon /></Button>
+                                <Button justIcon size="sm" color="danger" simple className={classes.reviewRightButton} onClick={handleDeleteReview} ><HighlightOffIcon /></Button>
                             </Tooltip>
                         </>
                     ) : (
                         <Tooltip title="Add review" classes={{ tooltip: classes.tooltip }}>
-                            <Button justIcon size="sm" color="primary" simple className={classes.reviewLeftButton} ><RateReviewIcon /></Button>
+                            <Button justIcon size="sm" color="primary" simple className={classes.reviewLeftButton} onClick={handleAddReview} ><RateReviewIcon /></Button>
                         </Tooltip>
-                    )
+                    )))
                 }
             </div>
             <CardBody>
@@ -139,6 +160,7 @@ const BookPage = () => {
     const dispatch = useDispatch();
     const { bookId } = useParams();
     const { book, justAdded, edit, deleteBookNow } = useSelector((state) => state.books);
+    const { reviewId, addReview, editReview, deleteReview, reviewData } = useSelector((state) => state.review);
     const { credentials } = useSelector((state) => state.user);
     const { message, errors } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
@@ -154,14 +176,27 @@ const BookPage = () => {
 
     useEffect(() => {
         if (errors?.error) errorAlert(errors.error);
-    }, [errors])
+    }, [errors]);
 
-    const handleDelete = () => {
+    useEffect(() => {
+        if (reviewId && editReview) dispatch(getReview(reviewId));
+    }, [reviewId, editReview]);
+
+    useEffect(() => {
+        if (deleteBookNow || deleteReview) confirmDelete();
+    }, [deleteReview, deleteBookNow]);
+
+    
+    const handleJustAdded = () => {
+        dispatch({ type: Actions.BOOK.DONE_ADDED });
+    };
+
+    const handleDeleteBook = () => {
         dispatch(deleteBook(bookId));
     }
 
-    const handleJustAdded = () => {
-        dispatch({ type: Actions.BOOK.DONE_ADDED });
+    const handleDeleteReview = () => {
+        dispatch(reviewDelete(bookId, reviewId));
     };
 
     const successAlert = (text) => {
@@ -175,6 +210,10 @@ const BookPage = () => {
                         setAlert(null);
                         history.push("/");
                         dispatch({ type: Actions.BOOK.STOP_DELETE });
+                    }
+                    else if (deleteReview) {
+                        setAlert(null);
+                        dispatch({ type: Actions.REVIEW.STOP_DELETE_REVIEW });
                     }
                     else setAlert(null);
                 }}
@@ -197,6 +236,10 @@ const BookPage = () => {
                         setAlert(null);
                         dispatch({ type: Actions.BOOK.STOP_DELETE });
                     }
+                    else if (deleteReview) {
+                        setAlert(null);
+                        dispatch({ type: Actions.REVIEW.STOP_DELETE });
+                    }
                     else setAlert(null);
                 }}
                 onCancel={() => hideAlert()}
@@ -208,21 +251,33 @@ const BookPage = () => {
     };
     
     const hideAlert = () => {
-        setAlert(null);
+        if (deleteBookNow) {
+            setAlert(null);
+            dispatch({ type: Actions.BOOK.STOP_DELETE });
+        }
+        else if (deleteReview) {
+            setAlert(null);
+            dispatch({ type: Actions.REVIEW.STOP_DELETE_REVIEW });
+        }
+        else setAlert(null);
     };
 
-    const handleEdit = () => {
+    const handleEditBook = () => {
         dispatch({ type: Actions.BOOK.EDIT });
     }
 
+    const handleAddReview = () => {
+        dispatch({ type: Actions.REVIEW.REVIEW })
+    }
+
     const confirmDelete = () => {
-        dispatch({ type: Actions.BOOK.DELETE });
+        deleteBookNow ? dispatch({ type: Actions.BOOK.DELETE }) : dispatch({ type: Actions.REVIEW.DELETE_REVIEW });
         setAlert(
             <SweetAlert
                 warning
                 style={{ display: "block", marginTop: "-100px" }}
                 title="Are you sure?"
-                onConfirm={() => handleDelete()}
+                onConfirm={() => deleteBookNow ? handleDeleteBook() : handleDeleteReview()}
                 onCancel={() => hideAlert()}
                 confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
                 cancelBtnCssClass={alertClasses.button + " " + alertClasses.danger}
@@ -230,7 +285,7 @@ const BookPage = () => {
                 cancelBtnText="Cancel"
                 showCancel
             >
-                You will not be able to recover this book and the rest of the data associate with it!
+                You will not be able to recover this data!
             </SweetAlert>
         );
     };
@@ -240,6 +295,12 @@ const BookPage = () => {
             {alert}
             {
                 edit && <EditBook open={edit} />
+            }
+            {
+                addReview && <AddReview open={addReview} />
+            }
+            {
+                editReview && reviewId && reviewData && <EditReview open={editReview} />
             }
             <ChangeCoverImage justAdded={justAdded} handleClose={handleJustAdded} />
             <GridItem xs={12} sm={12} md={12}>
@@ -339,7 +400,7 @@ const BookPage = () => {
                         }
                         {
                             book.ownerReview ? (
-                                <OwnerReview content={book.ownerReview ?? ""} owner={book.owner} ownerImage={book.ownerImage} />
+                                <OwnerReview content={book.ownerReview ?? ""} owner={book.owner} ownerImage={book.ownerImage} ownerReviewId={book.ownerReviewId ?? null} />
                             ) : (
                                 <OwnerReview content="Added by" owner={book.owner} ownerImage={book.ownerImage} />
                             )
@@ -347,20 +408,32 @@ const BookPage = () => {
                         </GridItem>
                     </GridContainer>
                     {
-                        (book.owner === credentials.username) && (
+                        (book.owner === credentials.username) ? (
                             <div className={classes.actions}>
                                 <Tooltip title="Edit" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
-                                    <Button color="success" simple justIcon onClick={handleEdit}><Edit /></Button>
+                                    <Button color="success" simple justIcon onClick={handleEditBook}><Edit /></Button>
                                 </Tooltip>
                                 <Tooltip title="Delete" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
-                                    <Button color="danger" simple justIcon onClick={confirmDelete}><HighlightOffIcon /></Button>
+                                    <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.BOOK.DELETE })}><HighlightOffIcon /></Button>
                                 </Tooltip>
                             </div>
+                        ) : ((book?.reviews?.filter((review) => review.username === credentials.username ).length === 0) && (
+                                <Tooltip
+                                    id="tooltip-top"
+                                    title="Add review"
+                                    placement="bottom"
+                                    classes={{ tooltip: classes.tooltip }}
+                                >
+                                    <Button color="primary" simple justIcon style={{position: 'absolute', right: 10}} onClick={handleAddReview}>
+                                        <RateReviewIcon className={classes.underChartIcons} />
+                                    </Button>
+                                </Tooltip>
+                            )
                         )
                     }
                 </Card>
             </GridItem> 
-            <ReviewContainer classes={classes} />
+            <ReviewContainer classes={classes} reviews={(book?.reviews && credentials?.username) ? userReviewFirst(book.reviews, credentials.username) : []} />
         </GridContainer>
     )
 }

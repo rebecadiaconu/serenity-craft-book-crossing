@@ -1,13 +1,14 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useParams, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { Actions } from "redux/types";
 
 // Redux
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 // @material-ui core
-import { Divider, Tooltip, Typography } from '@material-ui/core';
+import { Tooltip, Typography } from '@material-ui/core';
 
 // @material-ui icons
 import GradeIcon from '@material-ui/icons/Grade';
@@ -23,9 +24,18 @@ import CardAvatar from 'components/Card/CardAvatar';
 import GridContainer from 'components/Grid/GridContainer';
 import GridItem from 'components/Grid/GridItem';
 
-const ReviewCard = ({ review, classes }) => {
+const ReviewCard = ({ show, review, classes }) => {
+    const dispatch = useDispatch();
     const { credentials } = useSelector((state) => state.user);
     dayjs.extend(relativeTime);
+
+    const handleEditReview = () => {
+        dispatch({ type: Actions.REVIEW.EDIT_REVIEW, payload: review.reviewId });
+    };
+
+    const handleDeleteReview = () => {
+        dispatch({ type: Actions.REVIEW.DELETE_REVIEW, payload: review.reviewId  });
+    };
 
     return (
         <GridContainer
@@ -66,12 +76,12 @@ const ReviewCard = ({ review, classes }) => {
                 }
             </GridItem>
             {
-                (credentials.username === review.username) && (
+                (credentials.username === review.username && show) && (
                     <div className={classes.actions}>
-                        <Tooltip title="Edit" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
+                        <Tooltip title="Edit" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow onClick={handleEditReview} >
                             <Button color="success" simple justIcon><Edit /></Button>
                         </Tooltip>
-                        <Tooltip title="Delete" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
+                        <Tooltip title="Delete" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow onClick={handleDeleteReview} >
                             <Button color="danger" simple justIcon><HighlightOffIcon /></Button>
                         </Tooltip>
                     </div>
