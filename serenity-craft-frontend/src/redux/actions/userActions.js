@@ -87,10 +87,12 @@ export const forgotPassword = (userData) => (dispatch) => {
 export const getUserData = () => (dispatch) => {
     axios
     .get('/user')
-    .then((result) => {
+    .then(({ data }) => {
+        let canSendReq = data.books.filter((book) => book.available === true).length > 0;
+        data.credentials.canSendReq = canSendReq;
         dispatch({
             type: Actions.USER.SET_USER,
-            payload: result.data
+            payload: data
         });
     })
     .catch((err) => {

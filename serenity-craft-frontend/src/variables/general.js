@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "components/CustomButtons/Button.js";
 
 // @material-ui/icons
 import CardTravel from "@material-ui/icons/CardTravel";
@@ -34,7 +35,7 @@ const widgetStories = [
   },
   {
     // Second story
-    inverted: true,
+    inverted: false,
     badgeColor: "success",
     badgeIcon: Extension,
     title: "Another One",

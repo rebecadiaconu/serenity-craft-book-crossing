@@ -21,12 +21,12 @@ const responsive = {
         partialVisibilityGutter: 40
     },
     tablet: {
-        breakpoint: { max: 1600, min: 600 },
+        breakpoint: { max: 1600, min: 850 },
         items: 2,
         partialVisibilityGutter: 30
     },
     mobile: {
-        breakpoint: { max: 600, min: 0 },
+        breakpoint: { max: 850, min: 0 },
         items: 1,
         partialVisibilityGutter: 30
     }
@@ -64,8 +64,11 @@ const CrossingsCarousel = () => {
             >
                 {
                     crossings.map((crossing, index) => {
+                        let color = "success";
+                        if (crossing.status === "pending") color="warning";
+                        if (crossing.status === "done") color="info";
                         return (
-                            crossing.senderData.show ?  <CrossingContainer crossing={crossing} key={index}/> : null
+                            crossing.senderData.show ?  <CrossingContainer crossing={crossing} key={index} color={color}/> : null
                         )
                     })
                 }

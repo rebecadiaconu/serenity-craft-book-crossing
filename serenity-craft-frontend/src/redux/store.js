@@ -5,6 +5,7 @@ import UserReducer from "./reducers/userReducer";
 import UiReducer from "./reducers/uiReducer";
 import BookReducer from "./reducers/bookReducer";
 import ReviewReducer from "./reducers/reviewReducer";
+import CrossingReducer from "./reducers/crossingReducer";
 
 
 const initialState = {};
@@ -15,7 +16,8 @@ const reducers = combineReducers({
   user: UserReducer,
   books: BookReducer,
   ui: UiReducer,
-  review: ReviewReducer
+  review: ReviewReducer,
+  crossing: CrossingReducer
 });
 
 const store = createStore(

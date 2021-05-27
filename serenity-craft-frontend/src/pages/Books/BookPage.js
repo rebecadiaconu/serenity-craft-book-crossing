@@ -1,8 +1,8 @@
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, NavLink } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import history from "util/history";
-import { userReviewFirst } from "util/general";
+import { userReviewFirst, alreadyPending } from "util/general";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -161,7 +161,7 @@ const BookPage = () => {
     const { bookId } = useParams();
     const { book, justAdded, edit, deleteBookNow } = useSelector((state) => state.books);
     const { reviewId, addReview, editReview, deleteReview, reviewData } = useSelector((state) => state.review);
-    const { credentials } = useSelector((state) => state.user);
+    const { credentials, crossings } = useSelector((state) => state.user);
     const { message, errors } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
@@ -397,6 +397,11 @@ const BookPage = () => {
                                 />
                                 </GridItem>
                             )
+                        }
+                        {
+                            (book.owner !== credentials.username && book.available && crossings) && <Button disabled={alreadyPending(book.bookId, crossings) || !credentials.canSendReq} color={alreadyPending(book.bookId, crossings) ? "warning" : "success"} >
+                               {alreadyPending(book.bookId, crossings) ? "REQUEST SENT" : "SEND CROSSING REQUEST"}
+                            </Button>
                         }
                         {
                             book.ownerReview ? (

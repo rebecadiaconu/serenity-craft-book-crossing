@@ -35,13 +35,14 @@ import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 
 // Components Serenity
+import CrossingPage from "pages/Crossings/CrossingPage";
 import BookPage from "pages/Books/BookPage";
 import UserPage from "./pages/User/UserPage";
 import UserAuthPage from "./pages/User/UserAuthPage";
 import AllBooks from "./pages/AllBooks";
-import Crossings from "./pages/Crossings/Crossings";
 
 // @material-ui/icons Serenity
+import CachedIcon from '@material-ui/icons/Cached';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import ShareIcon from '@material-ui/icons/Share';
@@ -72,6 +73,16 @@ const routes = [
     unauth: false 
   },
   {
+    path: '/crossings/:crossingId',
+    name: '',
+    icon: ShareIcon,
+    component: CrossingPage,
+    layout: "/admin",
+    invisible:  true,
+    logged: false,
+    unauth: false 
+  },
+  {
     path: "/user",
     name: "My profile",
     icon: AccountBoxIcon,
@@ -90,15 +101,6 @@ const routes = [
     logged: false,
     unauth: false
   },
-  // {
-  //   path: "/crossings",
-  //   name: "My crossings",
-  //   icon: ShareIcon,
-  //   component: Crossings,
-  //   layout: "/admin",
-  //   logged: true,
-  //   unauth: false
-  // },
   {
     path: "/login-page",
     name: "Log in",
@@ -116,6 +118,15 @@ const routes = [
     logged: false,
     unauth: true,   
     layout: "/auth"
+  },
+  {
+      path: "/reset-password",
+      name: "Reset Password",
+      icon: CachedIcon,
+      component: ResetPassword,
+      layout: "/auth",
+      logged: false,
+      unauth: true,   
   },
   {
     path: "/dashboard",
@@ -142,13 +153,6 @@ const routes = [
         name: "Login Page",
         mini: "L",
         component: LoginPage,
-        layout: "/auth"
-      },
-      {
-        path: "/reset-password",
-        name: "Reset Password",
-        mini: "RP",
-        component: ResetPassword,
         layout: "/auth"
       },
       {

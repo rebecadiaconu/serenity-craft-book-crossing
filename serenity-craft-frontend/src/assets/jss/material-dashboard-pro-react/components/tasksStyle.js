@@ -23,7 +23,7 @@ const tasksStyle = {
   },
   tableCell: {
     ...defaultFont,
-    padding: "0",
+    padding: "10px",
     verticalAlign: "middle",
     border: "none",
     lineHeight: "1.42857143",

@@ -23,6 +23,7 @@ const useStyles = makeStyles(styles);
 export default function CustomDropdown(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const classes = useStyles();
+
   const handleClick = event => {
     if (anchorEl && anchorEl.contains(event.target)) {
       setAnchorEl(null);
@@ -30,18 +31,21 @@ export default function CustomDropdown(props) {
       setAnchorEl(event.currentTarget);
     }
   };
+
   const handleClose = event => {
     if (anchorEl.contains(event.target)) {
       return;
     }
     setAnchorEl(null);
   };
-  const handleCloseMenu = param => {
+
+  const handleCloseMenu = (param) => {
     setAnchorEl(null);
     if (props && props.onClick) {
       props.onClick(param);
     }
   };
+
   const {
     buttonText,
     buttonIcon,
@@ -57,18 +61,21 @@ export default function CustomDropdown(props) {
     innerDropDown,
     navDropdown
   } = props;
+
   const caretClasses = classNames({
     [classes.caret]: true,
     [classes.caretDropup]: dropup && !anchorEl,
     [classes.caretActive]: Boolean(anchorEl) && !dropup,
     [classes.caretRTL]: rtlActive
   });
+
   const dropdownItem = classNames({
     [classes.dropdownItem]: true,
     [classes[hoverColor + "Hover"]]: true,
     [classes.noLiPadding]: noLiPadding,
     [classes.dropdownItemRTL]: rtlActive
   });
+
   const dropDownMenu = (
     <MenuList role="menu" className={classes.menuList}>
       {dropdownHeader !== undefined ? (
@@ -98,7 +105,7 @@ export default function CustomDropdown(props) {
               className={dropdownItem}
               style={{ overflow: "visible", padding: 0 }}
             >
-              {prop}
+              {prop.text}
             </MenuItem>
           );
         }
@@ -108,7 +115,7 @@ export default function CustomDropdown(props) {
             onClick={() => handleCloseMenu(prop)}
             className={dropdownItem}
           >
-            {prop}
+            {prop.text}
           </MenuItem>
         );
       })}

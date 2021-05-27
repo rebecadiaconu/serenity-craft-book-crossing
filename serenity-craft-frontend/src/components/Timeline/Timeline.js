@@ -15,12 +15,12 @@ const useStyles = makeStyles(styles);
 export default function Timeline(props) {
   const classes = useStyles();
   const { stories, simple } = props;
-  const timelineClass =
-    classes.timeline +
+  const timelineClass = classes.timeline +
     " " +
     cx({
       [classes.timelineSimple]: simple
     });
+
   return (
     <ul className={timelineClass}>
       {stories.map((prop, key) => {

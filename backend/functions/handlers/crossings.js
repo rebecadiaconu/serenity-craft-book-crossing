@@ -51,11 +51,84 @@ exports.sendCrossingReq = (req, res) => {
         if (!data.empty) return res.status(400).json({ error: 'You already sent one crossing request to this user for this book!' });
         return db.collection('crossings').add(newCrossing);
     })
-    .then(() => {
-        return res.json({ message: 'Crossing request sent successfully! '});
+    .then((doc) => {
+        newCrossing.crossingId = doc.id;
+        return res.json(newCrossing);
     })
     .catch((err) => {
         console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+
+exports.chooseRandomBook = (req, res) => {
+    let sender = req.params.sender;
+    let recipient = req.params.recipient;
+
+    let randomBook = {};
+    let mainInterests = [];
+    let senderBooks = [];
+    let filteredBooks = [];
+    let recipientBooks = [];
+
+    db.doc(`/users/${recipient}`).get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'User not found! '});
+        else {
+            mainInterests = doc.data().mainInterests;
+
+            return db.collection('books').where("owner", "==", recipient).get();
+        }
+    })
+    .then((data) => {
+        if(data.empty) return res.status(400).json({ sender: 'Recipient has no books added!' });
+        else {
+            data.forEach((doc) => {
+                let bookData = doc.data();
+                bookData.bookId = doc.id;
+                recipientBooks.push(bookData);
+            });
+
+            return db.collection('books').where("owner", "==", sender).get();
+        }
+    })
+    .then((data) => {
+        if (data.empty) return res.status(400).json({ sender: 'Sender has no books added!' });
+        else {
+            data.forEach((doc) => {
+                let bookData = doc.data();
+                bookData.bookId = doc.id;
+                senderBooks.push(bookData);
+                if(bookData.genres.some((genre) => mainInterests.includes(genre))) filteredBooks.push(bookData);
+            });
+
+            if(filteredBooks.length === 0) {
+                let bookIndex = Math.floor(Math.random() * senderBooks.length);
+                randomBook = {
+                    randomBookId: senderBooks[bookIndex].bookId,
+                    title: senderBooks[bookIndex].title,
+                    author: senderBooks[bookIndex].author,
+                    coverImage: senderBooks[bookIndex].coverImage,
+                    averageRating: senderBooks[bookIndex].averageRating
+                };
+            } else {
+                filteredBooks.sort((a, b) => {
+                    return -(a.averageRating - b.averageRating);
+                });
+                randomBook = {
+                    randomBookId: filteredBooks[0].bookId,
+                    title: filteredBooks[0].title,
+                    author: filteredBooks[0].author,
+                    coverImage: filteredBooks[0].coverImage,
+                    averageRating: filteredBooks[0].averageRating
+                };
+            }
+
+            return res.json(randomBook);
+        }
+    })
+    .catch((err) => {
         return res.status(500).json({ error: err.code });
     });
 };
@@ -312,7 +385,7 @@ exports.getCrossingDetails = (req, res) => {
 
             crossingData.topics.map((topic) => {
                 if (topic.topicId === reply.topicId) topic.replyData.push(reply);
-                topic.replyData.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+                topic.replyData.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
             });
         });
 

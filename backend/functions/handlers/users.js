@@ -148,8 +148,14 @@ exports.getAuthenticatedUser = (req, res) => {
         userData.crossings = [];
         responses.forEach((response) => {
             response.docs.forEach((doc) => {
-                if (doc.data().status === "pending" && doc.data().recipient === req.user.username) userData.requests.push(doc.data());
-                else userData.crossings.push(doc.data());
+                if (doc.data().status === "pending" && doc.data().recipient === req.user.username) userData.requests.push({
+                    ...doc.data(),
+                    crossingId: doc.id
+                });
+                else userData.crossings.push({
+                    ...doc.data(),
+                    crossingId: doc.id
+                });
             });
         });
 

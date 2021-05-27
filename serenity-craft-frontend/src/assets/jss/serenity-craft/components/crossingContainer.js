@@ -1,34 +1,59 @@
 import CrossingBackgr from "assets/img/crossing-card-backgr.png";
+import {
+    tooltip,
+} from "assets/jss/material-dashboard-pro-react.js";
+
 
 const crossingContainer = {
+    tooltip,
     root: {
-        backgroundImage: `url(${CrossingBackgr})`,
-        height: 350,
+        // backgroundImage: `url(${CrossingBackgr})`,
+        margin: 15,
+        maxHeight: 350,
         fontFamily: "'Grandstander', cursive",
-        maxWidth: 500
+        maxWidth: 450
     },
     avatar: {
         display: 'flex',
         margin: '0 auto',
-        marginTop: 20
+        '& img': {
+            objectFit: 'cover',
+            maxWidth: 150, 
+            maxHeight: 150
+        }
+        // marginTop: 10
     },
     cover: {
-        minHeight: 300,
-        maxHeight: 310,
+        maxHeight: 300,
         '& img': {
             borderRadius: 15,
-            height: 300,
-            objectFit: 'contain',
-            margin: '30px 15px 0'
+            height: 280,
+            width: 170,
+            objectFit: 'cover',
+            margin: 10
         }
     },
     info: {
         fontFamily: "'Grandstander', cursive",
         margin: '0 auto'
     },
+    changeBookBtn: {
+        position: 'absolute',
+        right: 0,
+        top: 10,
+        zIndex: 2
+    },  
     right: {
         float: "right!important",
         display: "block"
+    },
+    link: {
+        color: "black",
+        textDecoration: "none",
+        '&:hover': {
+            color: "black",
+            textDecoration: "none",
+        }
     }
 };
 

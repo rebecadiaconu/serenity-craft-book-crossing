@@ -50,6 +50,12 @@ const allGenres = [
     'Thriller'
 ];
 
+const crossingStages = [
+    "I sent the book to the user.",
+    "Crossing book has arrived in my hands. I've started reading it!",
+    "Finished it! Send it on its way back home!",
+    "I received my book back."
+];
 
 const getFilterData = (books) => {
     let publishers = new Set();
@@ -103,6 +109,10 @@ const getFilterData = (books) => {
     return filterData;
 };
 
+const alreadyPending = (bookId, crossings ) => {
+    return crossings.filter((crossing) => crossing.reqBookId === bookId ).length > 0 
+};
+
 const userReviewFirst = (reviews, username) => {
     console.log(username);
     let data = {};
@@ -121,4 +131,4 @@ const userReviewFirst = (reviews, username) => {
     return reviews;
 };
 
-export { booksSort, allGenres, getFilterData, userReviewFirst, defaultUserImage, defaultBookImage };
+export { booksSort, allGenres, crossingStages, getFilterData, userReviewFirst, alreadyPending, defaultUserImage, defaultBookImage };

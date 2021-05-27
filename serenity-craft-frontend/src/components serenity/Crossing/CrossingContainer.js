@@ -1,10 +1,12 @@
 import React from 'react';
 import history from "util/history";
+import { NavLink } from 'react-router-dom';
 
 // React
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 // @material-ui core
+import { makeStyles } from '@material-ui/core';
 import { Typography, Tooltip } from "@material-ui/core";
 
 // Components
@@ -18,24 +20,15 @@ import GridItem from 'components/Grid/GridItem';
 
 // Styles
 import styles from "assets/jss/serenity-craft/components/crossingContainer";
-import { makeStyles } from '@material-ui/core';
-import { NavLink } from 'react-router-dom';
 
 const useStyles = makeStyles(styles);
 
-const CrossingContainer = ({ crossing }) => {
+const CrossingContainer = ({ crossing, color }) => {
     const classes = useStyles();
+    const { credentials } = useSelector((state) => state.user);
 
     const handleClick = () => {
-
-    };
-
-    const handleBookClick = () => {
-
-    };
-
-    const handleUserClick = () => {
-        history.push(`/admin/users/${crossing.recipient}`);
+        if (crossing.status !== "pending") history.push(`/admin/crossings/${crossing.crossingId}`);
     };
     
     return (
@@ -46,25 +39,21 @@ const CrossingContainer = ({ crossing }) => {
                 alignContent="center"
             >
                 <GridItem xs={6} sm={6} md={6}>
-                    <CardHeader text>
-                        <CardText color={crossing.status === "pending" ? "warning" : "success"}>
+                    <CardHeader>
+                        <CardText color={color} >
                             <h5>{crossing.reqBook.title}</h5>
                             <p>{crossing.reqBook.author}</p> 
                         </CardText>
                     </CardHeader>
-                    <NavLink
-                        to={`users/${crossing.recipient}`}
-                    >
-                        <CardAvatar profile className={classes.avatar}>
-                            <img src={crossing.recipientData.userImage} style={{width: 150, height: 150}} />
-                        </CardAvatar>
-                    </NavLink>
+                    <CardAvatar profile className={classes.avatar}>
+                        <img src={credentials.username !== crossing.recipient ? crossing.recipientData.userImage : crossing.senderData.userImage} style={{width: 150, height: 150}} />
+                    </CardAvatar>
                     <CardFooter>
                         <Typography className={classes.info} variant="body2" >{crossing.recipient}</Typography>
                     </CardFooter>
                 </GridItem>
                 <GridItem xs={6} sm={6} md={6}>
-                    <CardAvatar className={classes.cover} onClick={handleBookClick}>
+                    <CardAvatar className={classes.cover}>
                         <img src={crossing.reqBook.coverImage} />
                     </CardAvatar>
                 </GridItem>
