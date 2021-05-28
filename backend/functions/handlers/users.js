@@ -331,6 +331,108 @@ exports.uploadImage = (req, res) => {
     busboy.end(req.rawBody);
 };
 
+exports.deleteImage = (req, res) => {
+    const path = require('path');
+    const noImage = 'no-image.jpg';
+    const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImage}?alt=media`;
+    let oldImageUrl = req.user.imageUrl;
+    const userDoc = db.doc(`/users/${req.user.username}`);
+
+    userDoc.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ general: 'User not found!' });
+        const batch = db.batch();
+
+        return db.collection('books').where('owner', '==', req.user.username)
+        .get()
+        .then((data) => {
+            data.forEach((doc) => {
+                batch.update(db.doc(`/books/${doc.id}`), { ownerImage: imageUrl });
+            });
+
+            return db.collection('reviews').where('username', '==', req.user.username).get();
+        })
+        .then((data) => {
+            data.forEach((doc) => {
+                batch.update(db.doc(`/reviews/${doc.id}`), {userImage: imageUrl });
+            });
+
+            return db.collection('crossings').where('sender', '==', req.user.username).get();
+        })
+        .then((data) => {
+            data.forEach((doc) => {
+                let senderData = doc.data().senderData;
+                senderData.userImage = imageUrl;
+                batch.update(db.doc(`/crossings/${doc.id}`), {senderData});
+            });
+
+            return db.collection('crossings').where('recipient', '==', req.user.username).get();
+        })
+        .then((data) => {
+            data.forEach((doc) => {
+                let recipientData = doc.data().recipientData;
+                recipientData.userImage = imageUrl;
+                batch.update(db.doc(`/crossings/${doc.id}`), {recipientData});
+            });
+
+            return realtime.ref(`/topics/`).orderByChild("username").equalTo(req.user.username).get();
+        })
+        .then((data) => {
+            let topicData = [];
+            let promises = [];
+
+            if (data.exists()) {
+                topicData = Object.values(data.val());
+                topicData.forEach((doc) => {
+                    let updates = {};
+                    updates['userImage'] = imageUrl;
+                    promises.push(realtime.ref(`/topics/${doc.topicId}`).update(updates));
+                });
+
+            }
+
+            return Promise.all(promises);
+        })
+        .then(() => {
+            return realtime.ref(`/replies/`).orderByChild("username").equalTo(req.user.username).get();
+        })
+        .then((data) => {
+            let replyData = [];
+            let promises = [];
+            if (data.exists()) {
+                replyData = Object.values(data.val()).reverse();
+
+                replyData.forEach((doc) => {
+                    let updates = {};
+                    updates['userImage'] = imageUrl;
+                    promises.push(realtime.ref(`/replies/${doc.replyId}`).update(updates));
+                });
+            }
+
+            return Promise.all(promises);
+        })
+        .then(() => {
+            return batch.commit();
+        });
+    })
+    .then(() => {
+        return userDoc.update({imageUrl});
+    })
+    .then(() => {
+        oldImageFilename = path.basename(oldImageUrl).split('?')[0];
+
+        if (oldImageFilename !== 'no-image.jpg') {
+            admin.storage().bucket().file(oldImageFilename).delete();
+        }
+
+        return res.json({message: 'Image uploaded successfully!'});
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
 // Change account email
 exports.changeEmail = (req, res) => {
     const user = {

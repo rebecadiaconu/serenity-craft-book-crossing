@@ -4,8 +4,8 @@ const app = require('express')();
 var cors = require('cors');
 app.use(cors());
 
-const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationRead } = require('./handlers/users');
-const { addBook, uploadCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, getReview, editReview, deleteReview } = require('./handlers/books');
+const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, deleteImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationRead } = require('./handlers/users');
+const { addBook, uploadCoverImage, deleteCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, getReview, editReview, deleteReview } = require('./handlers/books');
 const { sendCrossingReq, chooseRandomBook, changeToPermanent, acceptCrossing, rejectCrossing, cancelCrossing, changeCrossingStatus, changeCrossingBook, getCrossingDetails, deleteCrossing } = require('./handlers/crossings');
 const { addTopic, getTopic, editTopic, deleteTopic, addReply, deleteReply } = require('./handlers/topics');
 
@@ -19,6 +19,7 @@ app.post('/forgotPassword', forgotPassword);
 app.get('/user', fbAuth,  getAuthenticatedUser);         // Get current user details  (books + crossings + notif + req)
 app.post('/user', fbAuth, addUserDetails);       // Add user details
 app.post('/user/image', fbAuth, uploadImage);        // Upload user profile picture
+app.post('/user/noImage', fbAuth, deleteImage);        // Remove user profile picture
 app.post('/user/email', fbAuth, changeEmail);       // Change account email
 app.post('/user/username', fbAuth, changeUsername);         // Change account username
 app.post('/user/password', fbAuth, changePassword);       // Change account password
@@ -30,6 +31,7 @@ app.post('/notifications', fbAuth, markNotificationRead);       // Mark user not
 // Book routes
 app.post('/book', fbAuth, addBook);     // Add new book
 app.post('/book/:bookId/cover', bookOwnerAuth, uploadCoverImage);        // Choose book's cover image
+app.post('/book/:bookId/noCover', bookOwnerAuth, deleteCoverImage);        // Remove book's cover image
 app.post('/book/:bookId/review', fbAuth, reviewBook);      // Add book Review
 app.post('/book/:bookId/:reviewId', fbAuth, editReview);       // Edit book review
 app.delete('/book/:bookId/:reviewId', fbAuth, deleteReview);       // Delete book review

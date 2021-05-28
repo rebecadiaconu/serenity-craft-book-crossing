@@ -375,6 +375,61 @@ exports.uploadCoverImage = (req, res) => {
     busboy.end(req.rawBody);
 };
 
+exports.deleteCoverImage = (req, res) => {
+    const path = require('path');
+    const noImage = 'nobook-image2.png';
+    const coverImage = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImage}?alt=media`;
+    
+    let oldImageUrl;
+    const bookDoc = db.doc(`/books/${req.params.bookId}`);
+
+    const batch = db.batch();
+
+    bookDoc.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'Book not found!' });
+
+        oldImageUrl = doc.data().coverImage;
+        oldImageFilename = path.basename(oldImageUrl).split('?')[0];
+
+        if (oldImageFilename !== 'nobook-image2.png') {
+            admin.storage().bucket().file(oldImageFilename).delete();
+        }
+
+        return bookDoc.update({ coverImage })
+        .then(() => {
+            return db.collection('crossings').where('reqBookId', '==', req.params.bookId).get();
+        })
+        .then((data) => {
+            data.forEach((doc) => {
+                reqBook = doc.data().reqBook;
+                reqBook.coverImage = coverImage;
+    
+                batch.update(db.doc(`/crossings/${doc.id}`), {reqBook: reqBook});
+            });
+            
+            return db.collection('crossings').where('randomBookId', '==', req.params.bookId).get();
+        })
+        .then((data) => {
+            data.forEach((doc) => {
+                randomBook = doc.data().randomBook;
+                randomBook.coverImage = coverImage;
+    
+                batch.update(db.doc(`/crossings/${doc.id}`), {randomBook: randomBook});
+            });
+    
+            return batch.commit();
+        });
+    })
+    .then(() => {
+        return res.json({message: 'Cover image uploaded successfully!'});
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({error: err.code});
+    });
+};
+
 // Review book
 exports.reviewBook = (req, res) => {
     if (req.hasOwnProperty('body')) {

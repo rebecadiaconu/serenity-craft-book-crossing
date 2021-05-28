@@ -116,6 +116,28 @@ export const changeCoverImage = (formData, bookId, justAdded) => (dispatch) => {
     });
 };
 
+export const removeCover = (bookId) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+
+    axios.post(`/book/${bookId}/noCover`)
+    .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(getBook(bookId));
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
 export const editBook = (formData, bookId) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/books/${bookId}`, formData)

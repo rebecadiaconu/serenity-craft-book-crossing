@@ -4,8 +4,8 @@ import { defaultUserImage, defaultBookImage } from "util/general";
 
 // Redux
 import { useSelector, useDispatch } from  "react-redux";
-import { changeImage } from '../../redux/actions/userActions';
-import { changeCoverImage } from '../../redux/actions/bookActions';
+import { changeImage, removeImage } from '../../redux/actions/userActions';
+import { changeCoverImage, removeCover } from '../../redux/actions/bookActions';
 
 // components
 import Button from "components/CustomButtons/Button.js";
@@ -45,11 +45,18 @@ const UploadImage = ({ changeButtonProps, removeButtonProps, bookCover }) => {
     };
 
     const handleSubmit = () => {
-        const formData = new FormData();
-        formData.append('image', file, file.name);
 
-        if (bookCover && imagePreviewUrl !== book.coverImage) dispatch(changeCoverImage(formData, book.bookId, justAdded));
-        else if (imagePreviewUrl !== credentials.imageUrl) dispatch(changeImage(formData));
+        if (!bookCover && imagePreviewUrl === defaultUserImage) {
+            dispatch(removeImage());
+        } else if (bookCover && imagePreviewUrl === defaultBookImage) {
+            dispatch(removeCover(book.bookId));
+        } else {
+            const formData = new FormData();
+            formData.append('image', file, file.name);
+
+            if (bookCover && imagePreviewUrl !== book.coverImage) dispatch(changeCoverImage(formData, book.bookId, justAdded));
+            else if (imagePreviewUrl !== credentials.imageUrl)  dispatch(changeImage(formData));
+        }    
     };
 
     const handleRemove = () => {

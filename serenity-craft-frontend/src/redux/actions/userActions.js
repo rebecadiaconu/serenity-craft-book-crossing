@@ -217,6 +217,27 @@ export const changeImage = (formData) => (dispatch) => {
     });
 };
 
+export const removeImage = () => (dispatch) => {
+    dispatch({ type: Actions.USER.LOADING_USER });
+
+    axios.post('/user/noImage')
+    .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(getUserData());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
 
 export const getAnyUser = (username) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });

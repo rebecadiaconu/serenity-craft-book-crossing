@@ -140,6 +140,7 @@ exports.chooseRandomBook = (req, res) => {
 
 // Change crossing status from temporar to permanent
 exports.changeToPermanent = (req, res) => {
+    let status;
     let crossingType = {};
     const crossingDoc = db.doc(`/crossings/${req.params.crossingId}`);
 
@@ -156,7 +157,18 @@ exports.changeToPermanent = (req, res) => {
                 crossingType.senderPermanent = doc.data().senderPermanent;
             }
 
-            return crossingDoc.update({ type: crossingType.senderPermanent && crossingType.recipientPermanent ? "permanent" : "temporar", senderPermanent: crossingType.senderPermanent, recipientPermanent: crossingType.recipientPermanent })
+            if (crossingType.senderPermanent && crossingType.recipientPermanent && doc.data().senderProgress.sendBook && doc.data().recipientProgress.sendBook && doc.data().senderProgress.receiveBook && doc.data().recipientProgress.receiveBook) status = 'done';
+
+            return crossingDoc.update( !!status ? {
+                status: status,
+                type: crossingType.senderPermanent && crossingType.recipientPermanent ? "permanent" : "temporar", 
+                senderPermanent: crossingType.senderPermanent, 
+                recipientPermanent: crossingType.recipientPermanent 
+            } : {
+                type: crossingType.senderPermanent && crossingType.recipientPermanent ? "permanent" : "temporar", 
+                senderPermanent: crossingType.senderPermanent, 
+                recipientPermanent: crossingType.recipientPermanent 
+            })
             .then(() => {
                 let message;
                 if (crossingType.senderPermanent && crossingType.recipientPermanent) message = 'Crossing type set to permanent!';
@@ -368,6 +380,7 @@ exports.changeCrossingStatus = (req, res) => {
 
     let isSender = false;
     let status;
+    let crossingData = {};
 
     let senderProgress = {};
     let recipientProgress = {};
@@ -378,6 +391,7 @@ exports.changeCrossingStatus = (req, res) => {
         if (!doc.exists) return res.status(404).json({ error: 'Crossing not found!' });
 
         status = doc.data().status;
+        crossingData = doc.data();
 
         if (doc.data().sender === req.user.username) {
             isSender = true;
@@ -401,7 +415,11 @@ exports.changeCrossingStatus = (req, res) => {
 
         if (senderProgress.sendBook && recipientProgress.sendBook) {
             if (senderProgress.receiveBook && recipientProgress.receiveBook) {
-                if (senderProgress.sendBack && recipientProgress.sendBack) {
+                if (doc.data().type === "permanent") {
+                    bookIdx.push(doc.data().randomBookId);
+                    bookIdx.push(doc.data().reqBookId);
+                    status = 'done';
+                } else if (senderProgress.sendBack && recipientProgress.sendBack) {
                     if (senderProgress.getBookBack && recipientProgress.getBookBack) {
                         bookIdx.push(doc.data().randomBookId);
                         bookIdx.push(doc.data().reqBookId);
@@ -429,9 +447,28 @@ exports.changeCrossingStatus = (req, res) => {
     .then(() => {
         let promises = [];
 
-        bookIdx.forEach((bookId) => {
-            promises.push(db.doc(`/books/${bookId}`).update({available: true, crossingId: admin.firestore.FieldValue.delete()}));
-        });
+        if (status === 'done' && crossingData.type === "permanent" && bookIdx.length === 2) {
+            console.log('here!!!');
+            console.log(bookIdx);
+            promises.push(db.doc(`/books/${bookIdx[0]}`).update({
+                owner: crossingData.recipient,
+                ownerImage: crossingData.recipientData.userImage,
+                available: true,
+                crossingId: admin.firestore.FieldValue.delete()
+            }));
+            promises.push(db.doc(`/books/${bookIdx[1]}`).update({
+                owner: crossingData.sender,
+                ownerImage: crossingData.senderData.userImage,
+                available: true,
+                crossingId: admin.firestore.FieldValue.delete()
+            }));
+        } else {
+            bookIdx.forEach((bookId) => {
+                promises.push(db.doc(`/books/${bookId}`).update(
+                        {available: true, crossingId: admin.firestore.FieldValue.delete()}
+                    ));
+            });
+        }
 
         return Promise.all(promises);
     })
