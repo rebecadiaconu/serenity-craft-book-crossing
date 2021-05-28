@@ -1,10 +1,11 @@
-import React, { useState, forwardRef, useEffect } from 'react';
+import React, { forwardRef, useEffect } from 'react';
+import featherLogo from "assets/img/feather-logo.png";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux"; 
-import { editReview } from "redux/actions/reviewActions";
+import { addTopic } from "redux/actions/crossingActions";
 import { Actions } from 'redux/types';
 
 // @material-ui core
@@ -27,40 +28,23 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const EditReview = ({ open }) => {
+const AddTopic = ({ open }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { register, handleSubmit, setValue } = useForm();
+    const { register, handleSubmit } = useForm();
     const { errors } = useSelector((state) => state.ui);
-    const { reviewData, reviewId } = useSelector((state) => state.review);
-    const { bookId } = useParams();
-    const [dialog, setDialog] = useState(false);
+    const { crossingId } = useParams();
 
     useEffect(() => {
-        setDialog(true);
-
-        return () => {
-            dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        }
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
     }, []);
 
-    useEffect(() => {
-        if (dialog && reviewId && reviewData) {
-            if (!!reviewData?.body) setValue('body', reviewData.body);
-            if (!!reviewData?.rating) setValue('rating', reviewData.rating);
-        }
-    }, [dialog]);
-
     const onSubmit = (formData) => {
-        let reviewData = {
-            ...formData,            
-            rating: parseInt(formData.rating),
-        };
-        dispatch(editReview(reviewData, bookId, reviewId));
+        dispatch(addTopic(formData, crossingId));
     };
 
     const handleClose = () => {
-        dispatch({ type: Actions.REVIEW.STOP_EDIT_REVIEW });
+        dispatch({ type: Actions.CROSSING.STOP_ADD_TOPIC });
     };
 
     return (
@@ -77,32 +61,32 @@ const EditReview = ({ open }) => {
                 alignContent="center"
                 style={{width: '95%', position: 'relative', marginLeft: 10,  height: 500, textAlign: "center"}}
             >
-                <GridItem xs={10} sm={10} md={12}>
+                <GridItem xs={12} sm={12} md={12}>
                     <Typography variant="h4" className={classes.header}>
-                    Let other people know what you think!
+                        Something new to tell your crossing mate? Post a new topic!
                     </Typography>
                 </GridItem>  
                 <GridItem xs={12} sm={12} md={12} style={{marginTop: 30, position: 'relative'}}>
                     <TextField 
                         className={classes.textField} 
                         variant="outlined"
-                        name="rating" 
-                        type="number" 
-                        label="Your rating" 
-                        error={errors?.rating ? true : false}
-                        helperText={errors?.rating}
+                        name="title" 
+                        type="text" 
+                        label="Choose an interesting title!" 
+                        error={errors?.title ? true : false}
+                        helperText={errors?.title}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
-                        InputProps={{ inputProps: { min: 0, max: 5 } }}
                         fullWidth
                     />
                     <TextField 
                         className={classes.textField} 
                         variant="outlined"
-                        name="body" 
+                        name="body"
+                        type="text" 
                         multiline
                         rows={4}
-                        label="Your review" 
+                        label="Topic content" 
                         error={errors?.body ? true : false}
                         helperText={errors?.body}
                         inputRef={register()}
@@ -114,7 +98,7 @@ const EditReview = ({ open }) => {
                         onClick={handleSubmit(onSubmit)}
                         className={classes.submitButton}
                     >
-                        UPDATE REVIEW
+                        POST TOPIC
                     </Button>
                 </GridItem> 
             </GridContainer>
@@ -122,4 +106,4 @@ const EditReview = ({ open }) => {
     )
 }
 
-export default EditReview;
+export default AddTopic;

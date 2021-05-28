@@ -23,6 +23,10 @@ const crossingContainer = {
         }
         // marginTop: 10
     },
+    submitButton: {
+        display: 'flex',
+        margin: '0 auto'
+    },
     cover: {
         maxHeight: 300,
         '& img': {

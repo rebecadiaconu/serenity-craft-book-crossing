@@ -199,6 +199,27 @@ const BookPage = () => {
         dispatch(reviewDelete(bookId, reviewId));
     };
 
+    const hideAlert = () => {
+        if (deleteBookNow) {
+            setAlert(null);
+            dispatch({ type: Actions.BOOK.STOP_DELETE });
+            history.push("/");
+        }
+        else if (deleteReview) {
+            setAlert(null);
+            dispatch({ type: Actions.REVIEW.STOP_DELETE_REVIEW });
+        }
+        else setAlert(null);
+    };
+
+    const handleEditBook = () => {
+        dispatch({ type: Actions.BOOK.EDIT });
+    }
+
+    const handleAddReview = () => {
+        dispatch({ type: Actions.REVIEW.REVIEW })
+    }
+
     const successAlert = (text) => {
         setAlert(
             <SweetAlert
@@ -250,25 +271,6 @@ const BookPage = () => {
         );
     };
     
-    const hideAlert = () => {
-        if (deleteBookNow) {
-            setAlert(null);
-            dispatch({ type: Actions.BOOK.STOP_DELETE });
-        }
-        else if (deleteReview) {
-            setAlert(null);
-            dispatch({ type: Actions.REVIEW.STOP_DELETE_REVIEW });
-        }
-        else setAlert(null);
-    };
-
-    const handleEditBook = () => {
-        dispatch({ type: Actions.BOOK.EDIT });
-    }
-
-    const handleAddReview = () => {
-        dispatch({ type: Actions.REVIEW.REVIEW })
-    }
 
     const confirmDelete = () => {
         deleteBookNow ? dispatch({ type: Actions.BOOK.DELETE }) : dispatch({ type: Actions.REVIEW.DELETE_REVIEW });

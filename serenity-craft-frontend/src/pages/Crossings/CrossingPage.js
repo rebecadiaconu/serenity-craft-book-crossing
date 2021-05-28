@@ -11,9 +11,13 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { Actions } from "redux/types";
-import { getCrossingData } from "redux/actions/crossingActions";
+import { getCrossingData, changeCrossingType, cancelCrossing, deleteCrossing, deleteTopic } from "redux/actions/crossingActions";
 
 // Components
+import ChangeBookModal from "components serenity/Crossing/ChangeBookModal";
+import AddTopic from "components serenity/Topic/AddTopic";
+import EditTopic from "components serenity/Topic/EditTopic";
+import Button from "components/CustomButtons/Button";
 import TopicCard from "components serenity/Topic/TopicCard";
 import Stages from "components serenity/Crossing/Stages";
 import CrossingInfo from "components serenity/Crossing/CrossingInfo";
@@ -22,12 +26,18 @@ import GridItem from 'components/Grid/GridItem';
 import CustomTabs from 'components/CustomTabs/CustomTabs';
 
 // @material-ui/core
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import { makeStyles, Tooltip, Typography } from '@material-ui/core';
 
 // @material-ui/icons
+import SettingsIcon from '@material-ui/icons/Settings';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import ShareIcon from '@material-ui/icons/Share';
@@ -37,12 +47,24 @@ import CheckIcon from '@material-ui/icons/Check';
 import Timeline from 'components/Timeline/Timeline';
 import CustomDropdown from 'components/CustomDropdown/CustomDropdown';
 
+// Styles
+import styles from "assets/jss/material-dashboard-pro-react/customCheckboxRadioSwitch.js";
+import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
+const useAlert = makeStyles(alertStyles);
+const switchStyles = makeStyles(styles);
+
+
 const CrossingPage = () => {
     dayjs.extend(relativeTime);
+    const switchClasses = switchStyles();
+    const alertClasses = useAlert();
     const dispatch = useDispatch();
     const { crossingId } = useParams();
     const { credentials } = useSelector((state) => state.user);
-    const { crossing, topic, viewTopic, editTopic, deleteTopic } = useSelector((state) => state.crossing);
+    const { crossing, cancel, deleteCross, changeBook, topicId, topic, viewTopic, addTopic, editTopic, deleteTopicVar } = useSelector((state) => state.crossing);
+    const { message, errors } = useSelector((state) => state.ui);
+    const [alert, setAlert] = useState(null);
+
 
     useEffect(() => {
         dispatch(getCrossingData(crossingId));
@@ -50,6 +72,37 @@ const CrossingPage = () => {
             dispatch({ type: Actions.UI.CLEAR_ACTION })
         };
     }, []);
+
+    useEffect(() => {
+        if (message) {
+            successAlert(message);
+            dispatch({ type: Actions.UI.CLEAR_ACTION })
+        }
+    }, [message]);
+
+    useEffect(() => {
+        if (errors?.error) {
+            errorAlert(errors.error);
+            dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        } 
+    }, [errors]);
+
+    useEffect(() => {
+        if (deleteTopicVar && topic && topicId) confirmDelete();
+        else if (cancel || deleteCross) confirmDelete();
+    }, [deleteTopicVar, cancel, deleteCross]);
+
+    const handleCancel = () => {
+        dispatch(cancelCrossing(crossingId));
+    };
+
+    const handleDelete = () => {
+        dispatch(deleteCrossing(crossingId));
+    };
+
+    const handleChangeType = () => {
+        dispatch(changeCrossingType(crossingId));
+    };
 
     const handleTopicClick = (data) => {
         switch(data.text) {
@@ -61,21 +114,153 @@ const CrossingPage = () => {
                 break
             case "DELETE":
                 dispatch({ type: Actions.CROSSING.DELETE_TOPIC, payload: data.data });
+                break
+            default:
+                break
         }
     };
 
     const handleCloseTopic = () => {
         dispatch({ type: Actions.CROSSING.STOP_VIEW_TOPIC });
-    }
+    };
+
+    const handleAddTopic = () => {
+        dispatch({ type: Actions.CROSSING.ADD_TOPIC });
+    };
+
+    const handleDeleteTopic = () => {
+        dispatch(deleteTopic(topicId, crossingId));
+    };
+
+    const hideAlert = () => {
+        setAlert(null);
+        if (deleteTopicVar) {
+            dispatch({ type: Actions.CROSSING.STOP_DELETE_TOPIC });
+        }
+        else if (cancel) {
+            dispatch({ type: Actions.CROSSING.STOP_CANCEL });
+        } 
+        else if (deleteCross) {
+            dispatch({ type: Actions.CROSSING.STOP_DELETE_CROSSING });
+        }
+    };
+
+    const successAlert = (text) => {
+        setAlert(
+            <SweetAlert
+                success
+                style={{ display: "block", marginTop: "-100px" }}
+                title="Done!"
+                onConfirm={() => {
+                    setAlert(null);
+                    if (deleteTopicVar) {
+                        dispatch({ type: Actions.CROSSING.STOP_DELETE_TOPIC });
+                    }
+                    else if (cancel) {
+                        dispatch({ type: Actions.CROSSING.STOP_CANCEL });
+                    } 
+                    else if (changeBook) {
+                        dispatch({ type: Actions.CROSSING.STOP_CHANGE_BOOK });
+                    }
+                    else if (deleteCross) {
+                        dispatch({ type: Actions.CROSSING.STOP_DELETE_CROSSING });
+                        history.push('/admin/user');
+                    }
+                }}
+                onCancel={() => hideAlert()}
+                confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
+            >
+                {text}
+            </SweetAlert>
+        );
+    };
+
+    const errorAlert = (error) => {
+        setAlert(
+            <SweetAlert
+                danger
+                style={{ display: "block", marginTop: "-100px" }}
+                title="Error"
+                onConfirm={() => {
+                    setAlert(null);
+                    if (deleteTopicVar) {
+                        dispatch({ type: Actions.CROSSING.STOP_DELETE_TOPIC });
+                    }
+                    else if (cancel) {
+                        dispatch({ type: Actions.CROSSING.STOP_CANCEL });
+                    }
+                    else if (changeBook) {
+                        dispatch({ type: Actions.CROSSING.STOP_CHANGE_BOOK });
+                    }
+                    else if (deleteCross) {
+                        dispatch({ type: Actions.CROSSING.STOP_DELETE_CROSSING });
+                    }
+                }}
+                onCancel={() => hideAlert()}
+                confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
+            >
+                {error}
+            </SweetAlert>
+        );
+    };
+
+    const confirmDelete = () => {
+        setAlert(
+            <SweetAlert
+                warning
+                style={{ display: "block", marginTop: "-100px" }}
+                title="Are you sure?"
+                onConfirm={() => deleteTopicVar ? handleDeleteTopic() : (cancel ? handleCancel() : handleDelete())}
+                onCancel={() => hideAlert()}
+                confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
+                cancelBtnCssClass={alertClasses.button + " " + alertClasses.danger}
+                confirmBtnText={cancel ? "Yes, cancel it!" : "Yes, delete it!"}
+                cancelBtnText="Cancel"
+                showCancel
+            >
+               {
+                   cancel ? "You will not be able to invert it!" : "You will not be able to recover this data!"
+               } 
+            </SweetAlert>
+        );
+    };
+
 
     return (
         <GridContainer>
         {
             crossing && (
                 <>
+                {alert}
                 {
                     viewTopic && topic && <TopicCard open={viewTopic} handleClose={handleCloseTopic} />
                 }    
+                {
+                    addTopic && <AddTopic open={addTopic} />
+                }
+                {
+                    editTopic && <EditTopic open={editTopic} />
+                }
+                {
+                    changeBook && <ChangeBookModal open={changeBook} recipient={crossing.sender} />
+                }
+                <GridItem xs={12} sm={12} md={12} style={{position: 'relative'}}>
+                {
+                    crossing.status === "done" ? 
+                    <Button color="danger" style={{display: 'flex', margin: '0 auto'}} onClick={() => dispatch({ type: Actions.CROSSING.DELETE_CROSSING })} >DELETE CROSSING</Button> : (
+                        (!!crossing?.canceled) ? 
+                        <Button disabled={crossing.canceled} color="danger" style={{display: 'flex', margin: '0 auto'}} >{`CANCELED BY ${crossing.canceledBy === credentials.username ? "You" : crossing.canceledBy}`}</Button> :
+                        <Button color="danger" style={{display: 'flex', margin: '0 auto'}} onClick={() => dispatch({ type: Actions.CROSSING.CANCEL })} >CANCEL CROSSING</Button>
+                    )
+                }
+                {
+                    crossing.canceled && (
+                        <Tooltip title="DELETE CROSSING">
+                            <Button size="lg" justIcon round color="danger" simple style={{position: 'absolute', right: 10, top: -10}} onClick={() => dispatch({ type: Actions.CROSSING.DELETE_CROSSING })} ><HighlightOffIcon /></Button>
+                        </Tooltip>
+                    )
+                }
+                </GridItem>
                 <CrossingInfo />
                 <GridItem xs={12} sm={12} md={5}>
                     <CustomTabs
@@ -133,10 +318,42 @@ const CrossingPage = () => {
                                     </ListItem>
                                 </List>
                             )
+                        },
+                        {
+                            tabName: "SETTINGS",
+                            tabIcon: SettingsIcon,
+                            tabContent: (
+                                <List>
+                                    <Typography variant="body2">If you and your crossing mate want to keep each others books at the "end of the day", you can change your crossing type and make it permanent.</Typography>
+                                    <Typography variant="body2">All you'll have to do is switching ON the button right below, but be carefull - the changes are also permanent!</Typography>
+                                    <h3>Talk to each other first!</h3>
+                                    <ListItem>
+                                        <FormControl>
+                                            <FormControlLabel
+                                                control={
+                                                <Switch 
+                                                    checked={crossing.type === "permanent" || (crossing.sender === credentials.username ? crossing.senderPermanent : crossing.recipientPermanent)} 
+                                                    disabled={crossing.type === "permanent"} 
+                                                    value="permanent"
+                                                    onChange={handleChangeType}
+                                                    classes={{
+                                                        switchBase: switchClasses.switchBase,
+                                                        checked: switchClasses.switchChecked,
+                                                        thumb: switchClasses.switchIcon,
+                                                        track: switchClasses.switchBar
+                                                    }}
+                                                />}
+                                                label="Make it permanent!"
+                                            />
+                                        </FormControl>
+                                    </ListItem>
+                                </List>
+                            )
                         }]}
                     />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={12}>
+                    <Button round color="rose" onClick={handleAddTopic} style={{display: 'flex', margin: '0 auto'}}><PostAddIcon />NEW TOPIC</Button>
                     <Timeline 
                         stories={
                             crossing.topics.map((topic) => {

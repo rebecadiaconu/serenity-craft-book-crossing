@@ -4,7 +4,8 @@ import { NavLink } from 'react-router-dom';
 import 'react-multi-carousel/lib/styles.css';
 
 // Redux
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Actions } from 'redux/types';
 
 // Components
 import Button from "components/CustomButtons/Button.js";
@@ -52,6 +53,7 @@ const responsive = {
 };
 
 const CrossingInfo = () => {
+    const dispatch = useDispatch();
     const classes = useStyles();
     const { credentials } = useSelector((state) => state.user);
     const { crossing } = useSelector((state) => state.crossing);
@@ -62,10 +64,10 @@ const CrossingInfo = () => {
             crossing && (
                 <>
                 {
-                    (credentials.username === crossing.recipient) && (
+                    (credentials.username === crossing.recipient && crossing.type === "temporar") && (
                         !crossing.senderProgress.sendBook ? (
                         <Tooltip title="Choose to receive other book!" classes={{ tooltip: classes.tooltip }}>
-                            <Button size="sm" round justIcon color="rose" className={classes.changeBookBtn}><EditIcon /></Button>
+                            <Button size="sm" round justIcon color="rose" className={classes.changeBookBtn} onClick={() => dispatch({ type: Actions.CROSSING.CHANGE_BOOK })} ><EditIcon /></Button>
                         </Tooltip>
                     ) : (
                         <Tooltip title="The other user already send his book!" classes={{ tooltip: classes.tooltip }}>

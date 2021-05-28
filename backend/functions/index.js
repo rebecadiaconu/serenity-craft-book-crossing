@@ -6,7 +6,7 @@ app.use(cors());
 
 const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationRead } = require('./handlers/users');
 const { addBook, uploadCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, getReview, editReview, deleteReview } = require('./handlers/books');
-const { sendCrossingReq, chooseRandomBook, acceptCrossing, rejectCrossing, cancelCrossing, changeCrossingStatus, getCrossingDetails, deleteCrossing } = require('./handlers/crossings');
+const { sendCrossingReq, chooseRandomBook, changeToPermanent, acceptCrossing, rejectCrossing, cancelCrossing, changeCrossingStatus, changeCrossingBook, getCrossingDetails, deleteCrossing } = require('./handlers/crossings');
 const { addTopic, getTopic, editTopic, deleteTopic, addReply, deleteReply } = require('./handlers/topics');
 
 const { fbAuth, bookOwnerAuth, crossingPartener } = require('./util/middleware');
@@ -47,8 +47,10 @@ app.post('/crossing/:crossingId/accept', crossingPartener, acceptCrossing);     
 app.post('/crossing/:crossingId/reject', crossingPartener, rejectCrossing);     // Reject crossing request by recipient
 app.post('/crossing/:crossingId/cancel', crossingPartener, cancelCrossing);     // Cancel crossing request by recipient
 app.post('/crossing/:crossingId/status', crossingPartener, changeCrossingStatus);       // Change book crossing status progress 
+app.post('/crossing/:crossingId/permanent', crossingPartener, changeToPermanent);       // Change type to permanent 
 app.get('/crossings/:crossingId', crossingPartener, getCrossingDetails);      // Get crossing details (crossing data + topics + replies)
 app.delete('/crossings/:crossingId', crossingPartener, deleteCrossing);       // Delete book crossing 
+app.post('/crossings/:crossingId/:newBookId', crossingPartener, changeCrossingBook); // Recipient changed crossing book
 
 app.post('/random/:sender/:recipient', fbAuth, chooseRandomBook);   // Choose random book for crossing
 

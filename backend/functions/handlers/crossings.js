@@ -41,6 +41,11 @@ exports.sendCrossingReq = (req, res) => {
         canceled: false
     };
 
+    if (type === "temporar") {
+        newCrossing.senderPermanent = false;
+        newCrossing.recipientPermanent = false;
+    }
+
     db.collection('crossings')
     .where('sender', '==', newCrossing.sender)
     .where('recipient', '==', newCrossing.recipient)
@@ -61,7 +66,7 @@ exports.sendCrossingReq = (req, res) => {
     });
 };
 
-
+// Choose random book for sending request
 exports.chooseRandomBook = (req, res) => {
     let sender = req.params.sender;
     let recipient = req.params.recipient;
@@ -129,6 +134,97 @@ exports.chooseRandomBook = (req, res) => {
         }
     })
     .catch((err) => {
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+// Change crossing status from temporar to permanent
+exports.changeToPermanent = (req, res) => {
+    let crossingType = {};
+    const crossingDoc = db.doc(`/crossings/${req.params.crossingId}`);
+
+    crossingDoc.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'Crossing not found!' });
+        else if (doc.data().type === "permanent") return res.status(400).json({ error: 'Crossing already permanent!' });
+        else {
+            if (req.user.username === doc.data().sender) {
+                crossingType.senderPermanent = true;
+                crossingType.recipientPermanent = doc.data().recipientPermanent;
+            } else {
+                crossingType.recipientPermanent = true;
+                crossingType.senderPermanent = doc.data().senderPermanent;
+            }
+
+            return crossingDoc.update({ type: crossingType.senderPermanent && crossingType.recipientPermanent ? "permanent" : "temporar", senderPermanent: crossingType.senderPermanent, recipientPermanent: crossingType.recipientPermanent })
+            .then(() => {
+                let message;
+                if (crossingType.senderPermanent && crossingType.recipientPermanent) message = 'Crossing type set to permanent!';
+                else message = 'Changes updated successfully! We are waiting for your crossing mate updates to make it official!';
+                
+                return res.json({ message: message });
+            });
+        }
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+// Change random book
+exports.changeCrossingBook = (req, res) => {
+    let crossingId = req.params.crossingId;
+    let newbookId = req.params.newBookId;
+
+    let crossingDoc = db.doc(`/crossings/${crossingId}`);
+    let oldBookId;
+    let crossingData = {};
+    let newbookData = {};
+
+    crossingDoc.get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error: 'Crossing not found!' });
+       
+        crossingData = doc.data();
+        crossingData.crossingId = crossingId;
+        oldBookId = crossingData.randomBookId;
+
+        if (crossingData.recipient !== req.user.username) return res.status(400).json({ error: 'Only the recipient can change his book! You choosed yours once!' });
+
+        return db.doc(`/books/${oldBookId}`).get()
+        .then((doc) => {
+            if (!doc.exists) return res.status(404).json({ error: 'Old book not found!' });
+
+            return db.doc(`/books/${oldBookId}`).update({ available: true })
+            .then(() => {
+                return db.doc(`/books/${newbookId}`).get()
+                .then((doc) => {
+                    if (!doc.exists) return res.status(404).json({ error: 'New chosen book not found!' });
+                    else if (!doc.data().available) return res.status(400).json({ error: 'Chosen book is already shared! Choose an available one!' });
+                    else {
+                        newbookData = doc.data();
+                        return db.doc(`/books/${newbookId}`).update({ available: false });
+                    }
+                })
+                .then(() => {
+                    let randomBook = {
+                        author: newbookData.author,
+                        title: newbookData.title,
+                        coverImage: newbookData.coverImage,
+                        averageRating: newbookData.averageRating
+                    };
+
+                    return crossingDoc.update({ randomBookId: newbookId, randomBook: randomBook });
+                });
+            })
+            .then(() => {
+                return res.json({ message: 'Book changed successfully!' });
+            });
+        });
+    })
+    .catch((err) => {
+        console.error(err);
         return res.status(500).json({ error: err.code });
     });
 };
@@ -229,8 +325,8 @@ exports.cancelCrossing = (req, res) => {
 
         return crossingDoc.update({
             canceled: true,
-            canceledBy: req.user.username,
-            reason: req.body.reason.trim()
+            canceledBy: req.user.username
+            // reason: req.body.reason.trim()
         })
         .then(() => { 
             let newNotification = {
@@ -306,7 +402,7 @@ exports.changeCrossingStatus = (req, res) => {
         if (senderProgress.sendBook && recipientProgress.sendBook) {
             if (senderProgress.receiveBook && recipientProgress.receiveBook) {
                 if (senderProgress.sendBack && recipientProgress.sendBack) {
-                    if (senderProgress.getBookBack && recipientProgress.getBookBack){
+                    if (senderProgress.getBookBack && recipientProgress.getBookBack) {
                         bookIdx.push(doc.data().randomBookId);
                         bookIdx.push(doc.data().reqBookId);
                         status = 'done';
@@ -332,6 +428,7 @@ exports.changeCrossingStatus = (req, res) => {
     })
     .then(() => {
         let promises = [];
+
         bookIdx.forEach((bookId) => {
             promises.push(db.doc(`/books/${bookId}`).update({available: true, crossingId: admin.firestore.FieldValue.delete()}));
         });

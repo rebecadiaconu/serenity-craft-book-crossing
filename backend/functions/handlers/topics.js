@@ -12,7 +12,9 @@ exports.addTopic = (req, res) => {
     if (req.body.title.trim() === '') errors.title = 'Must not be empty!';
     if (req.body.body.trim() === '') errors.body = 'Must not be empty!';
 
-    if (!Object.keys(errors).length === 0) return res.status(400).json(errors);
+    if (Object.keys(errors).length > 0) {
+        return res.status(400).json(errors);  
+    }
 
     let crossingData = {};
     let newTopic = {
@@ -58,7 +60,7 @@ exports.addTopic = (req, res) => {
         return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
     })
     .then(() => {
-        return res.json(newTopic);
+        return res.json({ message: 'Topic posted successfully!' });
     })
     .catch((err) => {
         console.error(err);

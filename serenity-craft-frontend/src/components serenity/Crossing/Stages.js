@@ -26,6 +26,7 @@ const Stages = ({ tasksIndexes, tasks, checkedIndexes }) => {
     const dispatch = useDispatch();
     const classes = useStyles();
     const { crossingId } = useParams();
+    const { crossing } = useSelector((state) => state.crossing);
     const [checked, setChecked] = useState(checkedIndexes);
 
     useEffect(() => {
@@ -48,15 +49,6 @@ const Stages = ({ tasksIndexes, tasks, checkedIndexes }) => {
         setChecked(newChecked);
     }
 
-    const handleToggle = value => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } 
-        setChecked(newChecked);
-    };
-
     const tableCellClasses = classnames(classes.tableCell);
 
     return (
@@ -67,7 +59,7 @@ const Stages = ({ tasksIndexes, tasks, checkedIndexes }) => {
                 <TableCell className={tableCellClasses}>
                 <Checkbox
                     checked={checked.indexOf(value) !== -1}
-                    disabled={checked.indexOf(value) !== -1}
+                    disabled={crossing.canceled === true  || crossing.status === "done" || checked.indexOf(value) !== -1 || (value !== 0 && checked.indexOf(value - 1)) === -1}
                     tabIndex={-1}
                     onClick={() => handleChecked(value)}
                     checkedIcon={<Check className={classes.checkedIcon} />}

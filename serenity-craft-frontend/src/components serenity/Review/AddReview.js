@@ -45,7 +45,6 @@ const AddReview = ({ open }) => {
             ...formData,            
             rating: parseInt(formData.rating),
         };
-        console.log(formData);
         dispatch(addReview(reviewData, bookId));
     };
 
