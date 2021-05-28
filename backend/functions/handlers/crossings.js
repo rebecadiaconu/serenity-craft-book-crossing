@@ -448,8 +448,6 @@ exports.changeCrossingStatus = (req, res) => {
         let promises = [];
 
         if (status === 'done' && crossingData.type === "permanent" && bookIdx.length === 2) {
-            console.log('here!!!');
-            console.log(bookIdx);
             promises.push(db.doc(`/books/${bookIdx[0]}`).update({
                 owner: crossingData.recipient,
                 ownerImage: crossingData.recipientData.userImage,

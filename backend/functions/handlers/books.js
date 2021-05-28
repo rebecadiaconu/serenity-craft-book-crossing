@@ -175,6 +175,8 @@ exports.editBook = (req, res) => {
 exports.deleteBook = (req, res) => {
     const path = require('path');
     const bookDocument = db.doc(`/books/${req.params.bookId}`);
+    const noImage = 'deletedBook.jpg';
+    const coverImage = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImage}?alt=media`;
     let bookData = {};
 
     bookDocument.get()
@@ -194,57 +196,43 @@ exports.deleteBook = (req, res) => {
                 batch.delete(db.doc(`/reviews/${doc.id}`));
             });
     
-            const reqBooks = db.collection("crossings").where("reqBookId", "==", req.params.bookId).get();
-            const randomBooks = db.collection("crossings").where("randomBookId", "==", req.params.bookId).get();
-    
-            return Promise.all([reqBooks, randomBooks]);
+            return db.collection('crossings').where('reqBookId', '==', req.params.bookId).get();
         })
-        .then((responses) => {
-            responses.forEach((response) => {
-                response.docs.forEach((doc) => {
-                    let promises = [];
-                    let crossingData = doc.data();
-                    crossingData.crossingId = doc.id;
-                    
-                    realtime.ref(`/topics/${crossingData.crossingId}`).get()
-                    .then((data) => {
-                        if (data.exists()) {
-                            crossingData.topics = Object.values(data.val());
-                        } else crossingData.topics = [];
-    
-                        crossingData.topics.map((topic) => {
-                            if (topic.replyCount > 0) {
-                                topic.replies.map( (reply) => {
-                                    promises.push(realtime.ref(`/replies/${reply}`).remove());
-                                });
-                            }
-    
-                            promises.push(realtime.ref(`/topics/${crossingData.crossingId}/${topic.topicId}`).remove());
-                        });
-
-                        return Promise.all(promises);
-                    })
-                    .then(() => {
-                        let newNotification = {
-                            notificationId: uuid(),
-                            createdAt: new Date().toISOString(),
-                            sender: req.user.username,
-                            senderImage: req.user.imageUrl,
-                            read: false,
-                            type: 'info'
-                        };
-    
-                        if (crossingData.sender === req.user.username) newNotification.recipient = crossingData.recipient;
-                        else newNotification.recipient = crossingData.sender;
-    
-                        newNotification.message = `Seems like ${newNotification.sender} deleted one book present in your crossings or pending requests, so these are gone too!`;
-    
-                        return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
-                    })
-                    .then(() => {
-                        batch.delete(db.doc(`/crossings/${crossingData.crossingId}`));
+        .then((data) => {
+            data.forEach((doc) => {
+                if (doc.data().status !== "pending") {
+                    batch.update(db.doc(`/crossings/${doc.id}`), {
+                        reqBook: {
+                            coverImage: coverImage,
+                            author: doc.data().reqBook.author,
+                            title: doc.data().reqBook.title,
+                            averageRating: 'Unknown'
+                        },
+                        reqBookId: 'deletedBook'
                     });
-                });
+                } else {
+                    batch.delete(db.doc(`/crossings/${doc.id}`));
+                }
+            });
+
+            return db.collection('crossings').where('randomBookId', '==', req.params.bookId).get();
+        })
+        .then((data) => {
+            data.forEach((doc) => {
+                if (doc.data().status !== "pending") {
+                    batch.update(db.doc(`/crossings/${doc.id}`), {
+                        randomBook: {
+                            coverImage: coverImage,
+                            author: doc.data().randomBook.author,
+                            title: doc.data().randomBook.title,
+                            averageRating: 'Unknown'
+                        },
+                        randomBookId: 'deletedBook'
+                    });
+                } else {
+                    batch.delete(db.doc(`/crossings/${doc.id}`));
+                }
+                
             });
         })
         .then(() => {
@@ -407,7 +395,7 @@ exports.deleteCoverImage = (req, res) => {
     
                 batch.update(db.doc(`/crossings/${doc.id}`), {reqBook: reqBook});
             });
-            
+                
             return db.collection('crossings').where('randomBookId', '==', req.params.bookId).get();
         })
         .then((data) => {

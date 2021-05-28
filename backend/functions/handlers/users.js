@@ -331,6 +331,7 @@ exports.uploadImage = (req, res) => {
     busboy.end(req.rawBody);
 };
 
+// Remove user profile
 exports.deleteImage = (req, res) => {
     const path = require('path');
     const noImage = 'no-image.jpg';
@@ -727,6 +728,18 @@ exports.markNotificationRead = (req, res) => {
 
 
 // Delete user account
+exports.deleteAccount = (req, res) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password
+    };
+
+    const { valid, errors } = validateLogInData(user);
+    if (!valid) return res.status(400).json(errors);
+
+    
+};
+
 // exports.deleteUserAccount = (req, res) => {
 //     const user = {
 //         email: req.body.email,

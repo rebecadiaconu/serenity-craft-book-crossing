@@ -27,6 +27,7 @@ const Stages = ({ tasksIndexes, tasks, checkedIndexes }) => {
     const classes = useStyles();
     const { crossingId } = useParams();
     const { crossing } = useSelector((state) => state.crossing);
+    const [pressed, setPressed] = useState(false);
     const [checked, setChecked] = useState(checkedIndexes);
 
     useEffect(() => {
@@ -37,7 +38,7 @@ const Stages = ({ tasksIndexes, tasks, checkedIndexes }) => {
             getBookBack: checked.indexOf(3) !== -1
         };
 
-        dispatch(changeCrossingStatus(stages, crossingId));
+        if (crossing.status !== "done" && pressed) dispatch(changeCrossingStatus(stages, crossingId));
     }, [checked]);
 
     const handleChecked = value => {
@@ -46,6 +47,7 @@ const Stages = ({ tasksIndexes, tasks, checkedIndexes }) => {
         if (currentIndex === -1) {
             newChecked.push(value);
         } 
+        setPressed(true);
         setChecked(newChecked);
     }
 
