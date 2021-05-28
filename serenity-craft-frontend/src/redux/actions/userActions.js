@@ -1,6 +1,8 @@
 import axios from "../../util/axios";
 import { Actions } from "../types";
 import history from "../../util/history";
+import { deleteBook } from "redux/actions/bookActions";
+import { cancelCrossing } from "./crossingActions";
 
 
 export const setAuth = (token) => {
@@ -260,5 +262,30 @@ export const getAnyUser = (username) => (dispatch) => {
     .catch((err) => {
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         console.error(err.response.data);
+    });
+};
+
+export const deleteAccount = (formData, books, crossings) => (dispatch) => {
+    console.log('delete --> ', formData);
+
+    dispatch({ type: Actions.USER.LOADING_USER });
+    books.forEach((book) => dispatch(deleteBook(book.bookId)))
+    crossings.forEach((crossing) => dispatch(cancelCrossing(crossing.crossingId)));
+    axios.post('/user/delete', formData)
+    .then(({ data }) => {
+        dispatch({
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(logOutUser());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
     });
 };

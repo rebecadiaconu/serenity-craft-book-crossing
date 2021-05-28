@@ -726,18 +726,122 @@ exports.markNotificationRead = (req, res) => {
 
 };
 
-
 // Delete user account
-exports.deleteAccount = (req, res) => {
+exports.deleteUserAccount = (req, res) => {
+    console.log(req.body);
     const user = {
-        email: req.body.email,
+        email: req.user.email,
         password: req.body.password
     };
 
     const { valid, errors } = validateLogInData(user);
     if (!valid) return res.status(400).json(errors);
 
+    const userDoc = db.doc(`/users/${req.user.username}`); 
+    const image = 'deletedUser.jpg';   
+    let imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${image}?alt=media`;
+
+    firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+    .then((data) => {
+
+        return userDoc
+        .get()
+        .then((doc) => {
+            if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
     
+            const batch = db.batch();
+    
+            return db.collection('reviews').where('username', '==', req.user.username)
+            .get()
+            .then((data) => {
+                data.forEach((doc) => {
+                    batch.update(db.doc(`/reviews/${doc.id}`), {userImage: imageUrl, username: 'deletedUser' });
+                });
+    
+                return db.collection('crossings').where('sender', '==', req.user.username).get();
+            })
+            .then((data) => {
+                data.forEach((doc) => {
+                    if (doc.data().status !== 'done' && doc.data().status !== 'pending') return res.status(400).json({ error: 'Seems like you are involved in an on-going book crossing. Try delete your account after it is ended!' });
+                    
+                    let senderData = doc.data().senderData;
+                    senderData.userImage = imageUrl;
+                    batch.update(db.doc(`/crossings/${doc.id}`), {senderData, sender: 'deletedUser'});
+                });
+    
+                return db.collection('crossings').where('recipient', '==', req.user.username).get();
+            })
+            .then((data) => {
+                data.forEach((doc) => {
+                    if (doc.data().status !== 'done' && doc.data().status !== 'pending') return res.status(400).json({ error: 'Seems like you are involved in an on-going book crossing. Try delete your account after it is ended!' });
+    
+                    let recipientData = doc.data().recipientData;
+                    recipientData.userImage = imageUrl;
+                    batch.update(db.doc(`/crossings/${doc.id}`), {recipientData, recipient: 'deletedUser'});
+                });
+    
+                return realtime.ref(`/topics/`).orderByChild("username").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let topicData = [];
+                let promises = [];
+    
+                if (data.exists()) {
+                    topicData = Object.values(data.val());
+                    topicData.forEach((doc) => {
+                        let updates = {};
+                        updates['userImage'] = imageUrl;
+                        updates['username'] = 'deletedUser';
+                        promises.push(realtime.ref(`/topics/${doc.topicId}`).update(updates));
+                    });
+                }
+    
+                return Promise.all(promises);
+            })
+            .then(() => {
+                return realtime.ref(`/replies/`).orderByChild("username").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let replyData = [];
+                let promises = [];
+                if (data.exists()) {
+                    replyData = Object.values(data.val()).reverse();
+    
+                    replyData.forEach((doc) => {
+                        let updates = {};
+                        updates['userImage'] = imageUrl;
+                        updates['username'] = 'deletedUser';
+                        promises.push(realtime.ref(`/replies/${doc.replyId}`).update(updates));
+                    });
+                }
+    
+                return Promise.all(promises);
+            })
+            .then(() => {
+                return batch.commit();
+            })
+            .then(() => {
+                return userDoc.delete();
+            });
+        })
+        .then(() => {
+            const uid = data.user.uid;
+
+            return admin.auth().deleteUser(uid);
+        })
+        .then(() => {
+            return res.json({ message: 'Account deleted successfully!' });
+        });
+    })
+    .catch((err) => {
+        console.error(err);
+
+        if (err.code == "auth/wrong-password") {
+            return res.status(400).json({ password: 'Wrong credentials!' });
+        }
+
+        return res.status(500).json({ error: err.code });
+    });
 };
 
 // exports.deleteUserAccount = (req, res) => {

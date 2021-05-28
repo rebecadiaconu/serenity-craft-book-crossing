@@ -3,6 +3,7 @@ import { Actions } from '../types';
 const initialState = {
     authenticated: !!localStorage.getItem('idToken'),
     loading: false,
+    deleted: false,
     credentials: {},
     books: [],
     crossings: [],
@@ -47,6 +48,16 @@ const UserReducer = (state = initialState, action) => {
           return {
             ...state,
             loading: false
+          }
+        case Actions.USER.DELETE_ACCOUNT:
+          return {
+            ...state,
+            deleted: true
+          }
+        case Actions.USER.STOP_DELETE_ACCOUNT:
+          return {
+            ...state,
+            deleted: false
           }
         default:
             return state;

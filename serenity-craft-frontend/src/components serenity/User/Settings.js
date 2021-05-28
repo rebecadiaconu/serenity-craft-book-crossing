@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 
 // Redux
 import { useSelector, useDispatch } from  "react-redux";
-import { changeEmail, changeUsername, changePassword } from '../../redux/actions/userActions';
+import { changeEmail, changeUsername, changePassword, deleteAccount } from 'redux/actions/userActions';
 
 // @material-ui core
 import Slide from "@material-ui/core/Slide";
@@ -45,7 +45,7 @@ const Settings = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
-    const { credentials } = useSelector((state) => state.user);
+    const { credentials, books, crossings } = useSelector((state) => state.user);
     const { errors } = useSelector((state) => state.ui);
 
     const [showPassword, setShowPassword] = useState(false);
@@ -53,6 +53,7 @@ const Settings = () => {
     const [emailAlert, setEmailAlert] = useState(false);
     const [usernameAlert, setUsernameAlert] = useState(false);
     const [passwordAlert, setPasswordAlert] = useState(false);
+    const [deleteAlert, setDeleteAlert] = useState(false);
 
     useEffect(() => {
         setValue('newUsername', credentials.username);
@@ -77,6 +78,11 @@ const Settings = () => {
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
+    };
+
+    const handleDeleteAccount = (formData) => {
+        let userReq = crossings.filter((crossing) => crossing.sender === credentials.username && crossing.status === "pending");
+        dispatch(deleteAccount(formData, books, userReq));
     };
 
     return (
@@ -171,6 +177,7 @@ const Settings = () => {
                         color="danger"
                         style={{width: 200}}
                         className={classes.central}
+                        onClick={() => setDeleteAlert(true)}
                     >
                         <HighlightOffIcon />
                         DELETE ACCOUNT
@@ -393,6 +400,69 @@ const Settings = () => {
                         color="success"
                         round
                         onClick={handleSubmit(handlePasswordChange)}
+                    >
+                        Sounds Good
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={deleteAlert}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setDeleteAlert(false)}
+            >
+                <DialogTitle
+                    disableTypography
+                >
+                    <Button
+                        justIcon
+                        className={classes.closeButton}
+                        key="close"
+                        aria-label="Close"
+                        color="transparent"
+                        onClick={() => setDeleteAlert(false)}
+                    >
+                        <Close />
+                    </Button>
+                    <h4 className={classes.modalTitle}>Type in your password to confirm the changes</h4>
+                </DialogTitle>
+                <DialogContent>
+                    <TextField 
+                        className={classes.textField} 
+                        variant="outlined"
+                        name="password" 
+                        type={showPassword ? "text" : "password"} 
+                        label="Password" 
+                        error={errors?.password ? true : false}
+                        helperText={errors?.password}
+                        inputRef={register()}
+                        InputLabelProps={{ shrink: true }}  
+                        fullWidth
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">
+                                <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={() => setShowPassword(!showPassword)}
+                                onMouseDown={handleMouseDownPassword}
+                                >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>,
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions className={classes.actionContainer}>
+                    <Button
+                        onClick={() => setDeleteAlert(false)}
+                        color="danger"
+                        round
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        color="success"
+                        round
+                        onClick={handleSubmit(handleDeleteAccount)}
                     >
                         Sounds Good
                     </Button>

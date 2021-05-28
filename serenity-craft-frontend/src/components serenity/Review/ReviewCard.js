@@ -49,7 +49,7 @@ const ReviewCard = ({ show, review, classes }) => {
                         to={`/admin/users/${review.username}`}
                     >
                         <CardAvatar>
-                            <img src={review.userImage} style={{width: 130, height: 130}} />
+                            <img src={review.userImage} style={{objectFit: 'cover', width: 130, height: 130}} />
                         </CardAvatar>
                 </NavLink>
             </GridItem>
