@@ -51,6 +51,7 @@ exports.addTopic = (req, res) => {
             sender: req.user.username,
             senderImage: req.user.imageUrl,
             type: 'topic',
+            crossingId: req.params.crossingId,
             topicId: newTopic.topicId
         };
 
@@ -243,7 +244,8 @@ exports.addReply = (req, res) => {
                 senderImage: req.user.imageUrl,
                 type: 'reply',
                 recipient: recipientName,
-                topicId: topicData.topicId
+                topicId: topicData.topicId,
+                // crossingId: req.body/crossingId
             };
 
             realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification)

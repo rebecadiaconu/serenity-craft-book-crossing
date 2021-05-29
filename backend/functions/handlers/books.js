@@ -583,8 +583,6 @@ exports.deleteReview = (req, res) => {
 
         deletedRating = data.docs[0].data().rating;
 
-        console.log(deletedRating);
-
         return db.doc(`/reviews/${req.params.reviewId}`).delete()
         .then(() => {
             bookData.numReviews--;
@@ -606,6 +604,21 @@ exports.deleteReview = (req, res) => {
                 averageRating: bookData.averageRating,
                 numReviews: bookData.numReviews
             });
+        })
+        .then(() => {
+            return realtime.ref(`/notifications/`).orderByChild("bookId").equalTo(req.params.bookId).get();
+        })
+        .then((data) => {
+            let promises = [];
+            
+            if (data.exists()) {
+                let notifications = Object.values(data.val());
+                notifications.forEach((notif) => {
+                    promises.push(realtime.ref(`/notifications/${notif.notificationId}`).remove());
+                });
+            }
+
+            return Promise.all(promises);
         })
         .then(() => {
             return res.json({ message: 'Review deleted successfully! '});

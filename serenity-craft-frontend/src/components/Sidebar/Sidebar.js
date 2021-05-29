@@ -29,6 +29,7 @@ var ps;
 // the links, and couldn't initialize the plugin.
 class SidebarWrapper extends Component {
   sidebarWrapper = createRef();
+
   componentDidMount() {
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(this.sidebarWrapper.current, {
@@ -337,67 +338,10 @@ class Sidebar extends Component {
             >
               <ListItemText
                 primary={this.props.user.username}
-                // secondary={
-                //   <b
-                //     className={
-                //       caret +
-                //       " " +
-                //       classes.userCaret +
-                //       " " +
-                //       (this.state.openAvatar ? classes.caretActive : "")
-                //     }
-                //   />
-                // }
                 disableTypography={true}
                 className={itemText + " " + classes.userItemText}
               />
             </NavLink>
-            {/* <Collapse in={this.state.openAvatar} unmountOnExit>
-              <List className={classes.list + " " + classes.collapseList}>
-              {
-                routes.map((route, index) => {
-                  const innerNavLinkClasses =
-                    classes.collapseItemLink +
-                    " " +
-                    cx({
-                      [" " + classes[color]]: this.activeRoute(route.path)
-                    });
-
-                  const navLinkClasses =
-                    classes.itemLink +
-                    " " +
-                    cx({
-                      [" " + classes[color]]: this.activeRoute(route.path)
-                    });
-
-                  return !!route.profile ? (
-                      <ListItem key={index} className={classes.collapseItem}>
-                        <NavLink
-                          to={route.layout + route.path}
-                          className={cx(
-                          { [navLinkClasses]: route.icon !== undefined },
-                          { [innerNavLinkClasses]: route.icon === undefined }
-                          )}
-                        >
-                          {route.icon !== undefined && (
-                            typeof route.icon === "string" ? (
-                              <Icon className={itemIcon}>{route.icon}</Icon>
-                            ) : (
-                              <route.icon className={itemIcon} />
-                            )
-                          )}
-                          <ListItemText
-                            primary={route.name}
-                            disableTypography={true}
-                            className={collapseItemText}
-                          />
-                        </NavLink>
-                      </ListItem>
-                  ) : null
-                })
-              }
-              </List>
-            </Collapse> */}
           </ListItem>
         </List>
       </div>
@@ -421,14 +365,14 @@ class Sidebar extends Component {
     var brand = (
       <div className={logoClasses}>
         <a
-          href="https://www.creative-tim.com?ref=mdpr-sidebar"
+          href="http://localhost:3000/"
           target="_blank"
           className={logoMini}
         >
           <img src={logo} alt="logo" className={classes.img} />
         </a>
         <a
-          href="https://www.creative-tim.com?ref=mdpr-sidebar"
+          href="http://localhost:3000/"
           target="_blank"
           className={logoNormal}
         >
@@ -449,8 +393,6 @@ class Sidebar extends Component {
       classes.sidebarWrapper +
       " " +
       cx({
-        [classes.drawerPaperMini]:
-          this.props.miniActive && this.state.miniActive,
         [classes.sidebarWrapperWithPerfectScrollbar]:
           navigator.platform.indexOf("Win") > -1
       });

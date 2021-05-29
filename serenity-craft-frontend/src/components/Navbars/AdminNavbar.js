@@ -1,18 +1,21 @@
 import React from "react";
+import cx from "classnames";
+
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
-import cx from "classnames";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import Hidden from "@material-ui/core/Hidden";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Hidden from "@material-ui/core/Hidden";
 
 // material-ui icons
+import Notifications from "@material-ui/icons/Notifications";
 import Menu from "@material-ui/icons/Menu";
 import MoreVert from "@material-ui/icons/MoreVert";
 import ViewList from "@material-ui/icons/ViewList";
+
 
 // core components
 import AdminNavbarLinks from "./AdminNavbarLinks";
@@ -20,6 +23,8 @@ import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarStyle.js";
 import { Link } from "react-router-dom";
+import RequestsContainer from "components serenity/User/RequestsContainer";
+import NotificationContainer from "components serenity/User/NotificationContainer";
 
 const useStyles = makeStyles(styles);
 
@@ -37,6 +42,7 @@ export default function AdminNavbar(props) {
         <Hidden smDown implementation="css">
           <div className={sidebarMinimize}>
             {props.miniActive ? (
+              <>
               <Button
                 justIcon
                 round
@@ -45,6 +51,7 @@ export default function AdminNavbar(props) {
               >
                 <ViewList className={classes.sidebarMiniIcon} />
               </Button>
+              </>
             ) : (
               <Button
                 justIcon
@@ -61,6 +68,7 @@ export default function AdminNavbar(props) {
           {/* Here we create navbar brand, based on route name */}
           <Button component={Link} to={props.location.pathname} className={classes.title} color="transparent">
             {brandText}
+
           </Button>
         </div>
         <Hidden smDown implementation="css">

@@ -289,3 +289,16 @@ export const deleteAccount = (formData, books, crossings) => (dispatch) => {
         });
     });
 };
+
+export const markNotificationRead = (notifIds) => (dispatch) => {
+    axios.post('/notifications', notifIds)
+    .then(({ data }) => {
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+    })
+    .catch((err) => {
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};

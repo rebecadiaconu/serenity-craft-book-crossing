@@ -173,6 +173,10 @@ const BookPage = () => {
     }, []);
 
     useEffect(() => {
+        if(bookId) dispatch(getBook(bookId));
+    }, [bookId]);
+
+    useEffect(() => {
         if (message) successAlert(message);
     }, [message]);
 

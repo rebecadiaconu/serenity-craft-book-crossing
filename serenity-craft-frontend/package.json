@@ -13,6 +13,7 @@
     "chartist": "0.10.1",
     "classnames": "2.2.6",
     "dayjs": "^1.10.4",
+    "firebase": "^8.6.3",
     "history": "4.10.1",
     "jwt-decode": "^3.1.2",
     "match-sorter": "4.1.0",

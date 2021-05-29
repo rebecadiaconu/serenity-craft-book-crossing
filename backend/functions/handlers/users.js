@@ -818,6 +818,20 @@ exports.deleteUserAccount = (req, res) => {
                 return Promise.all(promises);
             })
             .then(() => {
+                return realtime.ref(`/notifications/`).orderByChild("recipient").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let promises = [];
+                if (data.exists()) {
+                    let notifications = Object.values(data.val());
+                    notifications.forEach((notif) => {
+                        promises.push(realtime.ref(`/notifications/${notif.notificationId}`).remove());
+                    });
+                }
+    
+                return Promise.all(promises);
+            })
+            .then(() => {
                 return batch.commit();
             })
             .then(() => {
