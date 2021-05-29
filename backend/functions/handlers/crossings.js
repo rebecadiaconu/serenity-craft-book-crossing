@@ -9,7 +9,7 @@ realtime = firebase.database();
 // Send crossing request
 exports.sendCrossingReq = (req, res) => {
     const newCrossing = {
-        type: req.body.type.trim(),
+        type: "temporar",
         createdAt: new Date().toISOString(),
         sender: req.user.username,
         senderProgress: {
@@ -41,7 +41,7 @@ exports.sendCrossingReq = (req, res) => {
         canceled: false
     };
 
-    if (type === "temporar") {
+    if (newCrossing.type === "temporar") {
         newCrossing.senderPermanent = false;
         newCrossing.recipientPermanent = false;
     }
@@ -56,9 +56,8 @@ exports.sendCrossingReq = (req, res) => {
         if (!data.empty) return res.status(400).json({ error: 'You already sent one crossing request to this user for this book!' });
         return db.collection('crossings').add(newCrossing);
     })
-    .then((doc) => {
-        newCrossing.crossingId = doc.id;
-        return res.json(newCrossing);
+    .then(() => {
+        return res.json({ message: 'Crossing request send successfully!' });
     })
     .catch((err) => {
         console.error(err);
@@ -87,7 +86,7 @@ exports.chooseRandomBook = (req, res) => {
         }
     })
     .then((data) => {
-        if(data.empty) return res.status(400).json({ sender: 'Recipient has no books added!' });
+        if(data.empty) return res.status(400).json({ error: 'Recipient has no books added!' });
         else {
             data.forEach((doc) => {
                 let bookData = doc.data();
@@ -95,11 +94,11 @@ exports.chooseRandomBook = (req, res) => {
                 recipientBooks.push(bookData);
             });
 
-            return db.collection('books').where("owner", "==", sender).get();
+            return db.collection('books').where("owner", "==", sender).where('available', '==', true).get();
         }
     })
     .then((data) => {
-        if (data.empty) return res.status(400).json({ sender: 'Sender has no books added!' });
+        if (data.empty) return res.status(400).json({ error: 'Sender has no books added or none of them is available now!' });
         else {
             data.forEach((doc) => {
                 let bookData = doc.data();
@@ -313,7 +312,7 @@ exports.rejectCrossing = (req, res) => {
     })
 };
 
-// Cancel book crossing (only if status > 'accepted')
+// Cancel book crossing (only if status <= 'accepted')
 // status == pending -> just sender can cancel it
 // status == accepted -> any user
 exports.cancelCrossing = (req, res) => {

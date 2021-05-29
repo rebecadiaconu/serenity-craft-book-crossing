@@ -1,11 +1,3 @@
-// import {
-//     filterByLanguage,
-//     filterByAuthor,
-//     filterByPublisher,
-//     filterByGenres,
-//     filterByRating
-// } from "../redux/actions/booksActions";
-
 const defaultUserImage = "https://firebasestorage.googleapis.com/v0/b/serenity-craft-liceapp.appspot.com/o/no-image.jpg?alt=media";
 const defaultBookImage = "https://firebasestorage.googleapis.com/v0/b/serenity-craft-liceapp.appspot.com/o/nobook-image2.png?alt=media";
 
@@ -30,6 +22,7 @@ const allGenres = [
     'Contemporary',
     'Cooking',
     'Development',
+    'Drama',
     'Dystopian',
     'Families and relationships',
     'Fantasy',
@@ -41,9 +34,12 @@ const allGenres = [
     'Horror',
     'Humor',
     'Motivational',
-    'Mystery',
+    'Mystery and Suspense',
     'Paranormal',
+    'Philosophy',
+    'Poetry',
     'Romance',
+    'Science',
     'Science-fiction',
     'Self-help / Personal',
     'Travel',
@@ -110,11 +106,13 @@ const getFilterData = (books) => {
 };
 
 const alreadyPending = (bookId, crossings ) => {
-    return crossings.filter((crossing) => crossing.reqBookId === bookId ).length > 0 
+    let pendingCrossings = [];
+    pendingCrossings = crossings.filter((crossing) => crossing.reqBookId === bookId && crossing.status === "pending" );
+
+    return pendingCrossings.length > 0 ? pendingCrossings[0].crossingId : false;
 };
 
 const userReviewFirst = (reviews, username) => {
-    console.log(username);
     let data = {};
     let indexData;
 
@@ -127,7 +125,6 @@ const userReviewFirst = (reviews, username) => {
 
     reviews.splice(indexData, 1);
     reviews.unshift(data);
-    console.log(data);
     return reviews;
 };
 

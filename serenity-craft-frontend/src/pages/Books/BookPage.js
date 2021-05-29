@@ -8,6 +8,7 @@ import { userReviewFirst, alreadyPending } from "util/general";
 import { useSelector, useDispatch } from "react-redux";
 import { getBook, deleteBook } from "redux/actions/bookActions";
 import { getReview, reviewDelete } from "redux/actions/reviewActions";
+import { chooseRandomBook, sendRequest, cancelCrossing } from 'redux/actions/crossingActions';
 import { Actions } from 'redux/types';
 
 // Components
@@ -162,6 +163,7 @@ const BookPage = () => {
     const { book, justAdded, edit, deleteBookNow } = useSelector((state) => state.books);
     const { reviewId, addReview, editReview, deleteReview, reviewData } = useSelector((state) => state.review);
     const { credentials, crossings } = useSelector((state) => state.user);
+    const { sendReq, randomBookId, randomBook } = useSelector((state) =>  state.crossing);
     const { message, errors } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
@@ -185,6 +187,25 @@ const BookPage = () => {
     useEffect(() => {
         if (deleteBookNow || deleteReview) confirmDelete();
     }, [deleteReview, deleteBookNow]);
+
+    useEffect(() => {
+        if (sendReq && randomBookId && randomBook) {
+            let formData = {
+                owner: book.owner,
+                ownerImage: book.ownerImage,
+                randomBookId: randomBookId,
+                randomBook: randomBook,
+                reqBook: {
+                    title: book.title,
+                    author: book.author,
+                    coverImage: book.coverImage,
+                    averageRating: book.averageRating
+                }
+            };
+
+            dispatch(sendRequest(bookId, formData));
+        }
+    }, [sendReq]);
 
     
     const handleJustAdded = () => {
@@ -214,11 +235,21 @@ const BookPage = () => {
 
     const handleEditBook = () => {
         dispatch({ type: Actions.BOOK.EDIT });
-    }
+    };
 
     const handleAddReview = () => {
         dispatch({ type: Actions.REVIEW.REVIEW })
-    }
+    };
+
+    const handleSendReq = () => {
+        dispatch(chooseRandomBook(credentials.username, book.owner));
+    };
+
+    const handleCancelReq = () => {
+        let crossingId = alreadyPending(book.bookId, crossings);
+        console.log(crossingId);
+        dispatch(cancelCrossing(crossingId, bookId));
+    };
 
     const successAlert = (text) => {
         setAlert(
@@ -401,9 +432,14 @@ const BookPage = () => {
                             )
                         }
                         {
-                            (book.owner !== credentials.username && book.available && crossings) && <Button disabled={alreadyPending(book.bookId, crossings) || !credentials.canSendReq} color={alreadyPending(book.bookId, crossings) ? "warning" : "success"} >
-                               {alreadyPending(book.bookId, crossings) ? "REQUEST SENT" : "SEND CROSSING REQUEST"}
-                            </Button>
+                            (book.owner !== credentials.username && book.available && crossings) && (
+                                <Button 
+                                    color={alreadyPending(book.bookId, crossings) ? "warning" : "success"} 
+                                    onClick={alreadyPending(book.bookId, crossings) ? handleCancelReq : handleSendReq}
+                                >
+                                    {alreadyPending(book.bookId, crossings) ? "REQUEST SENT" : "SEND CROSSING REQUEST"}
+                                </Button>
+                                )
                         }
                         {
                             book.ownerReview ? (

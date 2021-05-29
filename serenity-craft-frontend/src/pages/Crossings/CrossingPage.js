@@ -93,7 +93,7 @@ const CrossingPage = () => {
     }, [deleteTopicVar, cancel, deleteCross]);
 
     const handleCancel = () => {
-        dispatch(cancelCrossing(crossingId));
+        dispatch(cancelCrossing(crossingId, false));
     };
 
     const handleDelete = () => {

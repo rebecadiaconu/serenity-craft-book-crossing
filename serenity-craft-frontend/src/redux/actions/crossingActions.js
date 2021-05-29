@@ -1,5 +1,7 @@
 import axios from "../../util/axios";
 import { Actions } from "../types";
+import { getBook } from "redux/actions/bookActions";
+import { getUserData } from "redux/actions/userActions";
 import history from "util/history";
 
 
@@ -12,6 +14,55 @@ export const getCrossingData = (crossingId) => (dispatch) => {
             payload: data
         });
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        console.error(err);
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS, 
+            payload: err.response.data 
+        });
+    });
+};
+
+
+export const chooseRandomBook = (sender, recipient) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post(`/random/${sender}/${recipient}`)
+    .then(({ data }) => {
+        dispatch({
+            type: Actions.CROSSING.SET_RANDOM_BOOK,
+            payload: data
+        });
+        dispatch({ type: Actions.CROSSING.SEND_REQ });
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        console.error(err);
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS, 
+            payload: err.response.data 
+        });
+    });
+};
+
+
+export const sendRequest = (bookId, formData) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post(`/crossing/${bookId}`, formData)
+    .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch(getUserData());
+        dispatch(getBook(bookId));
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.CROSSING.STOP_SEND_REQ });
+        dispatch({ type: Actions.CROSSING.STOP_SET_RANDOM_BOOK });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
@@ -105,7 +156,7 @@ export const changeCrossingType = (crossingId) => (dispatch) => {
     });
 };
 
-export const cancelCrossing = (crossingId) => (dispatch) => {
+export const cancelCrossing = (crossingId, bookId) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/crossing/${crossingId}/cancel`)
     .then(({ data }) => {
@@ -113,7 +164,8 @@ export const cancelCrossing = (crossingId) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
-        dispatch(getCrossingData(crossingId));
+        if (bookId) dispatch(getBook(bookId));
+        else dispatch(getCrossingData(crossingId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })

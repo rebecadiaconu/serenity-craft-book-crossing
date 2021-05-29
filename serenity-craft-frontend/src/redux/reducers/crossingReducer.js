@@ -1,6 +1,9 @@
 import { Actions } from '../types';
 
 const initialState = {
+    randomBook: null,
+    randomBookId: null,
+    sendReq: false,
     crossingId: null,
     crossing: null,
     topicId: null,
@@ -18,6 +21,28 @@ const initialState = {
 
 const CrossingReducer = (state = initialState, action) => {
     switch(action.type) {
+        case Actions.CROSSING.SET_RANDOM_BOOK:
+            return {
+                ...state,
+                randomBook: action.payload,
+                randomBookId: action.payload.randomBookId,
+            }
+        case Actions.CROSSING.SEND_REQ:
+            return {
+                ...state,
+                sendReq: true
+            }
+        case Actions.CROSSING.STOP_SEND_REQ:
+            return {
+                ...state,
+                sendReq: false
+            }
+        case Actions.CROSSING.STOP_SET_RANDOM_BOOK:
+            return {
+                ...state,
+                randomBook: null,
+                randomBookId: null
+            }
         case Actions.CROSSING.SET_CROSSING:
             return {
                 ...state,
