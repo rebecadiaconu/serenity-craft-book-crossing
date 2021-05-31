@@ -13,7 +13,8 @@ const initialState = {
     searchApplied: false,
     searchValue: '',
     sortApplied: false,
-    sortValueCrossings: 0
+    sortValueCrossings: 0,
+    favBooks: []
 };
 
 const UserReducer = (state = initialState, action) => {
@@ -98,6 +99,11 @@ const UserReducer = (state = initialState, action) => {
                 searchApplied: false,
                 searchValue: '',
                 crossings: state.initCrossings
+            }
+          case Actions.USER.SET_FAVS:
+            return {
+              ...state,
+              favBooks: action.payload
             }
         default:
             return state;

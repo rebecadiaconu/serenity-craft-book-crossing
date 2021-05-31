@@ -87,6 +87,7 @@ export const forgotPassword = (userData) => (dispatch) => {
 
 
 export const getUserData = () => (dispatch) => {
+    dispatch({ type: Actions.USER.LOADING_USER });
     axios
     .get('/user')
     .then(({ data }) => {
@@ -96,12 +97,62 @@ export const getUserData = () => (dispatch) => {
             type: Actions.USER.SET_USER,
             payload: data
         });
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {
         dispatch({
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
         });
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+    });
+};
+
+export const getUserFavs = (bookIds, books) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+
+    let favBooks = [];
+    favBooks = books.filter((book) => bookIds.includes(book.bookId));
+
+    dispatch({
+        type: Actions.USER.SET_FAVS,
+        payload: favBooks
+    });
+    dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+};
+
+export const addToFavs = (bookId) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post(`/user/favs/${bookId}`)
+    .then(({ data }) => {
+        dispatch(getUserData());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    });
+};
+
+export const removeFromFavs = (bookId) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post(`/user/noFavs/${bookId}`)
+    .then(({ data }) => {
+        dispatch(getUserData());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 

@@ -35,6 +35,7 @@ import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 
 // Components Serenity
+import Favorites from "pages/User/Favorites";
 import RequestPage from "pages/Crossings/RequestPage";
 import CrossingPage from "pages/Crossings/CrossingPage";
 import BookPage from "pages/Books/BookPage";
@@ -43,6 +44,7 @@ import UserAuthPage from "./pages/User/UserAuthPage";
 import AllBooks from "./pages/AllBooks";
 
 // @material-ui/icons Serenity
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import CachedIcon from '@material-ui/icons/Cached';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
@@ -123,6 +125,16 @@ const routes = [
     unauth: false
   },
   {
+    path: '/favorites',
+    name: 'My favorites',
+    icon: FavoriteIcon,
+    component: Favorites,
+    layout: "/admin",
+    invisible:  false,
+    logged: true,
+    unauth: false 
+  },
+  {
     path: "/login-page",
     name: "Log in",
     icon: Fingerprint,
@@ -148,208 +160,208 @@ const routes = [
       layout: "/auth",
       logged: false,
       unauth: true,   
-  },
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: DashboardIcon,
-    component: Dashboard,
-    layout: "/admin"
-  },
-  {
-    collapse: true,
-    name: "Pages",
-    icon: Image,
-    state: "pageCollapse",
-    views: [
-      {
-        path: "/timeline-page",
-        name: "Timeline Page",
-        mini: "T",
-        component: TimelinePage,
-        layout: "/admin"
-      },
-      {
-        path: "/login-page",
-        name: "Login Page",
-        mini: "L",
-        component: LoginPage,
-        layout: "/auth"
-      },
-      {
-        path: "/register-page",
-        name: "Register Page",
-        mini: "R",
-        component: RegisterPage,
-        layout: "/auth"
-      },
-      {
-        path: "/user-page",
-        name: "User Profile",
-        mini: "UP",
-        component: UserProfile,
-        layout: "/admin"
-      },
-      {
-        path: "/error-page",
-        name: "Error Page",
-        mini: "E",
-        component: ErrorPage,
-        layout: "/auth"
-      }
-    ]
-  },
-  {
-    collapse: true,
-    name: "Components",
-    icon: Apps,
-    state: "componentsCollapse",
-    views: [
-      {
-        collapse: true,
-        name: "Multi Level Collapse",
-        mini: "MC",
-        state: "multiCollapse",
-        views: [
-          {
-            path: "/buttons",
-            name: "Buttons",
-            mini: "B",
-            component: Buttons,
-            layout: "/admin"
-          }
-        ]
-      },
-      {
-        path: "/buttons",
-        name: "Buttons",
-        mini: "B",
-        component: Buttons,
-        layout: "/admin"
-      },
-      {
-        path: "/grid-system",
-        name: "Grid System",
-        mini: "GS",
-        component: GridSystem,
-        layout: "/admin"
-      },
-      {
-        path: "/panels",
-        name: "Panels",
-        mini: "P",
-        component: Panels,
-        layout: "/admin"
-      },
-      {
-        path: "/sweet-alert",
-        name: "Sweet Alert",
-        mini: "SA",
-        component: SweetAlert,
-        layout: "/admin"
-      },
-      {
-        path: "/notifications",
-        name: "Notifications",
-        mini: "N",
-        component: Notifications,
-        layout: "/admin"
-      },
-      {
-        path: "/icons",
-        name: "Icons",
-        mini: "I",
-        component: Icons,
-        layout: "/admin"
-      },
-      {
-        path: "/typography",
-        name: "Typography",
-        mini: "T",
-        component: Typography,
-        layout: "/admin"
-      }
-    ]
-  },
-  {
-    collapse: true,
-    name: "Forms",
-    icon: "content_paste",
-    state: "formsCollapse",
-    views: [
-      {
-        path: "/regular-forms",
-        name: "Regular Forms",
-        mini: "RF",
-        component: RegularForms,
-        layout: "/admin"
-      },
-      {
-        path: "/extended-forms",
-        name: "Extended Forms",
-        mini: "EF",
-        component: ExtendedForms,
-        layout: "/admin"
-      },
-      {
-        path: "/validation-forms",
-        name: "Validation Forms",
-        mini: "VF",
-        component: ValidationForms,
-        layout: "/admin"
-      },
-      {
-        path: "/wizard",
-        name: "Wizard",
-        mini: "W",
-        component: Wizard,
-        layout: "/admin"
-      }
-    ]
-  },
-  {
-    collapse: true,
-    name: "Tables",
-    icon: GridOn,
-    state: "tablesCollapse",
-    views: [
-      {
-        path: "/regular-tables",
-        name: "Regular Tables",
-        mini: "RT",
-        component: RegularTables,
-        layout: "/admin"
-      },
-      {
-        path: "/extended-tables",
-        name: "Extended Tables",
-        mini: "ET",
-        component: ExtendedTables,
-        layout: "/admin"
-      },
-      {
-        path: "/react-tables",
-        name: "React Tables",
-        mini: "RT",
-        component: ReactTables,
-        layout: "/admin"
-      }
-    ]
-  },
-  {
-    path: "/widgets",
-    name: "Widgets",
-    icon: WidgetsIcon,
-    component: Widgets,
-    layout: "/admin"
-  },
-  {
-    path: "/calendar",
-    name: "Calendar",
-    icon: DateRange,
-    component: Calendar,
-    layout: "/admin"
   }
+  // {
+  //   path: "/dashboard",
+  //   name: "Dashboard",
+  //   icon: DashboardIcon,
+  //   component: Dashboard,
+  //   layout: "/admin"
+  // },
+  // {
+  //   collapse: true,
+  //   name: "Pages",
+  //   icon: Image,
+  //   state: "pageCollapse",
+  //   views: [
+  //     {
+  //       path: "/timeline-page",
+  //       name: "Timeline Page",
+  //       mini: "T",
+  //       component: TimelinePage,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/login-page",
+  //       name: "Login Page",
+  //       mini: "L",
+  //       component: LoginPage,
+  //       layout: "/auth"
+  //     },
+  //     {
+  //       path: "/register-page",
+  //       name: "Register Page",
+  //       mini: "R",
+  //       component: RegisterPage,
+  //       layout: "/auth"
+  //     },
+  //     {
+  //       path: "/user-page",
+  //       name: "User Profile",
+  //       mini: "UP",
+  //       component: UserProfile,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/error-page",
+  //       name: "Error Page",
+  //       mini: "E",
+  //       component: ErrorPage,
+  //       layout: "/auth"
+  //     }
+  //   ]
+  // },
+  // {
+  //   collapse: true,
+  //   name: "Components",
+  //   icon: Apps,
+  //   state: "componentsCollapse",
+  //   views: [
+  //     {
+  //       collapse: true,
+  //       name: "Multi Level Collapse",
+  //       mini: "MC",
+  //       state: "multiCollapse",
+  //       views: [
+  //         {
+  //           path: "/buttons",
+  //           name: "Buttons",
+  //           mini: "B",
+  //           component: Buttons,
+  //           layout: "/admin"
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       path: "/buttons",
+  //       name: "Buttons",
+  //       mini: "B",
+  //       component: Buttons,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/grid-system",
+  //       name: "Grid System",
+  //       mini: "GS",
+  //       component: GridSystem,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/panels",
+  //       name: "Panels",
+  //       mini: "P",
+  //       component: Panels,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/sweet-alert",
+  //       name: "Sweet Alert",
+  //       mini: "SA",
+  //       component: SweetAlert,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/notifications",
+  //       name: "Notifications",
+  //       mini: "N",
+  //       component: Notifications,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/icons",
+  //       name: "Icons",
+  //       mini: "I",
+  //       component: Icons,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/typography",
+  //       name: "Typography",
+  //       mini: "T",
+  //       component: Typography,
+  //       layout: "/admin"
+  //     }
+  //   ]
+  // },
+  // {
+  //   collapse: true,
+  //   name: "Forms",
+  //   icon: "content_paste",
+  //   state: "formsCollapse",
+  //   views: [
+  //     {
+  //       path: "/regular-forms",
+  //       name: "Regular Forms",
+  //       mini: "RF",
+  //       component: RegularForms,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/extended-forms",
+  //       name: "Extended Forms",
+  //       mini: "EF",
+  //       component: ExtendedForms,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/validation-forms",
+  //       name: "Validation Forms",
+  //       mini: "VF",
+  //       component: ValidationForms,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/wizard",
+  //       name: "Wizard",
+  //       mini: "W",
+  //       component: Wizard,
+  //       layout: "/admin"
+  //     }
+  //   ]
+  // },
+  // {
+  //   collapse: true,
+  //   name: "Tables",
+  //   icon: GridOn,
+  //   state: "tablesCollapse",
+  //   views: [
+  //     {
+  //       path: "/regular-tables",
+  //       name: "Regular Tables",
+  //       mini: "RT",
+  //       component: RegularTables,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/extended-tables",
+  //       name: "Extended Tables",
+  //       mini: "ET",
+  //       component: ExtendedTables,
+  //       layout: "/admin"
+  //     },
+  //     {
+  //       path: "/react-tables",
+  //       name: "React Tables",
+  //       mini: "RT",
+  //       component: ReactTables,
+  //       layout: "/admin"
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: "/widgets",
+  //   name: "Widgets",
+  //   icon: WidgetsIcon,
+  //   component: Widgets,
+  //   layout: "/admin"
+  // },
+  // {
+  //   path: "/calendar",
+  //   name: "Calendar",
+  //   icon: DateRange,
+  //   component: Calendar,
+  //   layout: "/admin"
+  // }
 ];
 
 export default routes;

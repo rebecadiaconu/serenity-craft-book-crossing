@@ -46,6 +46,7 @@ exports.signUp = (req, res) => {
             imageUrl: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImage}?alt=media`,
             reportCount: 0,
             banned: false,
+            favs: [],
             userId
         };
 
@@ -736,6 +737,54 @@ exports.getNotifications = (req, res) => {
 
         notifications.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
         return res.json({ notifications: notifications });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+
+exports.addToFavs = (req, res) => {
+    let bookId = req.params.bookId;
+    let favorites = [];
+    const userDoc = db.doc(`/users/${req.user.username}`);
+
+    userDoc.get()
+    .then((doc) =>{
+        if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
+
+        favorites = doc.data().favs;
+        if (!favorites.includes(bookId)) favorites.push(bookId);
+
+        return userDoc.update({ favs: favorites });
+    })
+    .then(() =>{
+        return res.json({ message: 'Book added to favorites successfully!' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+exports.removeFromFavs = (req, res) => {
+    let bookId = req.params.bookId;
+    let favorites = [];
+    const userDoc = db.doc(`/users/${req.user.username}`);
+
+    userDoc.get()
+    .then((doc) =>{
+        if (!doc.exists) return res.status(404).json({ error: 'User not found!' });
+
+        favorites = doc.data().favs;
+        let bookIndex = favorites.indexOf(bookId);
+        if (bookIndex !== -1) favorites.splice(bookIndex, 1);
+
+        return userDoc.update({ favs: favorites });
+    })
+    .then(() =>{
+        return res.json({ message: 'Book removed from favorites successfully!' });
     })
     .catch((err) => {
         console.error(err);

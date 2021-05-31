@@ -84,7 +84,7 @@ const bookStyle = {
     },
     special: {
         marginTop: 20,
-        fontFamily: 'Sacramento, cursive'
+        fontFamily: "'Sacramento', cursive",
     },
     testimonialIcon: {
         marginTop: "30px",

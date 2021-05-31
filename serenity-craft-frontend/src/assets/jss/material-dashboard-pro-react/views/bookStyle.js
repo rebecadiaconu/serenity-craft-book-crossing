@@ -12,6 +12,9 @@ const bookStyle = {
     ...hoverCardStyle,
     ...dashboardStyle,
     tooltip,
+    fav: {
+        boxShadow: '1px 2px 10px 1px #ff1744'
+    },
     authorName: {
         ...cardTitle,
         textAlign: "center",

@@ -16,6 +16,7 @@ export const Actions = {
         SORT: "USER.SORT",
         SET_SEARCH_DATA: "USER.SET_SEARCH_DATA",
         STOP_SEARCH: "USER.STOP_SEARCH",
+        SET_FAVS: "USER.SET_FAVS"
     },
     UI: {
         SET_ERRORS: "UI.SET_ERRORS",

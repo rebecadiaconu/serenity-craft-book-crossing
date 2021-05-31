@@ -1,21 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import history from "util/history";
+import classNames from "classnames";
 
 // Redux
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addToFavs, removeFromFavs } from "redux/actions/userActions";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 
 // @material-ui/icons
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import Edit from "@material-ui/icons/Edit";
 import GradeIcon from '@material-ui/icons/Grade';
 import GradeOutlinedIcon from '@material-ui/icons/GradeOutlined';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 import ArtTrack from "@material-ui/icons/ArtTrack";
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import CommentIcon from '@material-ui/icons/Comment';
 
 // core components
 import GridItem from "components/Grid/GridItem.js";
@@ -30,16 +32,38 @@ import styles from "assets/jss/material-dashboard-pro-react/views/bookStyle.js";
 const useStyles = makeStyles(styles);
 
 const BookContainer = ({ book, carousel }) => {
+    const dispatch = useDispatch();
     const classes = useStyles();
+    const [cardStyles, setStyles] = useState(classes.cardHover);
     const { authenticated, credentials } = useSelector((state) => state.user);
+
+    useEffect(() => {
+        if (authenticated && credentials && credentials.favs) {
+            setStyles(classNames({
+                [classes.cardHover]: true,
+                [classes.fav]: credentials.favs.includes(book.bookId)
+            }));
+        }
+    }, [authenticated, credentials])
 
     const handleViewClick = () => {
         history.push(`/admin/books/${book.bookId}`);
     };
 
+    const handleFavsClick = (event) => {
+        event.preventDefault();
+        if (!credentials.favs.includes(book.bookId)) {
+            credentials.favs.push(book.bookId);
+            dispatch(addToFavs(book.bookId));
+        } else {
+            credentials.favs.splice(credentials.favs.indexOf(book.bookId), 1);
+            dispatch(removeFromFavs(book.bookId));
+        }
+    };
+
     return (
         <GridItem xs={12} sm={12} md={carousel ? 12 : 4}>
-            <Card product className={classes.cardHover}>
+            <Card product className={cardStyles}>
                 <CardHeader image className={classes.cardHeaderHover}>
                     <a href="#" onClick={e => e.preventDefault()}>
                         <img src={book.coverImage} className={classes.cardImage} alt="book-cover" />
@@ -59,6 +83,33 @@ const BookContainer = ({ book, carousel }) => {
                             </Button>
                         </Tooltip>
                         {
+                            ( authenticated && credentials?.favs?.includes(book.bookId)) ? (
+                                <Tooltip
+                                    id="tooltip-top"
+                                    title="Remove from Favorites"
+                                    placement="bottom"
+                                    classes={{ tooltip: classes.tooltip }}
+                                    onClick={handleFavsClick}
+                                >
+                                    <Button color="rose" simple justIcon>
+                                        <FavoriteIcon className={classes.underChartIcons} />
+                                    </Button>
+                                </Tooltip>
+                            ) : (
+                                <Tooltip
+                                    id="tooltip-top"
+                                    title="Add to Favorites"
+                                    placement="bottom"
+                                    classes={{ tooltip: classes.tooltip }}
+                                    onClick={handleFavsClick}
+                                >
+                                    <Button color="rose" simple justIcon>
+                                        <FavoriteBorderIcon className={classes.underChartIcons} />
+                                    </Button>
+                                </Tooltip>
+                            )
+                        }
+                        {
                             (authenticated && book.owner === credentials.username) && (
                                 <>
                                 <Tooltip
@@ -69,16 +120,6 @@ const BookContainer = ({ book, carousel }) => {
                                 >
                                     <Button color="success" simple justIcon>
                                         <Edit className={classes.underChartIcons} />
-                                    </Button>
-                                </Tooltip>
-                                <Tooltip
-                                    id="tooltip-top"
-                                    title="Remove"
-                                    placement="bottom"
-                                    classes={{ tooltip: classes.tooltip }}
-                                >
-                                    <Button color="danger" simple justIcon>
-                                        <HighlightOffIcon className={classes.underChartIcons} />
                                     </Button>
                                 </Tooltip>
                                 </>

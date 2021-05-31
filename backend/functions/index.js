@@ -4,10 +4,57 @@ const app = require('express')();
 var cors = require('cors');
 app.use(cors());
 
-const { signUp, logIn, forgotPassword, changeEmail, changeUsername, changePassword, uploadImage, deleteImage, addUserDetails, getAuthenticatedUser, getRequests, getNotifications, getUserDetails, markNotificationRead, deleteUserAccount } = require('./handlers/users');
-const { addBook, uploadCoverImage, deleteCoverImage, editBook, getBook, deleteBook, getAllBooks, reviewBook, getReview, editReview, deleteReview } = require('./handlers/books');
-const { sendCrossingReq, markCrossingReqRead, chooseRandomBook, changeToPermanent, acceptCrossing, rejectCrossing, cancelCrossing, changeCrossingStatus, changeCrossingBook, getCrossingDetails, deleteCrossing } = require('./handlers/crossings');
-const { addTopic, getTopic, editTopic, deleteTopic, addReply, deleteReply } = require('./handlers/topics');
+const { 
+    signUp, 
+    logIn, 
+    forgotPassword, 
+    changeEmail, 
+    changeUsername, 
+    changePassword, 
+    uploadImage, 
+    deleteImage, 
+    addUserDetails, 
+    getAuthenticatedUser, 
+    getRequests, 
+    getNotifications, 
+    getUserDetails, 
+    addToFavs,
+    removeFromFavs,
+    markNotificationRead, 
+    deleteUserAccount 
+} = require('./handlers/users');
+const { 
+    addBook, 
+    uploadCoverImage, 
+    deleteCoverImage, 
+    editBook, 
+    getBook, 
+    deleteBook, 
+    getAllBooks, 
+    reviewBook, 
+    getReview, 
+    editReview,
+    deleteReview 
+} = require('./handlers/books');
+const { 
+    sendCrossingReq, 
+    markCrossingReqRead, 
+    chooseRandomBook, 
+    changeToPermanent, 
+    acceptCrossing, 
+    rejectCrossing, 
+    cancelCrossing, 
+    changeCrossingStatus, 
+    changeCrossingBook, 
+    getCrossingDetails, 
+    deleteCrossing } = require('./handlers/crossings');
+const { 
+    addTopic, 
+    getTopic, 
+    editTopic, 
+    deleteTopic, 
+    addReply, 
+    deleteReply } = require('./handlers/topics');
 
 const { fbAuth, bookOwnerAuth, crossingPartener } = require('./util/middleware');
 
@@ -18,6 +65,8 @@ app.post('/login', logIn);        // Log in with email and password route
 app.post('/forgotPassword', forgotPassword);
 app.get('/user', fbAuth,  getAuthenticatedUser);         // Get current user details  (books + crossings + notif + req)
 app.post('/user', fbAuth, addUserDetails);       // Add user details
+app.post('/user/favs/:bookId', fbAuth, addToFavs);      // Add book to Favorites
+app.post('/user/noFavs/:bookId', fbAuth, removeFromFavs);      // Add book to Favorites
 app.post('/user/delete', fbAuth, deleteUserAccount);          // Delete account
 app.post('/user/image', fbAuth, uploadImage);        // Upload user profile picture
 app.post('/user/noImage', fbAuth, deleteImage);        // Remove user profile picture
