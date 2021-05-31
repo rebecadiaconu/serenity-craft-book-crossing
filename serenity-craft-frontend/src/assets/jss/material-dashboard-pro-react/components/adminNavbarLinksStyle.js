@@ -2,6 +2,7 @@ import {
   defaultFont,
   dangerColor,
   roseColor, 
+  grayColor,
   primaryColor,
   whiteColor
 } from "assets/jss/material-dashboard-pro-react.js";
@@ -10,18 +11,32 @@ import customDropdownStyle from "assets/jss/material-dashboard-pro-react/compone
 
 const adminNavbarLinksStyle = theme => ({
   ...customDropdownStyle(theme),
+  reqSeen: {
+    color: grayColor[0]
+  },
+  reqUnseen: {
+    color: roseColor[0]
+  },
   read: {
+    color: grayColor[0],
+    '&:hover': {
+      backgroundColor: grayColor[0],
+      color: whiteColor,
+    }
+  },
+  noRead : {
     color: roseColor[0],
     '&:hover': {
       backgroundColor: roseColor[0],
       color: whiteColor,
     }
   },
-  noRead : {
-    color: primaryColor[0],
+  iconButton: {
+    textDecoration: 'none',
+    color: 'black',
     '&:hover': {
-      backgroundColor: primaryColor[0],
-      color: whiteColor,
+      textDecoration: 'none',
+      color: 'black'
     }
   },
   icon: {

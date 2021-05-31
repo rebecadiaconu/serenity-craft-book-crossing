@@ -67,11 +67,11 @@ const CrossingInfo = () => {
                     (credentials.username === crossing.recipient && crossing.type === "temporar") && (
                         !crossing.senderProgress.sendBook ? (
                         <Tooltip title="Choose to receive other book!" classes={{ tooltip: classes.tooltip }}>
-                            <Button size="sm" round justIcon color="rose" className={classes.changeBookBtn} onClick={() => dispatch({ type: Actions.CROSSING.CHANGE_BOOK })} ><EditIcon /></Button>
+                            <Button disabled={crossing.canceled} size="sm" round justIcon color="rose" className={classes.changeBookBtn} onClick={() => dispatch({ type: Actions.CROSSING.CHANGE_BOOK })} ><EditIcon /></Button>
                         </Tooltip>
                     ) : (
                         <Tooltip title="The other user already send his book!" classes={{ tooltip: classes.tooltip }}>
-                            <Button size="sm" round disabled justIcon color="rose" className={classes.changeBookBtn}><EditIcon /></Button>
+                            <Button disabled={crossing.canceled} size="sm" round disabled justIcon color="rose" className={classes.changeBookBtn}><EditIcon /></Button>
                         </Tooltip>
                     ))
                 }
@@ -115,7 +115,7 @@ const CrossingInfo = () => {
                                     ) : (
                                         <NavLink to={`/admin/books/${crossing.reqBookId}`} className={classes.link}>
                                             <CardText color="warning" >
-                                                <h5>{crossing.sender === credentials.username ? "What you get" : "What you give"}</h5>
+                                                <h5>{crossing.recipient === credentials.username ? "What you get" : "What you give"}</h5>
                                                 <p>{crossing.reqBook.title}, by {crossing.reqBook.author}</p> 
                                             </CardText>
                                         </NavLink>

@@ -3,6 +3,7 @@ import { Actions } from "../types";
 import { getBook } from "redux/actions/bookActions";
 import { getUserData } from "redux/actions/userActions";
 import history from "util/history";
+import { getRequests } from "./userActions";
 
 
 export const getCrossingData = (crossingId) => (dispatch) => {
@@ -156,6 +157,45 @@ export const changeCrossingType = (crossingId) => (dispatch) => {
     });
 };
 
+export const acceptCrossing = (crossingId) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post(`/crossing/${crossingId}/accept`)
+    .then(({ data }) => {
+        dispatch({
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        })
+        dispatch(getRequests());        
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        history.push(`/admin/crossings/${crossingId}`);
+    })
+    .catch((err) => {
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS, 
+            payload: err.response.data 
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    });
+};
+
+export const rejectCrossing = (crossingId) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post(`/crossing/${crossingId}/reject`)
+    .then(({ data }) => {
+        dispatch(getRequests());        
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS, 
+            payload: err.response.data 
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    });
+};
+
 export const cancelCrossing = (crossingId, bookId) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/crossing/${crossingId}/cancel`)
@@ -177,6 +217,20 @@ export const cancelCrossing = (crossingId, bookId) => (dispatch) => {
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };  
+
+export const markRequestsRead = (reqIds) => (dispatch) => {
+    axios.post('/requests', reqIds)
+    .then(({ data }) => {
+        dispatch(getUserData());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+    })
+    .catch((err) => {
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
 
 export const addTopic = (formData, crossingId) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });

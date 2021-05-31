@@ -4,6 +4,8 @@ const initialState = {
     backUp: false,
     scrolling: false,
     loading: false,
+    seeRequest: false,
+    request: null,
     sendingEmail: false,
     errors: null,
     message: '',
@@ -85,6 +87,18 @@ const UiReducer = (state = initialState, action) => {
                 ...state,
                 user: {},
                 userBooks: [],
+            }
+        case Actions.UI.SEE_REQUEST:
+            return {
+                ...state,
+                seeRequest: true,
+                request: action.payload
+            }
+        case Actions.UI.STOP_SEE_REQUEST:
+            return {
+                ...state,
+                seeRequest: false,
+                request: null
             }
         default:
             return state;

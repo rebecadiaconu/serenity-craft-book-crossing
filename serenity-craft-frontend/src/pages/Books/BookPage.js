@@ -162,10 +162,14 @@ const BookPage = () => {
     const { bookId } = useParams();
     const { book, justAdded, edit, deleteBookNow } = useSelector((state) => state.books);
     const { reviewId, addReview, editReview, deleteReview, reviewData } = useSelector((state) => state.review);
-    const { credentials, crossings } = useSelector((state) => state.user);
+    const { authenticated, credentials, crossings } = useSelector((state) => state.user);
     const { sendReq, randomBookId, randomBook } = useSelector((state) =>  state.crossing);
     const { message, errors } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
+
+    useEffect(() => {
+        if(!authenticated) history.push('/');
+    }, []);
 
     useEffect(() => {
         dispatch(getBook(bookId));

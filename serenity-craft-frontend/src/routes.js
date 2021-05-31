@@ -35,6 +35,7 @@ import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 
 // Components Serenity
+import RequestPage from "pages/Crossings/RequestPage";
 import CrossingPage from "pages/Crossings/CrossingPage";
 import BookPage from "pages/Books/BookPage";
 import UserPage from "./pages/User/UserPage";
@@ -65,8 +66,18 @@ const routes = [
   {
     path: '/books/:bookId',
     name: '',
-    icon: BookIcon,
+    icon: ShareIcon,
     component: BookPage,
+    layout: "/admin",
+    invisible:  true,
+    logged: false,
+    unauth: false 
+  },
+  {
+    path: '/requests',
+    name: '',
+    icon: BookIcon,
+    component: RequestPage,
     layout: "/admin",
     invisible:  true,
     logged: false,

@@ -706,6 +706,43 @@ exports.getUserDetails = (req, res) => {
     });
 };
 
+exports.getRequests = (req, res) => {
+    let requests = [];
+
+    db.collection('crossings').where('recipient', '==', req.user.username).where('status', '==', 'pending').get()
+    .then((data) => {
+        data.forEach((doc) => {
+            requests.push({
+                ...doc.data(),
+                crossingId: doc.id
+            });
+        });
+
+        return res.json({ requests: requests });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+exports.getNotifications = (req, res) => {
+    let notifications;
+    realtime.ref(`/notifications/`).orderByChild("recipient").equalTo(req.user.username).get()
+    .then((data) => {
+        if (data.exists()) {
+            notifications = Object.values(data.val());
+        } else notifications = [];
+
+        notifications.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+        return res.json({ notifications: notifications });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
 // Mark user notification read
 exports.markNotificationRead = (req, res) => {
     let promises = [];
@@ -723,7 +760,6 @@ exports.markNotificationRead = (req, res) => {
         console.error(err);
         return res.status(500).json({error: err.code});
     });
-
 };
 
 // Delete user account

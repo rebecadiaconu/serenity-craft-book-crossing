@@ -266,8 +266,6 @@ export const getAnyUser = (username) => (dispatch) => {
 };
 
 export const deleteAccount = (formData, books, crossings) => (dispatch) => {
-    console.log('delete --> ', formData);
-
     dispatch({ type: Actions.USER.LOADING_USER });
     books.forEach((book) => dispatch(deleteBook(book.bookId)))
     crossings.forEach((crossing) => dispatch(cancelCrossing(crossing.crossingId)));
@@ -282,12 +280,53 @@ export const deleteAccount = (formData, books, crossings) => (dispatch) => {
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
         });
     });
+};
+
+export const getNotifications = () => (dispatch) => {
+    dispatch({ type: Actions.USER.LOADING_USER });
+    axios.get('/user/notifications')
+    .then(({ data }) => {
+        dispatch({
+            type: Actions.USER.SET_NOTIF,
+            payload: data.notifications
+        });
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
+export const getRequests = () => (dispatch) => {
+    dispatch({ type: Actions.USER.LOADING_USER });
+    axios.get('/user/requests')
+    .then(({ data }) => {
+        dispatch({
+            type: Actions.USER.SET_REQUESTS,
+            payload: data.requests
+        });
+        dispatch({ type: Actions.UI.CLEAR_ERRORS});
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+
 };
 
 export const markNotificationRead = (notifIds) => (dispatch) => {

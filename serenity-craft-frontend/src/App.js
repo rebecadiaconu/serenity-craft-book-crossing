@@ -45,10 +45,6 @@ const App = () => {
         } 
     }, []);
 
-    // useEffect(() => {
-    //     if (!authenticated) dispatch(logOutUser());
-    // }, [authenticated]);
-
     return (
         <Router history={history}>
             <Switch>

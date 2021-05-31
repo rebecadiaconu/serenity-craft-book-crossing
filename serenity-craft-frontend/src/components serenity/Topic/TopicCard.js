@@ -26,10 +26,8 @@ import { Divider, Typography, TextField } from "@material-ui/core";
 // @material-ui icons
 import PostAddIcon from '@material-ui/icons/PostAdd';
 
-
 // Styles
 import topicStyle from "assets/jss/serenity-craft/components/topicStyle";
-import CardFooter from 'components/Card/CardFooter';
 
 const useStyles = makeStyles(topicStyle);
 

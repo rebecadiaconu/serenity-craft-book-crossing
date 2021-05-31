@@ -60,11 +60,14 @@ const CrossingPage = () => {
     const alertClasses = useAlert();
     const dispatch = useDispatch();
     const { crossingId } = useParams();
-    const { credentials } = useSelector((state) => state.user);
+    const { authenticated, credentials } = useSelector((state) => state.user);
     const { crossing, cancel, deleteCross, changeBook, topicId, topic, viewTopic, addTopic, editTopic, deleteTopicVar } = useSelector((state) => state.crossing);
     const { message, errors } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
+    useEffect(() => {
+        if(!authenticated) history.push('/');
+    }, []);
 
     useEffect(() => {
         dispatch(getCrossingData(crossingId));
@@ -333,7 +336,7 @@ const CrossingPage = () => {
                                                 control={
                                                 <Switch 
                                                     checked={crossing.type === "permanent" || (crossing.sender === credentials.username ? crossing.senderPermanent : crossing.recipientPermanent)} 
-                                                    disabled={crossing.type === "permanent"} 
+                                                    disabled={crossing.type === "permanent" || crossing.canceled || crossing.status === "done"} 
                                                     value="permanent"
                                                     onChange={handleChangeType}
                                                     classes={{
@@ -353,7 +356,7 @@ const CrossingPage = () => {
                     />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={12}>
-                    <Button round color="rose" onClick={handleAddTopic} style={{display: 'flex', margin: '0 auto'}}><PostAddIcon />NEW TOPIC</Button>
+                    <Button disabled={crossing.canceled || crossing.status === "done"} round color="rose" onClick={handleAddTopic} style={{display: 'flex', margin: '0 auto'}}><PostAddIcon />NEW TOPIC</Button>
                     <Timeline 
                         stories={
                             crossing.topics.map((topic) => {

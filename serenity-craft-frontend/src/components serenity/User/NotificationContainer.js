@@ -8,7 +8,7 @@ import { realtime } from "util/realtime";
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { Actions } from "redux/types";
-import { getUserData, markNotificationRead } from "redux/actions/userActions";
+import { markNotificationRead, getNotifications } from "redux/actions/userActions";
 
 
 // @material-ui/core components
@@ -47,18 +47,18 @@ const NotificationContainer =() => {
     const [justRead, setRead] = useState(false);
 
     useEffect(() => {
-        dispatch(getUserData());
+        dispatch(getNotifications());
     }, []);
 
     useEffect(() => {
         if (!!credentials) {
 
             realtime.ref(`/notifications/`).on("child_added", (snapshot) => {
-                if (snapshot.val().recipient === credentials.username && notifications.filter((notification) => notification.notificationId === snapshot.val().notificationId).length === 0) dispatch(getUserData());
+                if (snapshot.val().recipient === credentials.username && notifications.filter((notification) => notification.notificationId === snapshot.val().notificationId).length === 0) dispatch(getNotifications());
             });
 
             realtime.ref(`/notifications/`).on("child_removed", (snapshot) => {
-                if (snapshot.val().recipient === credentials.username && notifications.filter((notification) => notification.notificationId === snapshot.val().notificationId).length > 0) dispatch(getUserData());
+                if (snapshot.val().recipient === credentials.username && notifications.filter((notification) => notification.notificationId === snapshot.val().notificationId).length > 0) dispatch(getNotifications());
             });
         }
     }, [credentials]);
@@ -73,7 +73,7 @@ const NotificationContainer =() => {
         } else {
             if (justRead) {
                 setRead(false);
-                dispatch(getUserData());
+                dispatch(getNotifications());
             }
         }
     }, [openNotification]);
@@ -82,6 +82,8 @@ const NotificationContainer =() => {
         if (openNotification && openNotification.contains(event.target)) {
             setOpenNotification(null);
         } else {
+            console.log(event.target);
+
             setOpenNotification(event.target);
         }
     };
@@ -134,7 +136,7 @@ const NotificationContainer =() => {
                         [classes.popperResponsive]: true,
                         [classes.popperNav]: true
                     })}
-                    style={{maxHeight: 400, overflow: 'auto'}}
+                    style={{maxHeight: 400, maxWidth: 400, overflow: 'auto'}}
                 >
                 {({ TransitionProps }) => (
                     <Grow

@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
 import Hidden from "@material-ui/core/Hidden";
 import NotificationContainer from "components serenity/User/NotificationContainer";
-import RequestsContainer from "components serenity/User/RequestsContainer";
+import RequestsButton from "components serenity/User/RequestsButton";
 
 // @material-ui/icons
 import PersonAdd from "@material-ui/icons/PersonAdd";
@@ -41,7 +41,7 @@ const HeaderLinks = (props) => {
       {
         props.authenticated ? (
           <>
-          <RequestsContainer />
+          <RequestsButton />
           <NotificationContainer />
           <Button
             color="transparent"

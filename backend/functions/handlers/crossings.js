@@ -38,7 +38,8 @@ exports.sendCrossingReq = (req, res) => {
         reqBook: req.body.reqBook,
         randomBook: req.body.randomBook,
         status: 'pending',
-        canceled: false
+        canceled: false,
+        read: false
     };
 
     if (newCrossing.type === "temporar") {
@@ -70,6 +71,7 @@ exports.chooseRandomBook = (req, res) => {
     let sender = req.params.sender;
     let recipient = req.params.recipient;
 
+    let takenBooks = [];
     let randomBook = {};
     let mainInterests = [];
     let senderBooks = [];
@@ -93,20 +95,30 @@ exports.chooseRandomBook = (req, res) => {
                 bookData.bookId = doc.id;
                 recipientBooks.push(bookData);
             });
-
-            return db.collection('books').where("owner", "==", sender).where('available', '==', true).get();
+            return db.collection('crossings').where('status', '==', 'pending').where('sender', '==', sender).get();
         }
+    })
+    .then((data) => {
+        data.forEach((doc) => {
+            takenBooks.push(doc.data().randomBookId);
+        });
+
+        return db.collection('books').where("owner", "==", sender).where('available', '==', true).get();
     })
     .then((data) => {
         if (data.empty) return res.status(400).json({ error: 'Sender has no books added or none of them is available now!' });
         else {
             data.forEach((doc) => {
-                let bookData = doc.data();
-                bookData.bookId = doc.id;
-                senderBooks.push(bookData);
-                if(bookData.genres.some((genre) => mainInterests.includes(genre))) filteredBooks.push(bookData);
+                if (!takenBooks.includes(doc.id)) {
+                    let bookData = doc.data();
+                    bookData.bookId = doc.id;
+                    senderBooks.push(bookData);
+                    if(bookData.genres.some((genre) => mainInterests.includes(genre))) filteredBooks.push(bookData);
+                }
             });
 
+            if (senderBooks.length === 0) return res.status(400).json({ error: 'Sender has no books unpromised in a crossing request!' });
+            
             if(filteredBooks.length === 0) {
                 let bookIndex = Math.floor(Math.random() * senderBooks.length);
                 randomBook = {
@@ -133,6 +145,7 @@ exports.chooseRandomBook = (req, res) => {
         }
     })
     .catch((err) => {
+        console.log(err.message);
         return res.status(500).json({ error: err.code });
     });
 };
@@ -253,7 +266,7 @@ exports.acceptCrossing = (req, res) => {
             bookIdx.push(doc.data().randomBookId);
             bookIdx.push(doc.data().reqBookId);            
 
-            return doc.ref.update({status: 'accepted'})
+            return doc.ref.update({status: 'accepted', read: true})
             .then(() => {
                 let newNotification = {
                     notificationId: uuid(),
@@ -300,8 +313,21 @@ exports.rejectCrossing = (req, res) => {
             return res.status(403).json({ error: 'Unauthorized!' });
         }
 
-        return crossingDoc.delete();
-        // notification to the sender
+        return crossingDoc.delete()
+        .then(() => {
+            let newNotification = {
+                notificationId: uuid(),
+                createdAt: new Date().toISOString(),
+                read: false,
+                sender: req.user.username,
+                senderImage: req.user.imageUrl,
+                recipient: doc.data().sender,
+                type: 'cancel-request',
+                crossingId: doc.id
+            }
+
+            return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
+        });
     })
     .then(() => {
         return res.json({ message: 'Book crossing rejected!' })
@@ -495,10 +521,10 @@ exports.getCrossingDetails = (req, res) => {
     .then((data) => {
         if (data.exists()) {
             crossingData.topics = Object.values(data.val()).reverse();
-        }
+        } else crossingData.topics = [];
 
+        console.log(crossingData.topics);
         let prom = [];
-
         crossingData.topics.map((topic) => {    
             topic.replyData = [];
             if (topic.replyCount > 0) {
@@ -611,6 +637,27 @@ exports.deleteCrossing = (req, res) => {
     })
     .then(() => {
         return res.json({ message: 'Book crossing deleted successfully!' });
+    })
+    .catch(err => {
+        console.error(err);
+        return res.status(500).json({error: err.code});
+    });
+};
+
+// Mark crossing requests read
+exports.markCrossingReqRead = (req, res) => {
+    const batch = db.batch(); 
+    let promises = [];
+    req.body.forEach(crossingId => {
+        promises.push(batch.update(db.doc(`/crossings/${crossingId}`), { read: true }));
+    });
+
+    Promise.all(promises)
+    .then(() => {
+        return batch.commit();
+    })
+    .then(() => {
+        return res.json({message: 'Crossing requests marked read.'});
     })
     .catch(err => {
         console.error(err);

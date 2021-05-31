@@ -23,7 +23,7 @@ import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarStyle.js";
 import { Link } from "react-router-dom";
-import RequestsContainer from "components serenity/User/RequestsContainer";
+import RequestsButton from "components serenity/User/RequestsButton";
 import NotificationContainer from "components serenity/User/NotificationContainer";
 
 const useStyles = makeStyles(styles);

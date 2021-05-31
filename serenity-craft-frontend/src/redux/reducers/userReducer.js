@@ -59,6 +59,16 @@ const UserReducer = (state = initialState, action) => {
             ...state,
             deleted: false
           }
+        case Actions.USER.SET_NOTIF:
+          return {
+            ...state,
+            notifications: action.payload
+          }
+        case Actions.USER.SET_REQUESTS:
+          return {
+            ...state,
+            requests: action.payload
+          }
         default:
             return state;
     }
