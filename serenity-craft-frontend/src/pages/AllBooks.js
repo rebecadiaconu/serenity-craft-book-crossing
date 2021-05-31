@@ -11,7 +11,6 @@ import { Actions } from "redux/types";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Textfield from "@material-ui/core/Textfield";
 
-import Icon from "@material-ui/core/Icon";
 
 // @material-ui/icons
 import AddIcon from '@material-ui/icons/Add';
@@ -22,7 +21,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // core components
 import AddBook from "components serenity/Book/AddBook";
-import SelectInput from "../util/components/SortInput";
+import SortInput from "../util/components/SortInput";
 import FilterMenu from "../util/components/FilterMenu";
 import Button from "../components/CustomButtons/Button";
 import BookContainer from "../components serenity/Book/BookContainer";
@@ -100,7 +99,7 @@ const AllBooks = () => {
             </GridContainer>
             <GridContainer >
                 <GridItem xs={12} sm={12} md={2}>
-                    <SelectInput label="Sort By" items={booksSort} defaultValue={0}/>
+                    <SortInput book label="Sort By" items={booksSort} defaultValue={0}/>
                 </GridItem>
                 {
                     Object.values(filterData).map((data, index) => {

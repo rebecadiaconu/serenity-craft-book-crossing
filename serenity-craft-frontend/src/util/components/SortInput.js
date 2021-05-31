@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { sortBooks } from "../../redux/actions/bookActions";
+import { sortCrossings } from "redux/actions/userActions";
 
 // @material-ui components
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,9 +20,10 @@ import styles from "assets/jss/material-dashboard-pro-react/customSelectStyle";
 
 const useStyles = makeStyles(styles);
 
-const SelectInput = ({ label, items, defaultValue }) => {
+const SelectInput = ({ book, crossing, label, items, defaultValue }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const { sortValueCrossings, crossings } = useSelector((state) => state.user);
     const { sortValue, books } = useSelector(state => state.books);
     const [selectItem, setItem] = useState(defaultValue);
     
@@ -31,7 +33,8 @@ const SelectInput = ({ label, items, defaultValue }) => {
     // }, [selectItem]);
 
     useEffect(() => {
-        if (selectItem !== sortValue) dispatch(sortBooks(selectItem, books));
+        if (book && selectItem !== sortValue) dispatch(sortBooks(selectItem, books));
+        else if (crossing && selectItem !== sortValueCrossings) dispatch(sortCrossings(selectItem, crossings));
     }, [selectItem]);
 
     const handleSelect = (event) => {

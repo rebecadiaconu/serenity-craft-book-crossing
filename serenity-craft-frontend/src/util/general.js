@@ -12,6 +12,13 @@ const booksSort = [
     'Number of reviews High to Low'     // Desc
 ];
 
+const crossingSort = [
+    'All',
+    'Pending',
+    'In Progress',
+    'Done',
+    'Canceled'
+];
 
 const allGenres = [
     'Adventure',
@@ -128,4 +135,4 @@ const userReviewFirst = (reviews, username) => {
     return reviews;
 };
 
-export { booksSort, allGenres, crossingStages, getFilterData, userReviewFirst, alreadyPending, defaultUserImage, defaultBookImage };
+export { booksSort, crossingSort, allGenres, crossingStages, getFilterData, userReviewFirst, alreadyPending, defaultUserImage, defaultBookImage };

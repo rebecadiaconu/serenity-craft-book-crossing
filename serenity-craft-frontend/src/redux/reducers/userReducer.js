@@ -6,9 +6,14 @@ const initialState = {
     deleted: false,
     credentials: {},
     books: [],
+    initCrossings: [],
     crossings: [],
     requests: [],
-    notifications: []
+    notifications: [],
+    searchApplied: false,
+    searchValue: '',
+    sortApplied: false,
+    sortValueCrossings: 0
 };
 
 const UserReducer = (state = initialState, action) => {
@@ -20,6 +25,7 @@ const UserReducer = (state = initialState, action) => {
             }
         case Actions.USER.SET_USER:
             return {
+              initCrossings: action.payload.crossings,
               authenticated: true,
               loading: false,
               ...action.payload,
@@ -69,6 +75,30 @@ const UserReducer = (state = initialState, action) => {
             ...state,
             requests: action.payload
           }
+        case Actions.USER.SET_CROSSINGS:
+          return {
+            ...state,
+            crossings: action.payload
+          }
+          case Actions.USER.SORT:
+            return {
+                ...state,
+                sortApplied: true,
+                sortValueCrossings: action.payload
+            };
+          case Actions.USER.SET_SEARCH_DATA:
+            return {
+                ...state,
+                searchApplied: true,
+                searchValue: action.payload
+            }
+          case Actions.USER.STOP_SEARCH:
+            return {
+                ...state,
+                searchApplied: false,
+                searchValue: '',
+                crossings: state.initCrossings
+            }
         default:
             return state;
     }

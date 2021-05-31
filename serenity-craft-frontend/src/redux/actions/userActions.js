@@ -341,3 +341,59 @@ export const markNotificationRead = (notifIds) => (dispatch) => {
         });
     });
 };
+
+
+export const sortCrossings = (value, crossings) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    let newCrossings = [];
+    switch(value) {
+        case 0:
+            break
+        case 1:
+            newCrossings = crossings.filter((crossing) => crossing.status === "pending" && !crossing.canceled);
+            break
+        case 2:
+            newCrossings = crossings.filter((crossing) => crossing.status !== "pending" && crossing.status !== "done" && !crossing.canceled);
+            break
+        case 3: 
+            newCrossings = crossings.filter((crossing) => crossing.status === "done" && !crossing.canceled);
+            break
+        case 4:
+            newCrossings = crossings.filter((crossing) => crossing.canceled);
+            break
+        default:
+            break;
+    }
+
+    dispatch({
+        type: Actions.USER.SORT,
+        payload: value
+    });
+    if (value === 0) dispatch({ type: Actions.USER.STOP_SEARCH });
+    else dispatch({
+        type: Actions.USER.SET_CROSSINGS,
+        payload: newCrossings
+    });
+    dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+};
+
+export const setSearchValue = (data, crossings) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+
+    if(!!data) {
+        let newCrossings = crossings.filter((crossing) => {
+            return (crossing.reqBook.title.toLowerCase().includes(data.toLowerCase()) || crossing.reqBook.author.toLowerCase().includes(data.toLowerCase()) || crossing.randomBook.title.toLowerCase().includes(data.toLowerCase()) || crossing.randomBook.author.toLowerCase().includes(data.toLowerCase()) || crossing.sender.toLowerCase().includes(data.toLowerCase()) || crossing.recipient.toLowerCase().includes(data.toLowerCase()));
+        });
+
+        dispatch({
+            type: Actions.USER.SET_CROSSINGS,
+            payload: newCrossings
+        }); 
+        dispatch({
+            type: Actions.USER.SET_SEARCH_DATA,
+            payload: data
+        });
+    }
+    else dispatch({ type: Actions.USER.STOP_SEARCH });
+    dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+};

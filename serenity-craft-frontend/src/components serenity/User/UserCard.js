@@ -143,7 +143,7 @@ const UserCard = ({ user, search }) => {
                             />
                         </GridItem>
                         <GridItem xs={12} sm={6} md={5}>
-                            <SortInput label="Sort By" items={booksSort} defaultValue={0}/>
+                            <SortInput book label="Sort By" items={booksSort} defaultValue={0}/>
                         </GridItem>
                     </GridContainer>
                 ) : null
