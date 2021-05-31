@@ -72,7 +72,7 @@ exports.addTopic = (req, res) => {
 
 exports.getTopic = (req, res) => {
     let topicData = {};
-    topic.replyData = [];
+    topicData.replyData = [];
 
     realtime.ref(`/topics/${req.params.topicId}`).get()
     .then((data) => {
@@ -85,8 +85,8 @@ exports.getTopic = (req, res) => {
     })
     .then((data) => {
         if (data.exists()) {
-            topic.replyData = Object.values(data.val()).sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-        }
+            topicData.replyData = Object.values(data.val()).sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+        } else topicData.replyData = [];
 
         return res.json(topicData);
     })
@@ -245,7 +245,7 @@ exports.addReply = (req, res) => {
                 type: 'reply',
                 recipient: recipientName,
                 topicId: topicData.topicId,
-                // crossingId: req.body/crossingId
+                crossingId: req.body.crossingId
             };
 
             realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification)

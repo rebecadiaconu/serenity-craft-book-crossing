@@ -35,6 +35,7 @@ import Button from "components/CustomButtons/Button.js";
 
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarLinksStyle.js";
+import { getCrossingData } from 'redux/actions/crossingActions';
 
 const useStyles = makeStyles(styles);
 
@@ -82,14 +83,16 @@ const NotificationContainer =() => {
         if (openNotification && openNotification.contains(event.target)) {
             setOpenNotification(null);
         } else {
-            console.log(event.target);
-
             setOpenNotification(event.target);
         }
     };
 
     const handleCloseNotification = () => {
         setOpenNotification(null);
+    };
+
+    const handleClick = () => {
+
     };
     
     const dropdownItem = classNames(classes.dropdownItem, classes.roseHover);
@@ -159,12 +162,12 @@ const NotificationContainer =() => {
                                             case 'topic':
                                                 message =  `${notif.sender} added a new topic ${time}.`;
                                                 icon = <ShareIcon fontSize="small" className={classes.icon} />;
-                                                redirectTo = `/admin/crossings/${notif.crossingId}`;
+                                                redirectTo = `/admin/crossings/${notif.crossingId}/${notif.topicId}`;
                                                 break
                                             case 'reply':
                                                 message = `${notif.sender} added a reply on your topic ${time}.`;
                                                 icon = <ChatBubbleIcon fontSize="small" className={classes.icon} />;
-                                                redirectTo = `/admin/crossings/${notif.crossingId}`;
+                                                redirectTo = `/admin/crossings/${notif.crossingId}/${notif.topicId}`;
                                                 break
                                             case 'review':
                                                 message = `${notif.sender} added a review on your book ${time}.`;
@@ -185,6 +188,7 @@ const NotificationContainer =() => {
 
                                         return (
                                             <NavLink
+                                                key={notif.notificationId}
                                                 to={redirectTo}
                                             >
                                                 <MenuItem 

@@ -67,6 +67,7 @@ const CrossingsCarousel = () => {
                         let color = "success";
                         if (crossing.status === "pending") color="warning";
                         if (crossing.status === "done") color="info";
+                        if (crossing.canceled) color="danger"
                         return (
                             crossing.senderData.show ?  <CrossingContainer crossing={crossing} key={index} color={color}/> : null
                         )

@@ -313,21 +313,7 @@ exports.rejectCrossing = (req, res) => {
             return res.status(403).json({ error: 'Unauthorized!' });
         }
 
-        return crossingDoc.delete()
-        .then(() => {
-            let newNotification = {
-                notificationId: uuid(),
-                createdAt: new Date().toISOString(),
-                read: false,
-                sender: req.user.username,
-                senderImage: req.user.imageUrl,
-                recipient: doc.data().sender,
-                type: 'cancel-request',
-                crossingId: doc.id
-            }
-
-            return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
-        });
+        return crossingDoc.delete();
     })
     .then(() => {
         return res.json({ message: 'Book crossing rejected!' })

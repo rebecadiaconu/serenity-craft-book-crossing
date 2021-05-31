@@ -11,7 +11,7 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { Actions } from "redux/types";
-import { getCrossingData, changeCrossingType, cancelCrossing, deleteCrossing, deleteTopic } from "redux/actions/crossingActions";
+import { getCrossingData, changeCrossingType, cancelCrossing, deleteCrossing, getTopic, deleteTopic } from "redux/actions/crossingActions";
 
 // Components
 import ChangeBookModal from "components serenity/Crossing/ChangeBookModal";
@@ -59,7 +59,8 @@ const CrossingPage = () => {
     const switchClasses = switchStyles();
     const alertClasses = useAlert();
     const dispatch = useDispatch();
-    const { crossingId } = useParams();
+    const { crossingId, topicIndex } = useParams();
+    const ala = useParams();
     const { authenticated, credentials } = useSelector((state) => state.user);
     const { crossing, cancel, deleteCross, changeBook, topicId, topic, viewTopic, addTopic, editTopic, deleteTopicVar } = useSelector((state) => state.crossing);
     const { message, errors } = useSelector((state) => state.ui);
@@ -75,6 +76,16 @@ const CrossingPage = () => {
             dispatch({ type: Actions.UI.CLEAR_ACTION })
         };
     }, []);
+
+    useEffect(() => {
+        if(crossingId) dispatch(getCrossingData(crossingId));
+    }, [crossingId]);
+
+    useEffect(() => {
+        if (topicIndex) {
+            dispatch(getTopic(topicIndex));
+        } 
+    }, [topicIndex]);
 
     useEffect(() => {
         if (message) {
@@ -110,6 +121,7 @@ const CrossingPage = () => {
     const handleTopicClick = (data) => {
         switch(data.text) {
             case "VIEW":
+                window.history.pushState(null, null, window.location.pathname + `/${data.data.topicId}`);
                 dispatch({ type: Actions.CROSSING.VIEW_TOPIC, payload: data.data });
                 break
             case "EDIT":
@@ -124,6 +136,7 @@ const CrossingPage = () => {
     };
 
     const handleCloseTopic = () => {
+        if (window.location.pathname.split(`/${topicIndex}`)[0] !== window.location.pathname) window.history.pushState(null, null, window.location.pathname.split(`/${topicIndex}`)[0]);
         dispatch({ type: Actions.CROSSING.STOP_VIEW_TOPIC });
     };
 
@@ -376,6 +389,7 @@ const CrossingPage = () => {
                                         hoverColor={credentials.username === topic.username ? "warning" : "info"}
                                         buttonText="More"
                                         buttonProps={{
+                                            disabled: crossing.canceled || crossing.status === "done",
                                             round: true,
                                             style: { marginBottom: "0" },
                                             color: credentials.username === topic.username ? "warning" : "info"

@@ -165,7 +165,8 @@ export const acceptCrossing = (crossingId) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         })
-        dispatch(getRequests());        
+        dispatch(getRequests());     
+        dispatch(getCrossingData(crossingId));   
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         history.push(`/admin/crossings/${crossingId}`);
@@ -232,6 +233,27 @@ export const markRequestsRead = (reqIds) => (dispatch) => {
     });
 };
 
+export const getTopic = (topicId) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    console.log('xfdcghjk');
+    axios.get(`/topics/${topicId}`).
+    then(({ data }) => {
+        dispatch({
+            type: Actions.CROSSING.VIEW_TOPIC,
+            payload: data
+        });
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS, 
+            payload: err.response.data 
+        });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    });
+};
+
 export const addTopic = (formData, crossingId) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/crossing/${crossingId}/topic`, formData)
@@ -240,6 +262,7 @@ export const addTopic = (formData, crossingId) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
+        dispatch({ type: Actions.CROSSING.STOP_ADD_TOPIC });
         dispatch(getCrossingData(crossingId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
@@ -261,6 +284,7 @@ export const editTopic = (formData, crossingId, topicId) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
+        dispatch({ type: Actions.CROSSING.STOP_EDIT_TOPIC });
         dispatch(getCrossingData(crossingId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
@@ -303,7 +327,7 @@ export const addReply = (formData, topicId) => (dispatch) => {
         dispatch({
             type: Actions.CROSSING.ADD_REPLY,
             payload: data
-        })
+        });
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })

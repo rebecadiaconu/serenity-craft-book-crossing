@@ -172,6 +172,7 @@ const BookPage = () => {
     }, []);
 
     useEffect(() => {
+        console.log('ferbht');
         dispatch(getBook(bookId));
         return () => dispatch({ type: Actions.UI.CLEAR_ACTION });
     }, []);

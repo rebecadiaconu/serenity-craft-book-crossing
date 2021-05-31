@@ -2,6 +2,7 @@ import React, { useEffect, forwardRef, useRef, createRef } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -39,6 +40,7 @@ const TopicCard = ({ open, handleClose }) => {
     dayjs.extend(relativeTime);
     const dispatch = useDispatch();
     const classes = useStyles();
+    const { crossingId } = useParams();
     const { register, handleSubmit, setValue } = useForm();
     const { credentials } = useSelector((state) => state.user);
     const { topic, addedReply } = useSelector((state) => state.crossing);
@@ -64,8 +66,12 @@ const TopicCard = ({ open, handleClose }) => {
     };
 
     const handleAddReply = (formData) => {
+        let newFormData = {
+            ...formData,
+            crossingId: crossingId
+        }
         setValue('body', '');
-        dispatch(addReply(formData, topic.topicId));
+        dispatch(addReply(newFormData, topic.topicId));
     };
 
     return (
@@ -99,9 +105,9 @@ const TopicCard = ({ open, handleClose }) => {
                 <Divider style={{margin: '15px 0 20px'}} />
                 <div style={{maxHeight: 500, overflowX: 'hidden'}} ref={bottom}>
                 {
-                    topic.replyData.map((reply) => {
+                    topic.replyData.map((reply, index) => {
                         return (
-                            <ReplyCard key={reply.replyId} reply={reply} classes={classes} handleDelete={handleDeleteReply} />
+                            <ReplyCard key={index} reply={reply} classes={classes} handleDelete={handleDeleteReply} />
                         );
                     })
                 } 

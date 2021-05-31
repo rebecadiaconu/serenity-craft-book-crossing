@@ -84,6 +84,16 @@ const routes = [
     unauth: false 
   },
   {
+    path: '/crossings/:crossingId/:topicIndex',
+    name: '',
+    icon: ShareIcon,
+    component: CrossingPage,
+    layout: "/admin",
+    invisible:  true,
+    logged: false,
+    unauth: false 
+  },
+  {
     path: '/crossings/:crossingId',
     name: '',
     icon: ShareIcon,

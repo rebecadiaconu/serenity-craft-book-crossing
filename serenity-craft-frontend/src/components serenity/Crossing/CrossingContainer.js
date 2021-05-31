@@ -49,7 +49,7 @@ const CrossingContainer = ({ crossing, color }) => {
                         <img src={credentials.username !== crossing.recipient ? crossing.recipientData.userImage : crossing.senderData.userImage} style={{width: 150, height: 150}} />
                     </CardAvatar>
                     <CardFooter>
-                        <Typography className={classes.info} variant="body2" >{crossing.recipient}</Typography>
+                        <Typography className={classes.info} variant="body2" >{credentials.username !== crossing.recipient ? crossing.recipient : crossing.sender}</Typography>
                     </CardFooter>
                 </GridItem>
                 <GridItem xs={6} sm={6} md={6}>
