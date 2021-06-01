@@ -3,6 +3,7 @@ const { db, admin } = require('../util/admin');
 const { validateLogInData, validateSignUpData, validateEmail, reduceUserDetails} = require('../util/validators');
 
 const firebase = require('firebase');
+const { uuid } = require('uuidv4');
 firebase.initializeApp(config);
 
 realtime = firebase.database();
@@ -47,7 +48,8 @@ exports.signUp = (req, res) => {
             reportCount: 0,
             banned: false,
             favs: [],
-            userId
+            userId,
+            role: "user"
         };
 
         return db.doc(`/users/${newUser.username}`).set(userCredentials);
@@ -943,40 +945,223 @@ exports.deleteUserAccount = (req, res) => {
     });
 };
 
-// exports.deleteUserAccount = (req, res) => {
-//     const user = {
-//         email: req.body.email,
-//         password: req.body.password,
-//     };
+// Get all reports for admin
+exports.getReports = (req, res) => {
+    let reports;
+    realtime.ref(`/reports/`).get()
+    .then((data) => {
+        if (data.exists()) {
+            reports = Object.values(data.val());
+        } else reports = [];
 
-//     const { valid, errors } = validateLogInData(user);
-//     if (!valid) return res.status(400).json(errors);
+        reports.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+        return res.json({ reports: reports });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
 
-//     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
-//     .then((data) => {
-//         const batch = db.batch();
-//         const path = require('path');
-//         const userDocument = db.doc(`/users/${req.user.username}`);
+// Add one report on user
+exports.addReport = (req, res) => {
+    let errors = {};
 
-//         db.collection("books").where("owner", "==", req.user.username).get()
-//         .then((data) => {
-//             data.forEach((doc) => {
-//                 if (!doc.data().available) return res.status(400).json({ error: '' });
-//                 batch.delete(db.doc(`/books/${doc.id}`));
-//             });
-//         })
-//         // data.user.delete()
-//         // var user = firebase.auth().currentUser;
+    if (req.body.reason.trim() === '') errors.reason = 'Must choose at least one reason! ';
+    if (Object.keys(errors).length > 0) {
+        return res.status(400).json(errors);  
+    }
 
-//         // user.delete()
-//     })
-//     .then(() => {
+    db.doc(`/users/${req.body.username}`).get()
+    .then((doc) => {
+        if (!doc.exists) return res.status(404).json({ error : 'User not found!' });
 
-//     })
-//     .then(() => {
-//         return res.json({ message: 'User account deleted successfully' });
-//     }).catch((err) => {
-//         console.error(err);
-//         return res.status(500). json({ error: err.code });
-//     });
-// };
+        let reportData = {
+            reportId: uuid(),
+            createdAt: new Date().toISOString(),
+            sender: req.user.username,
+            senderImage: req.user.imageUrl,
+            senderEmail: req.user.email,
+            recipient: req.body.username,
+            recipientImage: req.body.userImage,
+            type: req.body.type,
+            reason: req.body.reason,
+            seen: false,
+            status: 'unseen'
+        };
+    
+        switch(req.body.type) {
+            case 'book':
+                reportData.book = req.body.book;
+                break
+            case 'review':
+                reportData.review = req.body.review;
+                break
+            case 'crossing':
+                reportData.crossing = req.body.crossing;
+                break
+            case 'topic':
+                reportData.topic = req.body.topic;
+                break
+            case 'reply':
+                reportData.reply = req.body.reply;
+                break
+            case 'other':
+                break
+        }
+    
+        let updates = {};
+        updates['/reports/' + reportData.reportId] = reportData;
+
+        return realtime.ref().update(updates);
+    })
+    .then(() => {
+        return res.json({ message: 'Report send successfully! Our admin will take a look on it.' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+
+// Accept report by admin
+exports.acceptReport = (req, res) => {
+    let reportData = {};
+
+    realtime.ref(`/reports/${req.params.reportId}`).get()
+    .then((data) => {
+        if (!data.exists()) return res.status(404).json({ error: 'Report not found!' });
+
+        reportData = data.val();
+
+        return db.doc(`/users/${reportData.recipient}`).get()
+        .then((doc) => {
+            if (!doc.exists) return res.status(404).json({ error : 'User not found!' });
+            let reportCount = doc.data().reportCount + 1;
+
+            if (reportCount === 20) return db.doc(`/users/${reportData.recipient}`).update({ reportCount: reportCount, banned: true, bannedAt: new Date().toISOString()});
+            else  return db.doc(`/users/${reportData.recipient}`).update({ reportCount: reportCount});
+        })
+        .then(() => {
+            let updates = {};
+            updates['status'] = 'accepted';
+            updates['seen'] = true;
+
+            realtime.ref(`/reports/${req.params.reportId}`).update(updates);
+        });
+    })
+    .then(() => {
+        return res.json({ message: 'Report accepted successfully!' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+// Reject report by admin
+exports.rejectReport = (req, res) => {
+    let reportData = {};
+
+    realtime.ref(`/reports/${req.params.reportId}`).get()
+    .then((data) => {
+        if (!data.exists()) return res.status(404).json({ error: 'Report not found!' });
+
+        reportData = data.val();
+        
+        let updates = {};
+        updates['status'] = 'rejected';
+        updates['seen'] = true;
+
+        realtime.ref(`/reports/${req.params.reportId}`).update(updates);
+        
+    })
+    .then(() => {
+        return res.json({ message: 'Report rejected successfully!' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+// Set report to stand by -> talk on email for more details
+exports.standByReport = (req, res) => {
+    let reportData = {};
+
+    realtime.ref(`/reports/${req.params.reportId}`).get()
+    .then((data) => {
+        if (!data.exists()) return res.status(404).json({ error: 'Report not found!' });
+
+        reportData = data.val();
+        
+        let updates = {};
+        updates['status'] = 'stand-by';
+        updates['seen'] = true;
+
+        realtime.ref(`/reports/${req.params.reportId}`).update(updates);
+        
+    })
+    .then(() => {
+        return res.json({ message: 'Report status set to stand-by successfully!' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+// Mark reports seen on card click
+exports.markReportSeen = (req, res) => {
+    let reportData = {};
+
+    realtime.ref(`/reports/${req.params.reportId}`).get()
+    .then((data) => {
+        if (!data.exists()) return res.status(404).json({ error: 'Report not found!' });
+
+        reportData = data.val();
+        
+        let updates = {};
+        updates['seen'] = true;
+
+        realtime.ref(`/reports/${req.params.reportId}`).update(updates);
+        
+    })
+    .then(() => {
+        return res.json({ message: 'Report seen successfully!' });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};
+
+// Get user details for admin
+exports.getUserForAdmin = (req, res) => {
+    let reportsStats = [];
+
+    const whenRecipient = realtime.ref(`/reports/`).orderByChild("recipient").equalTo(req.params.username).get();
+    const whenSender = realtime.ref(`/reports/`).orderByChild("sender").equalTo(req.params.username).get();
+
+    Promise.all([whenRecipient, whenSender])
+    .then((responses) => {
+        responses.forEach((response) => {
+            response.docs.forEach((doc) => {
+                let report = doc.data();
+                reportsStats.push({
+                    reportId: report.reportId,
+                    createdAt: report.createdAt,
+                    status: report.status,
+                    type: report.type
+                });
+            });
+        });
+
+        return res.json({ reportsStats: reportsStats });
+    })
+    .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: err.code });
+    });
+};

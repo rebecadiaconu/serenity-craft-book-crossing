@@ -73,7 +73,8 @@ const bookStyle = {
     },
     coverContainer: {
         display: 'flex',
-        margin: '0 auto'
+        margin: '0 auto',
+        marginTop: 30
     },
     coverImage: {
         height: 600,

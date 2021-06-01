@@ -59,7 +59,7 @@ const AddTopic = ({ open }) => {
                 justify="center"
                 alignItems="center"
                 alignContent="center"
-                style={{width: '95%', position: 'relative', marginLeft: 10,  height: 500, textAlign: "center"}}
+                style={{width: '98%', position: 'relative', marginLeft: 7,  height: 500, textAlign: "center"}}
             >
                 <GridItem xs={12} sm={12} md={12}>
                     <Typography variant="h4" className={classes.header}>

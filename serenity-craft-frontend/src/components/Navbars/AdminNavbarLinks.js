@@ -28,7 +28,6 @@ const HeaderLinks = (props) => {
 
   const handleLogOut = () => {
     dispatch(logOutUser());
-    window.location.href = "/admin/dashboard";
   };
 
   const wrapper = classNames({

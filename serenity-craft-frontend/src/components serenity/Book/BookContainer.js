@@ -83,7 +83,7 @@ const BookContainer = ({ book, carousel }) => {
                             </Button>
                         </Tooltip>
                         {
-                            ( authenticated && credentials?.favs?.includes(book.bookId)) ? (
+                            authenticated && (( credentials?.favs?.includes(book.bookId)) ? (
                                 <Tooltip
                                     id="tooltip-top"
                                     title="Remove from Favorites"
@@ -107,7 +107,7 @@ const BookContainer = ({ book, carousel }) => {
                                         <FavoriteBorderIcon className={classes.underChartIcons} />
                                     </Button>
                                 </Tooltip>
-                            )
+                            ))
                         }
                         {
                             (authenticated && book.owner === credentials.username) && (

@@ -10,8 +10,10 @@ let db = {
             bio: 'Hi there, my name is Mark!',
             location: 'London, UK',
             mainInterests: ['drama', 'adventure'],
-            // banned: false,
-            // banDate: ''
+            reportCount: 0,
+            favs: [''],
+            banned: false,
+            bannedAt: ''
         }
     ],
     books: [
@@ -36,10 +38,7 @@ let db = {
             numExchanges: 3,
             numReviews: 1,
             coverImageUrl: '',
-            averageRating: 4,
-            // bookImages: ['imageUrl array'],
-            inAuction: false,
-            auctionId: ''
+            averageRating: 4
         }
     ],
     reviews: [
@@ -51,8 +50,6 @@ let db = {
             userImage: '',
             body: '',
             rating: 4
-            // bookOwner: '' ????
-
         }
     ],
     notifications: [
@@ -86,6 +83,7 @@ let db = {
                 userImage: '',
                 show: true
             },
+            recipientPermanent: false,
             sender: '',
             senderProgress: {
                 sendBook: false,
@@ -97,6 +95,7 @@ let db = {
                 userImage: '',
                 show: true
             },
+            senderPermanent: false,
             reqBookId: '',
             reqBook: {     // sender book
                 title: '',
@@ -114,7 +113,6 @@ let db = {
             status: 'pending | accepted | book-send | start-reading | send-back | done',
             canceled: false,
             canceledBy: 'username',     // only if canceled = true
-            reason: ''    // only if canceled = true
         }
     ],
     topics: [
@@ -145,8 +143,18 @@ let db = {
             reportId: '',
             createdAt: '2021-04-21T15:38:46.994Z',
             recipient: '',
+            recipientImage: '',
             sender: '',
-            body: ''
+            senderImage: '',
+            senderEmail: '',
+            reason: '',
+            type: '', // book | review | crossing | topic | reply | other
+            status: '', //  unseen | accepted | rejected | stand-by
+            seen: false,
+            book: '',   // optional
+            topic: '',  // optional
+            replyId: '', // optional
+            crossing: '' // ???? optional
         }
     ],
     auctions:[

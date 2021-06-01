@@ -10,7 +10,7 @@ import axios from "./util/axios";
 import { getUserData, logOutUser } from './redux/actions/userActions';
 
 // Components
-import UserPage from "pages/User/UserPage";
+import JustAdmin from "pages/Admin/JustAdmin";
 import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
 import { Actions } from 'redux/types';
@@ -48,7 +48,7 @@ const App = () => {
     return (
         <Router history={history}>
             <Switch>
-                {/* <Route path="/admin/users/:username" component={UserPage} /> */}
+                <Route path="/serenity-admin" component={JustAdmin} />
                 <Route path="/auth" component={AuthLayout} />
                 <Route path="/admin" component={AdminLayout} />
                 <Redirect from="/" to="/admin/all-books" />

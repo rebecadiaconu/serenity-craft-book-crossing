@@ -21,8 +21,16 @@ const {
     addToFavs,
     removeFromFavs,
     markNotificationRead, 
-    deleteUserAccount 
+    deleteUserAccount,
+    getReports,
+    addReport,
+    acceptReport,
+    rejectReport,
+    standByReport,
+    markReportSeen,
+    getUserForAdmin    
 } = require('./handlers/users');
+
 const { 
     addBook, 
     uploadCoverImage, 
@@ -56,7 +64,7 @@ const {
     addReply, 
     deleteReply } = require('./handlers/topics');
 
-const { fbAuth, bookOwnerAuth, crossingPartener } = require('./util/middleware');
+const { fbAuth, fbAdmin, bookOwnerAuth, crossingPartener } = require('./util/middleware');
 
 
 // User routes
@@ -78,6 +86,14 @@ app.get('/user/notifications', fbAuth, getNotifications);      // Get auth user 
 app.get('/user/:username', getUserDetails);          // Get any user details 
 app.post('/notifications', fbAuth, markNotificationRead);       // Mark user notifications as read
 
+// Reports routes
+app.get('/report/:username', fbAuth, getUserForAdmin);     // Get user info reports for admin
+app.post('/report/:username', fbAuth, addReport);       // Add report on one user
+app.get('/reports', fbAuth, getReports);      // Get all reports for admin
+app.post('/reports/:reportId/accept', fbAuth, acceptReport);   // Admin accepted report
+app.post('/reports/:reportId/reject', fbAuth, rejectReport);       // Admin rejected report
+app.post('/reports/:reportId/seen', fbAuth, markReportSeen);       // Mark report seen on card click
+app.post('/reports/:reportId/standBy', fbAuth, standByReport);     // Admin set report status on stand-by -> send email for more details
 
 // Book routes
 app.post('/book', fbAuth, addBook);     // Add new book

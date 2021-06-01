@@ -1,14 +1,16 @@
-import React, { useEffect, forwardRef, useRef, createRef } from 'react';
+import React, { useEffect, forwardRef, useRef } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { reportOnBookReviewTopicReply } from "util/general";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { addReply, deleteReply } from "redux/actions/crossingActions";
 
 // Components
+import ReportForm from "util/components/ReportForm";
 import Button from "components/CustomButtons/Button";
 import ReplyCard from "components serenity/Topic/ReplyCard";
 import Slide from "@material-ui/core/Slide";
@@ -22,13 +24,14 @@ import GridItem from 'components/Grid/GridItem';
 
 // @material-ui core
 import { makeStyles } from "@material-ui/core/styles"; 
-import { Divider, Typography, TextField } from "@material-ui/core";
+import { Divider, Typography, TextField, Tooltip } from "@material-ui/core";
 
 // @material-ui icons
-import PostAddIcon from '@material-ui/icons/PostAdd';
+import ReportIcon from '@material-ui/icons/Report';
 
 // Styles
 import topicStyle from "assets/jss/serenity-craft/components/topicStyle";
+import { Actions } from 'redux/types';
 
 const useStyles = makeStyles(topicStyle);
 
@@ -44,7 +47,7 @@ const TopicCard = ({ open, handleClose }) => {
     const { register, handleSubmit, setValue } = useForm();
     const { credentials } = useSelector((state) => state.user);
     const { topic, addedReply } = useSelector((state) => state.crossing);
-    const { errors } = useSelector((state) => state.ui);
+    const { errors, sendReport } = useSelector((state) => state.ui);
 
     const bottom = useRef(null);
 
@@ -86,6 +89,26 @@ const TopicCard = ({ open, handleClose }) => {
             className={classes.root}
         >
             <Card className={classes.card} >
+                {
+                    sendReport && 
+                    <ReportForm 
+                        open={sendReport}
+                        items={reportOnBookReviewTopicReply}
+                        type="topic"
+                        username={topic.username}
+                        userImage={topic.userImage}
+                        topic={topic}
+                    />
+                }
+                <Tooltip
+                    id="tooltip-top"
+                    title="REPORT"
+                    placement="bottom"
+                >
+                    <Button color="danger" round simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT })} style={{position: 'absolute', right: 10, top: -10}}>
+                        <ReportIcon />
+                    </Button>
+                </Tooltip>
                 <CardHeader color={credentials.username === topic.username ? "warning" : "info"}>
                 <GridContainer>
                         <GridItem xs={4} sm={4} md={4} style={{textAlign: "center"}}>

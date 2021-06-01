@@ -50,7 +50,6 @@ exports.addBook = (req, res) => {
         owner: req.user.username,
         ownerImage: req.user.imageUrl,
         coverImage: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImage}?alt=media`,
-        inAuction: false
     }
 
     if (req.body.publicationYear) newBook.publicationYear = req.body.publicationYear;

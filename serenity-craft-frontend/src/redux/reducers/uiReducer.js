@@ -3,6 +3,7 @@ import { Actions } from '../types';
 const initialState = {
     backUp: false,
     scrolling: false,
+    sendReport: false,
     loading: false,
     seeRequest: false,
     request: null,
@@ -99,6 +100,16 @@ const UiReducer = (state = initialState, action) => {
                 ...state,
                 seeRequest: false,
                 request: null
+            }
+        case Actions.UI.REPORT:
+            return {
+                ...state,
+                sendReport: true
+            };
+        case Actions.UI.STOP_REPORT:
+            return {
+                ...state,
+                sendReport: false
             }
         default:
             return state;

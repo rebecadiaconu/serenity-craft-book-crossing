@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, NavLink } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import history from "util/history";
-import { crossingStages } from "util/general";
+import { crossingStages, reportOnCrossing } from "util/general";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import PerfectScrollbar from "perfect-scrollbar";
-import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -14,6 +12,7 @@ import { Actions } from "redux/types";
 import { getCrossingData, changeCrossingType, cancelCrossing, deleteCrossing, getTopic, deleteTopic } from "redux/actions/crossingActions";
 
 // Components
+import ReportForm from "util/components/ReportForm";
 import ChangeBookModal from "components serenity/Crossing/ChangeBookModal";
 import AddTopic from "components serenity/Topic/AddTopic";
 import EditTopic from "components serenity/Topic/EditTopic";
@@ -36,6 +35,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles, Tooltip, Typography } from '@material-ui/core';
 
 // @material-ui/icons
+import ReportIcon from '@material-ui/icons/Report';
 import SettingsIcon from '@material-ui/icons/Settings';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import PostAddIcon from '@material-ui/icons/PostAdd';
@@ -60,10 +60,9 @@ const CrossingPage = () => {
     const alertClasses = useAlert();
     const dispatch = useDispatch();
     const { crossingId, topicIndex } = useParams();
-    const ala = useParams();
     const { authenticated, credentials } = useSelector((state) => state.user);
     const { crossing, cancel, deleteCross, changeBook, topicId, topic, viewTopic, addTopic, editTopic, deleteTopicVar } = useSelector((state) => state.crossing);
-    const { message, errors } = useSelector((state) => state.ui);
+    const { message, errors, sendReport } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
     useEffect(() => {
@@ -260,6 +259,17 @@ const CrossingPage = () => {
                 {
                     changeBook && <ChangeBookModal open={changeBook} recipient={crossing.sender} />
                 }
+                {
+                    sendReport && authenticated && 
+                    <ReportForm 
+                        open={sendReport}
+                        items={reportOnCrossing}
+                        type="crossing"
+                        username={crossing.sender === credentials.username ? crossing.recipient : crossing.sender}
+                        userImage={crossing.sender === credentials.username ? crossing.recipientData.userImage : crossing.senderData.userImage}
+                        crossing={crossing}
+                    />
+                }
                 <GridItem xs={12} sm={12} md={12} style={{position: 'relative'}}>
                 {
                     crossing.status === "done" ? 
@@ -276,6 +286,15 @@ const CrossingPage = () => {
                         </Tooltip>
                     )
                 }
+                    <Tooltip
+                        id="tooltip-top"
+                        title="REPORT"
+                        placement="bottom"
+                    >
+                        <Button disabled={crossing.canceled} color="danger" round simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT })} style={{position: 'absolute', left: 0, top: -10}}>
+                            <ReportIcon />
+                        </Button>
+                    </Tooltip>
                 </GridItem>
                 <CrossingInfo />
                 <GridItem xs={12} sm={12} md={5}>

@@ -17,6 +17,7 @@ const topicStyle = {
         fontFamily: "'Grandstander', cursive"
     },
     card: {
+        position: 'relative',
         overflow: 'hidden',
         paddingTop: 60
     },

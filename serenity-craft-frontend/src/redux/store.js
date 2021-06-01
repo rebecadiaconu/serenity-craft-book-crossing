@@ -1,6 +1,7 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
+import AdminReducer from "./reducers/adminReducer";
 import UserReducer from "./reducers/userReducer";
 import UiReducer from "./reducers/uiReducer";
 import BookReducer from "./reducers/bookReducer";
@@ -17,7 +18,8 @@ const reducers = combineReducers({
   books: BookReducer,
   ui: UiReducer,
   review: ReviewReducer,
-  crossing: CrossingReducer
+  crossing: CrossingReducer,
+  admin: AdminReducer
 });
 
 const store = createStore(

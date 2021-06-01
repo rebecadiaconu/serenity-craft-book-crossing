@@ -349,7 +349,6 @@ exports.cancelCrossing = (req, res) => {
         return crossingDoc.update({
             canceled: true,
             canceledBy: req.user.username
-            // reason: req.body.reason.trim()
         })
         .then(() => { 
             let newNotification = {

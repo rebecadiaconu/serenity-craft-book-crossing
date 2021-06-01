@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, NavLink } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import history from "util/history";
-import { userReviewFirst, alreadyPending } from "util/general";
+import { userReviewFirst, alreadyPending, reportOnBookReviewTopicReply } from "util/general";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
@@ -12,6 +12,7 @@ import { chooseRandomBook, sendRequest, cancelCrossing } from 'redux/actions/cro
 import { Actions } from 'redux/types';
 
 // Components
+import ReportForm from "util/components/ReportForm";
 import AddReview from 'components serenity/Review/AddReview';
 import EditReview from 'components serenity/Review/EditReview';
 import ChangeCoverImage from "components serenity/Book/ChangeCoverImage";
@@ -29,6 +30,7 @@ import CardHeader from 'components/Card/CardHeader';
 import { List, ListItem, makeStyles, Tooltip, Typography } from '@material-ui/core';
 
 // @material-ui icons
+import ReportIcon from '@material-ui/icons/Report';
 import RateReviewIcon from '@material-ui/icons/RateReview';
 import Edit from "@material-ui/icons/Edit";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -164,7 +166,7 @@ const BookPage = () => {
     const { reviewId, addReview, editReview, deleteReview, reviewData } = useSelector((state) => state.review);
     const { authenticated, credentials, crossings } = useSelector((state) => state.user);
     const { sendReq, randomBookId, randomBook } = useSelector((state) =>  state.crossing);
-    const { message, errors } = useSelector((state) => state.ui);
+    const { message, errors, sendReport } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
     useEffect(() => {
@@ -344,6 +346,17 @@ const BookPage = () => {
             {
                 editReview && reviewId && reviewData && <EditReview open={editReview} />
             }
+            {
+                sendReport && authenticated && 
+                <ReportForm 
+                    open={sendReport} 
+                    items={reportOnBookReviewTopicReply} 
+                    type="book"
+                    book={book}
+                    username={book.owner}
+                    userImage={book.ownerImage}
+                />
+            }
             <ChangeCoverImage justAdded={justAdded} handleClose={handleJustAdded} />
             <GridItem xs={12} sm={12} md={12}>
                 <Card testimonial>
@@ -470,16 +483,28 @@ const BookPage = () => {
                                 </Tooltip>
                             </div>
                         ) : ((book?.reviews?.filter((review) => review.username === credentials.username ).length === 0) && (
+                            <div style={{position: 'absolute', right: 10}}>
                                 <Tooltip
                                     id="tooltip-top"
                                     title="Add review"
                                     placement="bottom"
                                     classes={{ tooltip: classes.tooltip }}
                                 >
-                                    <Button color="primary" simple justIcon style={{position: 'absolute', right: 10}} onClick={handleAddReview}>
+                                    <Button color="primary" simple justIcon onClick={handleAddReview}>
                                         <RateReviewIcon className={classes.underChartIcons} />
                                     </Button>
                                 </Tooltip>
+                                <Tooltip
+                                    id="tooltip-top"
+                                    title="REPORT"
+                                    placement="bottom"
+                                    classes={{ tooltip: classes.tooltip }}
+                                >
+                                    <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
+                                        <ReportIcon className={classes.underChartIcons} />
+                                    </Button>
+                                </Tooltip>
+                            </div>
                             )
                         )
                     }

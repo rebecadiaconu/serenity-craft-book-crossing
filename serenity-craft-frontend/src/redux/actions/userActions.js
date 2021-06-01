@@ -43,7 +43,6 @@ export const loginUser = (userData) => (dispatch) => {
             setAuth(data.token);
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
             dispatch(getUserData());
-            history.push("/");
         })
         .catch((err) => {
             dispatch({
@@ -58,9 +57,9 @@ export const loginUser = (userData) => (dispatch) => {
 
 
 export const logOutUser = () => (dispatch) => {
-    dispatch({ type: Actions.USER.SET_UNAUTHENTICATED });
     localStorage.removeItem('idToken');
     delete axios.defaults.headers.common['Authorization'];
+    dispatch({ type: Actions.USER.SET_UNAUTHENTICATED });
     history.push('/auth/login-page');
 }
 
@@ -99,6 +98,10 @@ export const getUserData = () => (dispatch) => {
         });
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        if (data.credentials.role === "admin") {
+            dispatch({ type: Actions.ADMIN.SET_ADMIN });
+            history.push("/serenity-admin");
+        } 
     })
     .catch((err) => {
         dispatch({
@@ -386,6 +389,28 @@ export const markNotificationRead = (notifIds) => (dispatch) => {
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
     })
     .catch((err) => {
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
+
+export const addReport = (formData, username) => (dispatch) => {
+    console.log(formData);
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post(`/report/${username}`, formData)
+    .then(({ data }) => {
+        dispatch({
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
+        dispatch({ type: Actions.UI.STOP_REPORT });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data

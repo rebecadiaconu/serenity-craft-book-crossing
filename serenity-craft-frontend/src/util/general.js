@@ -135,4 +135,14 @@ const userReviewFirst = (reviews, username) => {
     return reviews;
 };
 
-export { booksSort, crossingSort, allGenres, crossingStages, getFilterData, userReviewFirst, alreadyPending, defaultUserImage, defaultBookImage };
+const reportOnCrossing = [
+    'Returned my book back damaged',
+    'The user did not send his book',
+    'Did not send my book back'
+];
+
+const reportOnBookReviewTopicReply = [
+    'Inappropriate language and content'
+]
+
+export { reportOnCrossing, reportOnBookReviewTopicReply, booksSort, crossingSort, allGenres, crossingStages, getFilterData, userReviewFirst, alreadyPending, defaultUserImage, defaultBookImage };

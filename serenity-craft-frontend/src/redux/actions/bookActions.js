@@ -15,6 +15,7 @@ export const getAllBooks = () => (dispatch) => {
             type: Actions.BOOK.SET_INIT,
             payload: data 
         });
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
