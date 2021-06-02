@@ -6,7 +6,7 @@ import { reportSort } from "util/general";
 // Redux 
 import { useDispatch, useSelector } from "react-redux";
 import { logOutUser } from "redux/actions/userActions";
-import { getReports, setSearchValue} from "redux/actions/adminActions";
+import { getReports, setSearchValue } from "redux/actions/adminActions";
 import { Actions } from 'redux/types';
 
 // creates a beautiful scrollbar

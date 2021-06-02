@@ -1,9 +1,11 @@
 const config = require('../util/config');
-const { db, admin } = require('../util/admin');
+const { db, admin, emailAccount } = require('../util/admin');
 const { validateLogInData, validateSignUpData, validateEmail, reduceUserDetails} = require('../util/validators');
 
+const nodemailer = require("nodemailer");
 const firebase = require('firebase');
 const { uuid } = require('uuidv4');
+const { report } = require('process');
 firebase.initializeApp(config);
 
 realtime = firebase.database();
@@ -1030,7 +1032,6 @@ exports.addReport = (req, res) => {
     });
 };
 
-
 // Accept report by admin
 exports.acceptReport = (req, res) => {
     let reportData = {};
@@ -1054,7 +1055,7 @@ exports.acceptReport = (req, res) => {
             updates['status'] = 'accepted';
             updates['seen'] = true;
 
-            realtime.ref(`/reports/${req.params.reportId}`).update(updates);
+            return realtime.ref(`/reports/${req.params.reportId}`).update(updates);
         })
         .then(() => {
             
@@ -1129,7 +1130,7 @@ exports.rejectReport = (req, res) => {
         updates['status'] = 'rejected';
         updates['seen'] = true;
 
-        realtime.ref(`/reports/${req.params.reportId}`).update(updates);
+        return realtime.ref(`/reports/${req.params.reportId}`).update(updates);
     })
     .then(() => {
         return res.json({ message: 'Report rejected successfully!' });
@@ -1143,6 +1144,7 @@ exports.rejectReport = (req, res) => {
 // Set report to stand by -> talk on email for more details
 exports.standByReport = (req, res) => {
     let reportData = {};
+    let transporter;
 
     realtime.ref(`/reports/${req.params.reportId}`).get()
     .then((data) => {
@@ -1154,11 +1156,32 @@ exports.standByReport = (req, res) => {
         updates['status'] = 'stand-by';
         updates['seen'] = true;
 
-        realtime.ref(`/reports/${req.params.reportId}`).update(updates);
-        
-    })
-    .then(() => {
-        return res.json({ message: 'Report status set to stand-by successfully!' });
+        return realtime.ref(`/reports/${req.params.reportId}`).update(updates)
+        .then(() => {
+            transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                service: "gmail",
+                auth: {
+                    user: emailAccount.email,
+                    pass: emailAccount.password
+                }
+            });
+        })
+        .then(() => {
+            let info = transporter.sendMail({
+                from: emailAccount.email,
+                to: reportData.senderEmail,
+                subject: "Report on crossing",
+                text: `Hi there! \nThe Serenity Craft Admin has seen you report with ${reportData.recipient}. Tell us more details and proofs (if you have) to fix the problem! \nYour reason: ${reportData.reason}.`
+            });
+
+            console.log("Email send successfully! --> ", info.messageId);
+        })
+        .then(() => {
+            return res.json({ message: 'Email send successfully! Do the talk there!' });
+        });
     })
     .catch((err) => {
         console.error(err);

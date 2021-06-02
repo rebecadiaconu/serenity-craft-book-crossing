@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
-import { rejectReport, markSeen } from "redux/actions/adminActions";
+import { rejectReport, markSeen, sendEmail } from "redux/actions/adminActions";
 import { Actions } from 'redux/types';
 
 // components
@@ -41,6 +41,10 @@ const ReportCard = ({ report }) => {
             }));
         }
     }, [reports, admin]);
+
+    const handleSendEmail = () => {
+        dispatch(sendEmail(report));
+    };
 
     const handleSeeReport = () => {
         dispatch(markSeen(report));
@@ -97,9 +101,13 @@ const ReportCard = ({ report }) => {
                             <Tooltip title="Decline report" classes={{tooltip: classes.tooltip}} onClick={handleReject}>
                                 <Button simple color="danger" justIcon round><CancelIcon /></Button>
                             </Tooltip>
-                            <Tooltip title="Send email to know more" classes={{tooltip: classes.tooltip}}>
-                                <Button simple color="warning" justIcon round><EmailIcon /></Button>
-                            </Tooltip>
+                            {
+                                report.status !== "stand-by" && (
+                                    <Tooltip title="Send email to know more" classes={{tooltip: classes.tooltip}} onClick={handleSendEmail}>
+                                        <Button simple color="warning" justIcon round><EmailIcon /></Button>
+                                    </Tooltip>
+                                )
+                            }
                             </>
                         )
                     }

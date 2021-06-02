@@ -4,4 +4,9 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
-module.exports = { admin, db };
+const emailAccount = {
+    email: "serenity.craft31@gmail.com",
+    password: "licenta2021"
+};
+
+module.exports = { admin, db, emailAccount };

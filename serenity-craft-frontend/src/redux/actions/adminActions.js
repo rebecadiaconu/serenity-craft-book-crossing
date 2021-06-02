@@ -107,6 +107,27 @@ export const markSeen = (report) => (dispatch) => {
     });
 };
 
+export const sendEmail = (report) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_DATA });
+    axios.post(`/reports/${report.reportId}/standBy`)
+    .then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message 
+        });
+        dispatch(getReports());
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+    })
+    .catch((err) => {
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
+    });
+};
+
 export const sortReports = (value, reports) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
     let newReports = [];
