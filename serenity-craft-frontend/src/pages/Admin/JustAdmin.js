@@ -73,7 +73,7 @@ const DecideOnAccept = ({ open }) => {
     };
 
     const onSubmit = () =>{
-        if (decision !== 'delete' && decision != 'notification') setError('You must choose one of them!');
+        if (decision !== 'delete' && decision != 'notification' && decision !== 'ban') setError('You must choose one of them!');
         else if (report && accept) {
             let formData = {
                 decision: decision,

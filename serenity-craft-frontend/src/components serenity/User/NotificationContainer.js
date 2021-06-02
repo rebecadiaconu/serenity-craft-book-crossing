@@ -193,13 +193,13 @@ const NotificationContainer =() => {
                                                     )
                                                 )
                                                 break
+                                            case 'report-delete':
+                                                message = `The admin accepted one report on your name and deleted the specific content!`
+                                                icon = <ReportIcon fontSize="small" className={classes.icon} />;     
                                         }
 
                                         return (
-                                            <NavLink
-                                                key={notif.notificationId}
-                                                to={redirectTo}
-                                            >
+                                            notif.type === "report-delete" ? (
                                                 <MenuItem 
                                                     className={notif.read ? classes.read + " " + classes.dropdownItem : classes.noRead + " " + classes.dropdownItem}
                                                     key={notif.notificationId}
@@ -207,7 +207,21 @@ const NotificationContainer =() => {
                                                 >
                                                     {icon}{message}
                                                 </MenuItem>
-                                            </NavLink>
+                                            ) : (
+                                                <NavLink
+                                                    key={notif.notificationId}
+                                                    to={redirectTo}
+                                                >
+                                                    <MenuItem 
+                                                        className={notif.read ? classes.read + " " + classes.dropdownItem : classes.noRead + " " + classes.dropdownItem}
+                                                        key={notif.notificationId}
+                                                        style={{maxHeight: 'unset'}}
+                                                    >
+                                                        {icon}{message}
+                                                    </MenuItem>
+                                                </NavLink>
+                                            )
+                                            
                                         )
                                     })
                                 ) : (

@@ -156,7 +156,7 @@ const LoginPage = () => {
                 <br />
                 {
                   errors?.general && (
-                    <TypographyDanger variant="body2">
+                    <TypographyDanger variant="body2" style={{textAlign: 'center', marginTop: 20}}>
                       {errors.general}
                     </TypographyDanger>
                   )

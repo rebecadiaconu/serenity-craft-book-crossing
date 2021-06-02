@@ -85,7 +85,24 @@ exports.logIn = (req, res) => {
         return data.user.getIdToken();
     })
     .then((token) => {
-        return res.json({ token });
+        db.collection('users').where('email', '==', user.email).limit(1).get()
+        .then((data) =>{
+            if (!data.empty) {
+                if (data.docs[0].data().banned) {
+                    let now = new Date();
+                    let banDate = new Date(data.docs[0].data().bannedAt);
+                    let daysBetween = Math.floor((now - banDate) / (1000*3600*24));
+                    if (daysBetween < 30) {
+                        return res.status(403).json({ general: `Your account has been banned! Come back in ${30 - daysBetween} days.` });
+                    } else if (daysBetween >= 30) {
+                        return db.doc(`/users/${data.docs[0].data().username}`).update({ reportCount: 0, banned: false, bannedAt: admin.firestore.FieldValue.delete()})
+                        .then(() => {
+                            return res.json({ token });
+                        });
+                    }
+                } else  return res.json({ token });
+            } else return res.status(404).json({ general: 'User not found!' });
+        });
     })
     .catch((err) => {
         console.error(err);
