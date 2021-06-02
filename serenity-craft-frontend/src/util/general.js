@@ -20,6 +20,14 @@ const crossingSort = [
     'Canceled'
 ];
 
+const reportSort = [
+    'All',
+    'Unseen',
+    'Accepted',
+    'Rejected',
+    'Stand By'
+];
+
 const allGenres = [
     'Adventure',
     'Art',
@@ -135,7 +143,7 @@ const userReviewFirst = (reviews, username) => {
     return reviews;
 };
 
-const reportOnCrossing = [
+const reportOnCrossingItems = [
     'Returned my book back damaged',
     'The user did not send his book',
     'Did not send my book back'
@@ -145,4 +153,4 @@ const reportOnBookReviewTopicReply = [
     'Inappropriate language and content'
 ]
 
-export { reportOnCrossing, reportOnBookReviewTopicReply, booksSort, crossingSort, allGenres, crossingStages, getFilterData, userReviewFirst, alreadyPending, defaultUserImage, defaultBookImage };
+export { reportOnCrossingItems, reportSort, reportOnBookReviewTopicReply, booksSort, crossingSort, allGenres, crossingStages, getFilterData, userReviewFirst, alreadyPending, defaultUserImage, defaultBookImage };

@@ -575,12 +575,12 @@ exports.deleteReview = (req, res) => {
         bookData = doc.data();
         bookData.bookId = doc.id;
 
-        return db.collection('reviews').where('username', '==', req.user.username).where('bookId', '==', req.params.bookId).limit(1).get();
+        return db.doc(`/reviews/${req.params.reviewId}`).get();
     })
-    .then((data) => {
-        if (data.empty)  return res.status(404).json({ error: 'Review already deleted!' });
+    .then((doc) => {
+        if (!doc.exists)  return res.status(404).json({ error: 'Review already deleted!' });
 
-        deletedRating = data.docs[0].data().rating;
+        deletedRating = doc.data().rating;
 
         return db.doc(`/reviews/${req.params.reviewId}`).delete()
         .then(() => {

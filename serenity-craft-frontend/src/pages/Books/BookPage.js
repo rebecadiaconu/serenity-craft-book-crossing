@@ -174,7 +174,6 @@ const BookPage = () => {
     }, []);
 
     useEffect(() => {
-        console.log('ferbht');
         dispatch(getBook(bookId));
         return () => dispatch({ type: Actions.UI.CLEAR_ACTION });
     }, []);
@@ -407,8 +406,7 @@ const BookPage = () => {
 
                         {
                             book.summary ? (
-                                <GridItem xs={12} sm={12} md={7} style={{display: 'flex',margin: '0 auto'}}
->
+                                <GridItem xs={12} sm={12} md={7} style={{display: 'flex',margin: '0 auto'}}>
                                 <Accordion
                                     active={-1}
                                     collapses={[
@@ -433,8 +431,7 @@ const BookPage = () => {
                                 />
                                 </GridItem>
                             ) : (
-                                <GridItem xs={12} sm={12} md={7} style={{display: 'flex',margin: '0 auto'}}
->
+                                <GridItem xs={12} sm={12} md={7} style={{display: 'flex',margin: '0 auto'}}>
                                 <Accordion
                                     active={-1}
                                     collapses={[
@@ -482,7 +479,7 @@ const BookPage = () => {
                                     <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.BOOK.DELETE })}><HighlightOffIcon /></Button>
                                 </Tooltip>
                             </div>
-                        ) : ((book?.reviews?.filter((review) => review.username === credentials.username ).length === 0) && (
+                        ) : ((book?.reviews?.filter((review) => review.username === credentials.username ).length === 0) ? (
                             <div style={{position: 'absolute', right: 10}}>
                                 <Tooltip
                                     id="tooltip-top"
@@ -504,6 +501,18 @@ const BookPage = () => {
                                         <ReportIcon className={classes.underChartIcons} />
                                     </Button>
                                 </Tooltip>
+                            </div>) : 
+                            (<div style={{position: 'absolute', right: 10}}>
+                                <Tooltip
+                                    id="tooltip-top"
+                                    title="REPORT"
+                                    placement="bottom"
+                                    classes={{ tooltip: classes.tooltip }}
+                                >
+                                    <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
+                                        <ReportIcon className={classes.underChartIcons} />
+                                    </Button>
+                                </Tooltip> 
                             </div>
                             )
                         )

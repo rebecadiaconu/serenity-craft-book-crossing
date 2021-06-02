@@ -134,15 +134,17 @@ exports.deleteTopic = (req, res) => {
     let topicData = {};
     let promises = [];
 
+    console.log('HERE!!!');
+
     realtime.ref(`/topics/${req.params.topicId}`).get()
     .then((data) => {
         if (!data.exists()) return res.status(404).json({ error: 'Topic already deleted!' });
 
         topicData = data.val();
 
-        if (topicData.username !== req.user.username) return res.status(403).json({ error: 'Unauthorized!' });
+        if (topicData.username !== req.user.username && req.user.role !== "admin") return res.status(403).json({ error: 'Unauthorized!' });
 
-        return realtime.ref(`/topics/${req.params.topicId}`).remove();
+        else return realtime.ref(`/topics/${req.params.topicId}`).remove();
     })
     .then(() => {
         if (topicData.replyCount > 0) {

@@ -1,6 +1,4 @@
 import React, { forwardRef, useEffect, useState } from 'react';
-import featherLogo from "assets/img/feather-logo.png";
-import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 // Redux
@@ -32,12 +30,12 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const ReportForm = ({ open, items, type, username, userImage, book, review, crossing, topic, reply }) => {
+const ReportForm = ({ open, items, type, username, userImage, book, review, bookId, crossing, crossingId, topic, reply, topicId }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit } = useForm();
     const { errors } = useSelector((state) => state.ui);
-    const [reason, setReason] = useState(null);
+    const [reason, setReason] = useState(null);;
 
     const handleChange = (value) => {
         setReason(value);
@@ -53,32 +51,37 @@ const ReportForm = ({ open, items, type, username, userImage, book, review, cros
             username: username,
             userImage: userImage
         };
-        if (reason) reportData.reason = reason;
+        if (reason && reason !== "other-reason") reportData.reason = reason;
         else if (!(!!reason && !!formData.reason)) reportData.reason = '';
-        else if (!!reason=== false && !!formData.reason) reportData.reason = formData.reason;
-
-        console.log(reportData);
+        else if (reason === "other-reason" && !!formData.reason) reportData.reason = formData.reason;
 
         switch(type) {
             case 'book':
                 if (book) reportData.book = book;
                 break
             case 'review':
-                if (review) reportData.review = review;
+                if (review && bookId) {
+                    reportData.review = review;
+                    reportData.bookId = bookId;
+                }
                 break
             case 'crossing':
                 if (crossing) reportData.crossing = crossing;
                 break
             case 'topic':
-                if (topic) reportData.topic = topic;
+                if (topic && crossingId) {
+                    reportData.topic = topic;
+                    reportData.crossingId = crossingId;
+                }
                 break
             case 'reply':
-                if (reply) {
+                if (reply && topicId && crossingId) {
                     reportData.reply = reply;
+                    reportData.topicId = topicId;
+                    reportData.crossingId = crossingId;
                 }
                 break
         }
-
         dispatch(addReport(reportData, username));
     };
 

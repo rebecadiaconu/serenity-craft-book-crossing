@@ -45,7 +45,7 @@ const responsive = {
 
 const CrossingsCarousel = () => {
     const dispatch = useDispatch();
-    const { initCrossings, crossings, searchApplied, searchValue } = useSelector((state) => state.user);
+    const { initCrossings, crossings, searchValue } = useSelector((state) => state.user);
 
     const handleSearch = (event) => {
         if (event.target.value !== searchValue) dispatch(setSearchValue(event.target.value, initCrossings));

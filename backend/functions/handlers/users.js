@@ -954,8 +954,10 @@ exports.getReports = (req, res) => {
             reports = Object.values(data.val());
         } else reports = [];
 
+        let unseenFirst;
         reports.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-        return res.json({ reports: reports });
+        unseenFirst = (reports.filter((report) => report.seen === false)).concat(reports.filter((report) => report.seen === true));
+        return res.json({ reports: unseenFirst });
     })
     .catch((err) => {
         console.error(err);
@@ -996,15 +998,19 @@ exports.addReport = (req, res) => {
                 break
             case 'review':
                 reportData.review = req.body.review;
+                reportData.bookId = req.body.bookId;
                 break
             case 'crossing':
                 reportData.crossing = req.body.crossing;
                 break
             case 'topic':
                 reportData.topic = req.body.topic;
+                reportData.crossingId = req.body.crossingId;
                 break
             case 'reply':
                 reportData.reply = req.body.reply;
+                reportData.topicId = req.body.topicId;
+                reportData.crossingId = req.body.crossingId;
                 break
             case 'other':
                 break
@@ -1049,10 +1055,58 @@ exports.acceptReport = (req, res) => {
             updates['seen'] = true;
 
             realtime.ref(`/reports/${req.params.reportId}`).update(updates);
+        })
+        .then(() => {
+            
+            if (req.body.decision === "ban") {
+                return db.doc(`/users/${reportData.recipient}`).update({ banned: true, bannedAt: new Date().toISOString() });
+            }
+            else {
+                let newNotification = {
+                    notificationId: uuid(),
+                    createdAt: new Date().toISOString(),
+                    read: false,
+                    sender: 'ADMIN',
+                    recipient: reportData.recipient,
+                    user: reportData.sender
+                };
+
+                if (req.body.decision === "notification") {
+                    newNotification.type = 'report-edit';
+                    switch(reportData.type) {
+                        case 'crossing':
+                            newNotification.crossingId = reportData.crossing.crossingId;
+                            newNotification.body = `Some user noticed us of your behavior on this crossing page. Check your content!`;
+                            break;
+                        case 'book':
+                            newNotification.bookId = reportData.book.bookId;
+                            newNotification.body = `You can not post offensive or wrong informations about books. Check yours!`;
+                            break;
+                        case 'review':
+                            newNotification.reviewId = reportData.review.reviewId;
+                            newNotification.bookId = reportData.bookId;
+                            newNotification.body = `You can not post offensive reviews. Check yours!`;
+                            break;
+                        case 'topic':
+                            newNotification.topicId = reportData.topic.topicId;
+                            newNotification.crossingId = reportData.crossingId;
+                            newNotification.body = `You can not post offensive topics. Check yours!`;
+                            break;
+                        case 'reply':
+                            newNotification.topicId = reportData.topicId;
+                            newNotification.crossingId = reportData.crossingId;
+                            newNotification.body = `You can not post offensive replies. Check yours!`;
+                            break;
+                    }
+                }
+                else if (req.body.decision === "delete") newNotification.type = 'report-delete';
+
+                return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
+            }
+        })
+        .then(() => {
+            return res.json({ message: 'Report accepted successfully!' });
         });
-    })
-    .then(() => {
-        return res.json({ message: 'Report accepted successfully!' });
     })
     .catch((err) => {
         console.error(err);
@@ -1063,6 +1117,7 @@ exports.acceptReport = (req, res) => {
 // Reject report by admin
 exports.rejectReport = (req, res) => {
     let reportData = {};
+    console.log('reject!!');
 
     realtime.ref(`/reports/${req.params.reportId}`).get()
     .then((data) => {
@@ -1075,7 +1130,6 @@ exports.rejectReport = (req, res) => {
         updates['seen'] = true;
 
         realtime.ref(`/reports/${req.params.reportId}`).update(updates);
-        
     })
     .then(() => {
         return res.json({ message: 'Report rejected successfully!' });

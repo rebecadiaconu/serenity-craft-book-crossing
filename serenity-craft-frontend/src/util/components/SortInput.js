@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { sortBooks } from "../../redux/actions/bookActions";
 import { sortCrossings } from "redux/actions/userActions";
+import { sortReports } from "redux/actions/adminActions";
 
 // @material-ui components
 import { makeStyles } from "@material-ui/core/styles";
@@ -20,21 +21,28 @@ import styles from "assets/jss/material-dashboard-pro-react/customSelectStyle";
 
 const useStyles = makeStyles(styles);
 
-const SelectInput = ({ book, crossing, label, items, defaultValue }) => {
+const SelectInput = ({ book, crossing, admin, label, items, defaultValue }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { sortValueCrossings, crossings } = useSelector((state) => state.user);
+    const { sortValueCrossings, crossings, initCrossings } = useSelector((state) => state.user);
     const { sortValue, books } = useSelector(state => state.books);
+    const { sortValue: sortValueReports, reports, initReports } = useSelector(state => state.admin);
     const [selectItem, setItem] = useState(defaultValue);
     
-
     // useEffect(() => {
     //     top.current.scrollTo({ top: 0, behavior: 'smooth'});
     // }, [selectItem]);
 
     useEffect(() => {
         if (book && selectItem !== sortValue) dispatch(sortBooks(selectItem, books));
-        else if (crossing && selectItem !== sortValueCrossings) dispatch(sortCrossings(selectItem, crossings));
+        else if (crossing && selectItem !== sortValueCrossings) {
+            let sortOn = crossings.length === 0 ? initCrossings : crossings;
+            dispatch(sortCrossings(selectItem, sortOn));
+        }
+        else if (admin && selectItem !== sortValueReports) {
+            let sortOn = reports.length === 0 ? initReports : reports;
+            dispatch(sortReports(selectItem, sortOn));
+        }
     }, [selectItem]);
 
     const handleSelect = (event) => {

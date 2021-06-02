@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import history from "util/history";
-import { crossingStages, reportOnCrossing } from "util/general";
+import { crossingStages, reportOnCrossingItems } from "util/general";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -62,7 +62,7 @@ const CrossingPage = () => {
     const { crossingId, topicIndex } = useParams();
     const { authenticated, credentials } = useSelector((state) => state.user);
     const { crossing, cancel, deleteCross, changeBook, topicId, topic, viewTopic, addTopic, editTopic, deleteTopicVar } = useSelector((state) => state.crossing);
-    const { message, errors, sendReport } = useSelector((state) => state.ui);
+    const { message, errors, reportOnCrossing } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
     useEffect(() => {
@@ -260,10 +260,10 @@ const CrossingPage = () => {
                     changeBook && <ChangeBookModal open={changeBook} recipient={crossing.sender} />
                 }
                 {
-                    sendReport && authenticated && 
+                    reportOnCrossing && authenticated && 
                     <ReportForm 
-                        open={sendReport}
-                        items={reportOnCrossing}
+                        open={reportOnCrossing}
+                        items={reportOnCrossingItems}
                         type="crossing"
                         username={crossing.sender === credentials.username ? crossing.recipient : crossing.sender}
                         userImage={crossing.sender === credentials.username ? crossing.recipientData.userImage : crossing.senderData.userImage}
@@ -291,7 +291,7 @@ const CrossingPage = () => {
                         title="REPORT"
                         placement="bottom"
                     >
-                        <Button disabled={crossing.canceled} color="danger" round simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT })} style={{position: 'absolute', left: 0, top: -10}}>
+                        <Button disabled={crossing.canceled} color="danger" round simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT_CROSSING })} style={{position: 'absolute', left: 0, top: -10}}>
                             <ReportIcon />
                         </Button>
                     </Tooltip>

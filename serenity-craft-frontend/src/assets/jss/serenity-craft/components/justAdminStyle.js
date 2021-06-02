@@ -2,24 +2,23 @@ import {
     whiteColor,
     blackColor,
     hexToRgb,
+    roseColor,
     tooltip
 } from "assets/jss/material-dashboard-pro-react.js";
+
 
 const justAdminStyle = {
     tooltip,
     header: {
         margin: '15px 0',
         fontFamily: "'Sacramento', cursive",
-        textAlign: "center",
+        textAlign: "center"
     },
     logOutBtn: {
-        // display: 'flex',
-        // margin: '0 auto',
-        // top: 10
-        position: 'absolute',
-        top: 40,
-        right: 40
-   },
+        position: 'fixed',
+        top: 20,
+        right: 20
+    },
     fullPage: {
         padding: "40px 0",
         position: "relative",

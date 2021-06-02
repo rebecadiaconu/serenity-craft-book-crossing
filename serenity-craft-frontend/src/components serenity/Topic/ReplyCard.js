@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from "react-router-dom";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { reportOnBookReviewTopicReply } from "util/general";
@@ -26,18 +27,21 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 const ReplyCard = ({ reply, classes, handleDelete }) => {
     dayjs.extend(relativeTime);
     const dispatch = useDispatch();
+    const { crossingId, topicIndex } = useParams();
     const { authenticated, credentials } = useSelector(state => state.user);
-    const { sendReport } = useSelector((state) => state.ui);
+    const { reportOnReply } = useSelector((state) => state.ui);
 
     return (
         <Card className={classes.replyCard}>
             {
-                sendReport && authenticated && 
+                reportOnReply && authenticated && 
                 <ReportForm 
-                    open={sendReport} 
+                    open={reportOnReply} 
                     items={reportOnBookReviewTopicReply} 
                     type="reply"
                     reply={reply}
+                    topicId={topicIndex}
+                    crossingId={crossingId}
                     username={reply.username}
                     userImage={reply.userImage}
                 />
@@ -68,7 +72,7 @@ const ReplyCard = ({ reply, classes, handleDelete }) => {
                             placement="bottom"
                             classes={{tooltip: classes.tooltip }}
                         >
-                            <Button size="sm" color="danger" round simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) } className={classes.replyBtn}>
+                            <Button size="sm" color="danger" round simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT_REPLY }) } className={classes.replyBtn}>
                                 <ReportIcon />
                             </Button>
                         </Tooltip>

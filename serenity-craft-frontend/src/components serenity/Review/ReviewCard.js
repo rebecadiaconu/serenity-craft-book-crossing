@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { Actions } from "redux/types";
 import { reportOnBookReviewTopicReply } from "util/general";
 
@@ -29,8 +29,9 @@ import GridItem from 'components/Grid/GridItem';
 
 const ReviewCard = ({ show, review, classes }) => {
     const dispatch = useDispatch();
+    const { bookId } = useParams();
     const { authenticated, credentials } = useSelector((state) => state.user);
-    const { sendReport } = useSelector((state) => state.ui);
+    const { sendReport, reportOnReview } = useSelector((state) => state.ui);
     dayjs.extend(relativeTime);
 
     const handleEditReview = () => {
@@ -44,14 +45,15 @@ const ReviewCard = ({ show, review, classes }) => {
     return (
         <>
         {
-            sendReport && authenticated &&
+            sendReport && authenticated && reportOnReview &&
             <ReportForm 
                 open={sendReport}
                 items={reportOnBookReviewTopicReply}
                 type="review"
-                username={review.username}
-                userImage={review.userImage}
-                review={review}
+                username={reportOnReview.username}
+                userImage={reportOnReview.userImage}
+                review={reportOnReview}
+                bookId={bookId}
             />
         }
         <GridContainer
@@ -109,7 +111,10 @@ const ReviewCard = ({ show, review, classes }) => {
                             placement="bottom"
                             classes={{ tooltip: classes.tooltip }}
                         >
-                            <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT })}>
+                            <Button color="danger" simple justIcon onClick={(event) => {
+                                event.preventDefault();
+                                dispatch({ type: Actions.UI.REPORT_REVIEW, payload: review })}
+                            }>
                                 <ReportIcon className={classes.underChartIcons} />
                             </Button>
                         </Tooltip>

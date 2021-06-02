@@ -4,6 +4,10 @@ const initialState = {
     backUp: false,
     scrolling: false,
     sendReport: false,
+    reportOnCrossing: false,
+    reportOnTopic: false,
+    reportOnReply: false,
+    reportOnReview: null,
     loading: false,
     seeRequest: false,
     request: null,
@@ -104,12 +108,41 @@ const UiReducer = (state = initialState, action) => {
         case Actions.UI.REPORT:
             return {
                 ...state,
-                sendReport: true
+                sendReport: true,
+                reportOnCrossing: false
             };
+        case Actions.UI.REPORT_CROSSING:
+            return {
+                ...state,
+                reportOnCrossing: true,
+                sendReport: false
+            };
+        case Actions.UI.REPORT_TOPIC:
+            return {
+                ...state,
+                reportOnTopic: true,
+                sendReport: false
+            };
+        case Actions.UI.REPORT_REPLY:
+            return {
+                ...state,
+                reportOnReply: true,
+                sendReport: false
+            };
+        case Actions.UI.REPORT_REVIEW:
+            return {
+                ...state,
+                sendReport: true,
+                reportOnReview: action.payload
+            }
         case Actions.UI.STOP_REPORT:
             return {
                 ...state,
-                sendReport: false
+                sendReport: false,
+                reportOnCrossing: false,
+                reportOnTopic: false,
+                reportOnReply: false,
+                reportOnReview: null
             }
         default:
             return state;

@@ -47,7 +47,7 @@ const TopicCard = ({ open, handleClose }) => {
     const { register, handleSubmit, setValue } = useForm();
     const { credentials } = useSelector((state) => state.user);
     const { topic, addedReply } = useSelector((state) => state.crossing);
-    const { errors, sendReport } = useSelector((state) => state.ui);
+    const { errors, reportOnTopic } = useSelector((state) => state.ui);
 
     const bottom = useRef(null);
 
@@ -90,25 +90,30 @@ const TopicCard = ({ open, handleClose }) => {
         >
             <Card className={classes.card} >
                 {
-                    sendReport && 
+                    reportOnTopic && 
                     <ReportForm 
-                        open={sendReport}
+                        open={reportOnTopic}
                         items={reportOnBookReviewTopicReply}
                         type="topic"
                         username={topic.username}
                         userImage={topic.userImage}
                         topic={topic}
+                        crossingId={crossingId}
                     />
                 }
-                <Tooltip
-                    id="tooltip-top"
-                    title="REPORT"
-                    placement="bottom"
-                >
-                    <Button color="danger" round simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT })} style={{position: 'absolute', right: 10, top: -10}}>
-                        <ReportIcon />
-                    </Button>
-                </Tooltip>
+                {
+                    topic.username !== credentials.username && (
+                        <Tooltip
+                            id="tooltip-top"
+                            title="REPORT"
+                            placement="bottom"
+                        >
+                            <Button color="danger" round simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT_TOPIC })} style={{position: 'absolute', right: 10, top: -10}}>
+                                <ReportIcon />
+                            </Button>
+                        </Tooltip>
+                    )
+                }
                 <CardHeader color={credentials.username === topic.username ? "warning" : "info"}>
                 <GridContainer>
                         <GridItem xs={4} sm={4} md={4} style={{textAlign: "center"}}>

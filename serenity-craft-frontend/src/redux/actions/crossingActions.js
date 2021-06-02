@@ -7,6 +7,7 @@ import { getRequests } from "./userActions";
 
 
 export const getCrossingData = (crossingId) => (dispatch) => {
+    console.log('here!!');
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.get(`/crossings/${crossingId}`)
     .then(({ data }) => {

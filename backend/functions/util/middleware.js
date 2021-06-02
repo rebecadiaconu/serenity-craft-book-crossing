@@ -25,40 +25,7 @@ exports.fbAuth = (req, res, next) => {
         req.user.email = data.docs[0].data().email;
         req.user.username = data.docs[0].data().username;
         req.user.imageUrl = data.docs[0].data().imageUrl;
-        
-        return next();
-    })
-    .catch((err) => {
-        console.error('Error while verifying token ', err);
-        return res.status(403).json(err);
-    });
-};
-
-const fbAdmin = (req, res, next) => {
-    let idToken;
-
-    if (req.headers.authorization &&  req.headers.authorization.startsWith('Bearer ')) {
-        idToken = req.headers.authorization.split('Bearer ')[1];
-    }
-    else {
-        console.error('No token found!');
-        return res.status(403).json({error: 'Unauthorized!'});
-    }
-
-    admin.auth().verifyIdToken(idToken)
-    .then((decodedToken) => {
-        req.user = decodedToken;
-
-        return db.collection('users')
-        .where('userId', '==', req.user.uid)
-        .where('role', '==', 'admin')
-        .limit(1)
-        .get();
-    })
-    .then((data) => { 
-        req.user.email = data.docs[0].data().email;
-        req.user.username = data.docs[0].data().username;
-        req.user.imageUrl = data.docs[0].data().imageUrl;
+        req.user.role = data.docs[0].data().role;
         
         return next();
     })
@@ -92,8 +59,10 @@ exports.bookOwnerAuth = (req, res, next) => {
         req.user.email = data.docs[0].data().email;
         req.user.username = data.docs[0].data().username;
         req.user.imageUrl = data.docs[0].data().imageUrl;
-
-        db.doc(`/books/${req.params.bookId}`).get()
+        req.user.role = data.docs[0].data().role;
+        
+        if (data.docs[0].data().role === "admin") return next();
+        else return db.doc(`/books/${req.params.bookId}`).get()
         .then((doc) => {
             if (!doc.exists) {
                 return res.status(404).json({ error: 'Book not found!' });
@@ -137,13 +106,17 @@ exports.crossingPartener = (req, res, next) => {
     .then((data) => { 
         req.user.username = data.docs[0].data().username;
         req.user.imageUrl = data.docs[0].data().imageUrl;
+        req.user.role = data.docs[0].data().role;
+
+        if (data.docs[0].data.role === "admin") return next();
         
-        db.doc(`/crossings/${req.params.crossingId}`).get()
+        else return db.doc(`/crossings/${req.params.crossingId}`).get()
         .then((doc) => {
+            console.log(doc);
             if (!doc.exists) return res.status(404).json({ error: 'Crossing not found!' });
 
             if (doc.data().recipient === req.user.username || doc.data().sender === req.user.username) return next();
-            else return res.status(403).json({ error: 'Unathorized!' });
+            else return res.status(403).json({ error: 'Unauthorized!' });
         });
     })
     .catch((err) => {

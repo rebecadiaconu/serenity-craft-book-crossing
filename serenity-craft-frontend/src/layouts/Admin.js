@@ -16,10 +16,8 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import ScrollToTop from "../util/components/ScrollToTop";
-// import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
 import routes from "routes.js";
-
 import styles from "assets/jss/material-dashboard-pro-react/layouts/adminStyle.js";
 
 let ps;

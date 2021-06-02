@@ -81,30 +81,30 @@ const UserReducer = (state = initialState, action) => {
             ...state,
             crossings: action.payload
           }
-          case Actions.USER.SORT:
-            return {
-                ...state,
-                sortApplied: true,
-                sortValueCrossings: action.payload
-            };
-          case Actions.USER.SET_SEARCH_DATA:
-            return {
-                ...state,
-                searchApplied: true,
-                searchValue: action.payload
-            }
-          case Actions.USER.STOP_SEARCH:
-            return {
-                ...state,
-                searchApplied: false,
-                searchValue: '',
-                crossings: state.initCrossings
-            }
-          case Actions.USER.SET_FAVS:
-            return {
+        case Actions.USER.SORT:
+          return {
               ...state,
-              favBooks: action.payload
-            }
+              sortApplied: true,
+              sortValueCrossings: action.payload
+          };
+        case Actions.USER.SET_SEARCH_DATA:
+          return {
+              ...state,
+              searchApplied: true,
+              searchValue: action.payload
+          }
+        case Actions.USER.STOP_SEARCH:
+          return {
+              ...state,
+              searchApplied: false,
+              searchValue: '',
+              crossings: state.initCrossings
+          }
+        case Actions.USER.SET_FAVS:
+          return {
+            ...state,
+            favBooks: action.payload
+          }
         default:
             return state;
     }

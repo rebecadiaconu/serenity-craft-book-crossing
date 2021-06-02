@@ -23,6 +23,7 @@ import Typography from '@material-ui/core/Typography';
 import Badge from '@material-ui/core/Badge';
 
 // @material-ui/icons
+import ReportIcon from '@material-ui/icons/Report';
 import Notifications from "@material-ui/icons/Notifications";
 import RateReviewIcon from '@material-ui/icons/RateReview';
 import ShareIcon from '@material-ui/icons/Share';
@@ -35,7 +36,6 @@ import Button from "components/CustomButtons/Button.js";
 
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarLinksStyle.js";
-import { getCrossingData } from 'redux/actions/crossingActions';
 
 const useStyles = makeStyles(styles);
 
@@ -139,7 +139,7 @@ const NotificationContainer =() => {
                         [classes.popperResponsive]: true,
                         [classes.popperNav]: true
                     })}
-                    style={{maxHeight: 400, maxWidth: 400, overflow: 'auto'}}
+                    style={{maxHeight: 400, maxWidth: 600, overflow: 'auto'}}
                 >
                 {({ TransitionProps }) => (
                     <Grow
@@ -184,6 +184,15 @@ const NotificationContainer =() => {
                                                 icon = <NotInterestedIcon fontSize="small" className={classes.icon} />;
                                                 redirectTo = `/admin/crossings/${notif.crossingId}`;
                                                 break
+                                            case 'report-edit':
+                                                message = notif.body;
+                                                icon = <ReportIcon fontSize="small" className={classes.icon} />;
+                                                (notif.crossingId && notif.topicId) ? redirectTo = `/admin/crossings/${notif.crossingId}/${notif.topicId}` : (
+                                                    notif.bookId ? redirectTo = `/admin/books/${notif.bookId}` : (
+                                                            redirectTo = `/admin/crossings/${notif.crossingId}`
+                                                    )
+                                                )
+                                                break
                                         }
 
                                         return (
@@ -194,6 +203,7 @@ const NotificationContainer =() => {
                                                 <MenuItem 
                                                     className={notif.read ? classes.read + " " + classes.dropdownItem : classes.noRead + " " + classes.dropdownItem}
                                                     key={notif.notificationId}
+                                                    style={{maxHeight: 'unset'}}
                                                 >
                                                     {icon}{message}
                                                 </MenuItem>
