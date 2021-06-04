@@ -50,7 +50,7 @@ const AllBooks = () => {
     }, [initBooks]);
 
     useEffect(() => {
-        setShowed(Math.min(booksPerPage * index, books.length));
+        if (books.length > 0) setShowed(Math.min(booksPerPage * index, books.length));
     }, [books]);
 
     const handleShowMore = (event) => {
@@ -153,8 +153,8 @@ const AllBooks = () => {
                         <h2 style={{margin: '0 auto'}}>No book found by your custom search...</h2> : 
                         <h2 style={{margin: '0 auto'}}>No books added yet...</h2>
                     ) : (
-                        books.slice(0, showedBooks).map((book, index) => {
-                            return book.available ? <BookContainer key={index} book={book} /> :   null
+                        books.filter((book) => book.available).slice(0, showedBooks).map((book, index) => {
+                            return <BookContainer key={index} book={book} />
                         })
                     )
                 }

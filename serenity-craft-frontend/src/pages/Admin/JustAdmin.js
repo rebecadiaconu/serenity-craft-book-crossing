@@ -33,6 +33,7 @@ import Dialog from "@material-ui/core/Dialog";
 import { makeStyles, Tooltip, Typography } from '@material-ui/core';
 
 // icons
+import LockOpen from "@material-ui/icons/LockOpen";
 import Search from "@material-ui/icons/Search";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
@@ -189,6 +190,10 @@ const JustAdmin = () => {
         dispatch(logOutUser());
     };
 
+    const handleLockPage = () => {
+        console.log('Lock page!');
+    };
+
     const successAlert = (text) => {
         setAlert(
             <SweetAlert
@@ -233,6 +238,11 @@ const JustAdmin = () => {
                 <Tooltip title="Log out" classes={{ tooltip: classes.tooltip}}>
                     <Button color="rose" round justIcon className={classes.logOutBtn} onClick={handleLogOut}>
                         <ExitToAppIcon />
+                    </Button>
+                </Tooltip>
+                <Tooltip title="Lock Screen" classes={{ tooltip: classes.tooltip}}>
+                    <Button color="rose" round justIcon className={classes.lockBtn} onClick={handleLockPage}>
+                        <LockOpen />
                     </Button>
                 </Tooltip>
                 {

@@ -146,7 +146,8 @@ const userReviewFirst = (reviews, username) => {
 const reportOnCrossingItems = [
     'Returned my book back damaged',
     'The user did not send his book',
-    'Did not send my book back'
+    'Did not send my book back',
+    'The book that I received do not look like its cover!'
 ];
 
 const reportOnBookReviewTopicReply = [

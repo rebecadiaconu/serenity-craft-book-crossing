@@ -19,6 +19,11 @@ const justAdminStyle = {
         top: 20,
         right: 20
     },
+    lockBtn: {
+        position: 'fixed',
+        top: 20,
+        left: 20
+    },
     fullPage: {
         padding: "40px 0",
         position: "relative",
