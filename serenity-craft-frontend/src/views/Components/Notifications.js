@@ -1,51 +1,56 @@
 /*eslint-disable*/
-import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Slide from "@material-ui/core/Slide";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-
-// @material-ui/icons
-import AddAlert from "@material-ui/icons/AddAlert";
-import Close from "@material-ui/icons/Close";
-
-// core components
-import Heading from "components/Heading/Heading.js";
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import SnackbarContent from "components/Snackbar/SnackbarContent.js";
-import Button from "components/CustomButtons/Button.js";
-import Snackbar from "components/Snackbar/Snackbar.js";
-import Instruction from "components/Instruction/Instruction.js";
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
-
-import styles from "assets/jss/material-dashboard-pro-react/views/notificationsStyle.js";
-
+import React, { forwardRef, useState, useEffect } from "react";
 import noticeModal1 from "assets/img/card-1.jpeg";
 import noticeModal2 from "assets/img/card-2.jpeg";
 
+// components-template
+
+// template
+import Heading from "components-template/Heading/Heading.js";
+import GridContainer from "components-template/Grid/GridContainer.js";
+import GridItem from "components-template/Grid/GridItem.js";
+import SnackbarContent from "components-template/Snackbar/SnackbarContent.js";
+import Button from "components-template/CustomButtons/Button.js";
+import Snackbar from "components-template/Snackbar/Snackbar.js";
+import Instruction from "components-template/Instruction/Instruction.js";
+import Card from "components-template/Card/Card.js";
+import CardBody from "components-template/Card/CardBody.js";
+
+// @material-ui core
+import { 
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  makeStyles,
+  Slide
+ } from "@material-ui/core";
+
+// icons
+import AddAlert from "@material-ui/icons/AddAlert";
+import Close from "@material-ui/icons/Close";
+
+// Styles
+import styles from "assets/jss/material-dashboard-pro-react/views/notificationsStyle.js";
 const useStyles = makeStyles(styles);
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
 export default function Notifications() {
   const classes = useStyles();
-  const [tl, setTL] = React.useState(false);
-  const [tc, setTC] = React.useState(false);
-  const [tr, setTR] = React.useState(false);
-  const [bl, setBL] = React.useState(false);
-  const [bc, setBC] = React.useState(false);
-  const [br, setBR] = React.useState(false);
-  const [classicModal, setClassicModal] = React.useState(false);
-  const [noticeModal, setNoticeModal] = React.useState(false);
-  const [smallModal, setSmallModal] = React.useState(false);
-  React.useEffect(() => {
+  const [tl, setTL] = useState(false);
+  const [tc, setTC] = useState(false);
+  const [tr, setTR] = useState(false);
+  const [bl, setBL] = useState(false);
+  const [bc, setBC] = useState(false);
+  const [br, setBR] = useState(false);
+  const [classicModal, setClassicModal] = useState(false);
+  const [noticeModal, setNoticeModal] = useState(false);
+  const [smallModal, setSmallModal] = useState(false);
+
+  useEffect(() => {
     // Specify how to clean up after this effect:
     return function cleanup() {
       // to stop the warning of calling setState of unmounted component

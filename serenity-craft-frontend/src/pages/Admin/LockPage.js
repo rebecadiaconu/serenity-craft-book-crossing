@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from "react";
+import avatar from "assets/img/backgr.jpg";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 
-// @material-ui/core components
+// Components
+
+// template
+import Button from "components-template/CustomButtons/Button.js";
+import Card from "components-template/Card/Card.js";
+import CardBody from "components-template/Card/CardBody.js";
+import CardAvatar from "components-template/Card/CardAvatar.js";
+import CardFooter from "components-template/Card/CardFooter.js";
+
+// @material-ui core 
 import { makeStyles } from "@material-ui/core/styles";
 
-// core components
-import Button from "components/CustomButtons/Button.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
-import CardAvatar from "components/Card/CardAvatar.js";
-import CardFooter from "components/Card/CardFooter.js";
-
-// icons
-
-import avatar from "assets/img/faces/avatar.jpg";
-
+// Styles
 import styles from "assets/jss/material-dashboard-pro-react/views/lockScreenPageStyle.js";
-
 const useStyles = makeStyles(styles);
 
 const LockPage = () => {
@@ -52,17 +50,6 @@ const LockPage = () => {
             </CardAvatar>
             <CardBody profile>
                 <h4 className={classes.cardTitle}>{credentials.username}</h4>
-                <CustomInput
-                    labelText="Enter Password"
-                    id="company-disabled"
-                    formControlProps={{
-                        fullWidth: true
-                    }}
-                    inputProps={{
-                        type: "password",
-                        autoComplete: "off"
-                    }}
-                />
             </CardBody>
             <CardFooter className={classes.justifyContentCenter}>
                 <Button color="rose" round>

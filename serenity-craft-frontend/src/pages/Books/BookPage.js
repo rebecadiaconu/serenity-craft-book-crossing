@@ -12,24 +12,30 @@ import { chooseRandomBook, sendRequest, cancelCrossing } from 'redux/actions/cro
 import { Actions } from 'redux/types';
 
 // Components
+
+// template
+import Accordion from "components-template/Accordion/Accordion";
+import Button from "components-template/CustomButtons/Button.js";
+import Card from 'components-template/Card/Card';
+import CardHeader from 'components-template/Card/CardHeader';
+import CardAvatar from 'components-template/Card/CardAvatar';
+import CardBody from "components-template/Card/CardBody.js";
+import CardFooter from 'components-template/Card/CardFooter';
+import GridContainer from 'components-template/Grid/GridContainer';
+import GridItem from 'components-template/Grid/GridItem';
+
+// serenity
+import AddReview from 'components-serenity/Review/AddReview';
+import ChangeCoverImage from "components-serenity/Book/ChangeCoverImage";
+import EditBook from "components-serenity/Book/EditBook";
+import EditReview from 'components-serenity/Review/EditReview';
+import ReviewContainer from "components-serenity/Review/ReviewContainer";
 import ReportForm from "util/components/ReportForm";
-import AddReview from 'components serenity/Review/AddReview';
-import EditReview from 'components serenity/Review/EditReview';
-import ChangeCoverImage from "components serenity/Book/ChangeCoverImage";
-import EditBook from "components serenity/Book/EditBook";
-import ReviewContainer from "components serenity/Review/ReviewContainer";
-import Card from 'components/Card/Card';
-import Button from "components/CustomButtons/Button.js";
-import CardAvatar from 'components/Card/CardAvatar';
-import CardBody from "components/Card/CardBody.js";
-import CardFooter from 'components/Card/CardFooter';
-import Accordion from "components/Accordion/Accordion";
-import GridContainer from 'components/Grid/GridContainer';
-import GridItem from 'components/Grid/GridItem';
-import CardHeader from 'components/Card/CardHeader';
+
+// @material-ui core
 import { List, ListItem, makeStyles, Tooltip, Typography } from '@material-ui/core';
 
-// @material-ui icons
+// icons
 import ReportIcon from '@material-ui/icons/Report';
 import RateReviewIcon from '@material-ui/icons/RateReview';
 import Edit from "@material-ui/icons/Edit";

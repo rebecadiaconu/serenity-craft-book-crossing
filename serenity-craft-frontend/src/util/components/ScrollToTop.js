@@ -1,11 +1,15 @@
 import React from 'react';
 import { useSelector } from "react-redux";
 
-// @material-ui components
-import { makeStyles } from "@material-ui/core/styles";
-import IconButton from "@material-ui/core/IconButton";
+// Components
 
-// @material-ui icons
+// @material-ui core
+import {
+    IconButton,
+    makeStyles
+} from "@material-ui/core";
+
+// icons
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 // Styles

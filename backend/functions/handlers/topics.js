@@ -1,6 +1,6 @@
 const { db } = require('../util/admin');
 const firebase = require('firebase');
-const { uuid } = require('uuidv4');
+const { v4: uuidv4 } = require('uuid');
 
 realtime = firebase.database();
 
@@ -35,7 +35,7 @@ exports.addTopic = (req, res) => {
         crossingData = doc.data();
         crossingData.crossingId = doc.id;
 
-        let topicId = uuid();
+        let topicId = uuidv4();
         newTopic.topicId = topicId;
 
         let updates = {};
@@ -45,7 +45,7 @@ exports.addTopic = (req, res) => {
     })
     .then(() => {
         let newNotification = {
-            notificationId: uuid(),
+            notificationId: uuidv4(),
             createdAt: new Date().toISOString(),
             read: false,
             sender: req.user.username,
@@ -183,7 +183,7 @@ exports.addReply = (req, res) => {
     if (!(Object.keys(errors).length === 0)) return res.status(400).json(errors);
 
     let newReply = {
-        replyId: uuid(),
+        replyId: uuidv4(),
         topicId: req.params.topicId,
         createdAt: new Date().toISOString(),
         username: req.user.username,
@@ -239,7 +239,7 @@ exports.addReply = (req, res) => {
 
         if (sendNotif) {
             let newNotification = {
-                notificationId: uuid(),
+                notificationId: uuidv4(),
                 createdAt: new Date().toISOString(),
                 read: false,
                 sender: req.user.username,
@@ -250,12 +250,11 @@ exports.addReply = (req, res) => {
                 crossingId: req.body.crossingId
             };
 
-            realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification)
-            .then(() => {
-                return res.json(newReply);
-            });
+            return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
         }
-        else return res.json(newReply);
+    })
+    .then(() => {
+        return res.json(newReply);
     })
     .catch((err) => {
         console.error(err);

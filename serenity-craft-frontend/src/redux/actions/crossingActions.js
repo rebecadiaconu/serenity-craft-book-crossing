@@ -322,9 +322,11 @@ export const deleteTopic = (topicId, crossingId) => (dispatch) => {
 };
 
 export const addReply = (formData, topicId) => (dispatch) => {
+    console.log(formData, topicId);
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/topics/${topicId}/reply`, formData)
     .then(({ data }) => {
+        console.log(data);
         dispatch({
             type: Actions.CROSSING.ADD_REPLY,
             payload: data
@@ -333,6 +335,7 @@ export const addReply = (formData, topicId) => (dispatch) => {
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
+        console.log(err);
         dispatch({ 
             type: Actions.UI.SET_ERRORS, 
             payload: err.response.data 

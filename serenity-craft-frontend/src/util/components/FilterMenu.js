@@ -4,22 +4,26 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { setFilterData } from "../../redux/actions/bookActions";
 
-// @material-ui components
-import { makeStyles } from '@material-ui/core/styles';
-import Checkbox from '@material-ui/core/Checkbox';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Paper from '@material-ui/core/Paper';
-import Popover from '@material-ui/core/Popover';
+// Components
 
-// @material-ui icons
+// template
+import Button from 'components-template/CustomButtons/Button';
+import GridItem from "components-template/Grid/GridItem.js";
+
+// @material-ui core
+import { 
+    Checkbox,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    makeStyles,
+    Paper,
+    Popover
+ } from '@material-ui/core';
+
+// icons
 import FilterListIcon from '@material-ui/icons/FilterList';
-
-// core components
-import GridItem from "components/Grid/GridItem.js";
-import Button from 'components/CustomButtons/Button';
 
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/filterMenuStyle";

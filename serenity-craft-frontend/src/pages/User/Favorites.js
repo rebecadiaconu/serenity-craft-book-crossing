@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from 'react';
 
+// Redux
 import { useSelector, useDispatch } from "react-redux";
 import { getUserFavs } from 'redux/actions/userActions';
 
-import Button from "components/CustomButtons/Button";
-import BookContainer from "components serenity/Book/BookContainer";
-import GridContainer from 'components/Grid/GridContainer';
+// Components
+
+// template
+import Button from "components-template/CustomButtons/Button";
+import GridContainer from 'components-template/Grid/GridContainer';
+
+// serenity
+import BookContainer from "components-serenity/Book/BookContainer";
+
+// @material-ui core
 import { Typography, makeStyles } from '@material-ui/core';
 
 // icons
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import GridItem from 'components/Grid/GridItem';
+import GridItem from 'components-template/Grid/GridItem';
 
 import styles from "assets/jss/serenity-craft/components/bookStyle.js";
 const useStyles = makeStyles(styles);

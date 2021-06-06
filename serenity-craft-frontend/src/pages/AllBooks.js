@@ -7,27 +7,33 @@ import { getAllBooks, setSearchValue } from "redux/actions/bookActions";
 import { getFilterData } from "util/general";
 import { Actions } from "redux/types";
 
-// @material-ui components
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Textfield from "@material-ui/core/Textfield";
+// Components
+
+// template
+import Button from "components-template/CustomButtons/Button";
+import GridContainer from "components-template/Grid/GridContainer.js";
+import GridItem from "components-template/Grid/GridItem.js";
+
+// serenity
+import AddBook from "components-serenity/Book/AddBook";
+import BookContainer from "components-serenity/Book/BookContainer";
+import FilterMenu from "util/components/FilterMenu";
+import SortInput from "util/components/SortInput";
+
+// @material-ui core
+import {
+    InputAdornment,
+    Tooltip
+} from "@material-ui/core";
+
+import TextField from "@material-ui/core/TextField"
 
 
-// @material-ui/icons
+// icons
 import AddIcon from '@material-ui/icons/Add';
 import Search from "@material-ui/icons/Search";
 import RefreshIcon from '@material-ui/icons/Refresh';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-
-// core components
-import AddBook from "components serenity/Book/AddBook";
-import SortInput from "../util/components/SortInput";
-import FilterMenu from "../util/components/FilterMenu";
-import Button from "../components/CustomButtons/Button";
-import BookContainer from "../components serenity/Book/BookContainer";
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import { Tooltip } from "@material-ui/core";
 
 
 const AllBooks = () => {
@@ -84,7 +90,7 @@ const AllBooks = () => {
                     open && <AddBook open={open} handleClose={handleClose} />
                 }
                 <GridItem xs={12} sm={12} md={4}>
-                    <Textfield
+                    <TextField
                         id="book-search"
                         label="SEARCH"
                         fullWidth

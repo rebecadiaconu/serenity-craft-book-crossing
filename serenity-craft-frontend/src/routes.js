@@ -137,16 +137,17 @@ const routes = [
       logged: false,
       unauth: true,   
   },
-  {
-    path: "/lock-screen-page",
-    name: "Lock Page",
-    icon: LockOpen,
-    component: LockScreenPage,
-    logged: false,
-    unauth: true,  
-    admin: true, 
-    layout: "/auth"
-  }
+  // {
+  //   path: "/lock-screen-page",
+  //   name: "Lock Page",
+  //   icon: LockOpen,
+  //   component: LockScreenPage,
+  //   invisible: true,
+  //   logged: false,
+  //   unauth: false,  
+  //   admin: true, 
+  //   layout: "/auth"
+  // }
 ];
 
 export default routes;

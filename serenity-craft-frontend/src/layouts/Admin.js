@@ -1,44 +1,45 @@
 import React, { useState, useEffect, createRef } from "react";
-import cx from "classnames";
 import { Switch, Route, Redirect } from "react-router-dom";
+import PerfectScrollbar from "perfect-scrollbar";
+import routes from "routes.js";
+import cx from "classnames";
+import "perfect-scrollbar/css/perfect-scrollbar.css";
+
+// Redux
 import { useSelector, useDispatch } from "react-redux";
 import { Actions } from "../redux/types";
 
-// creates a beautiful scrollbar
-import PerfectScrollbar from "perfect-scrollbar";
-import "perfect-scrollbar/css/perfect-scrollbar.css";
+// Components
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+// template
+import AdminNavbar from "components-template/Navbars/AdminNavbar.js";
+import Footer from "components-template/Footer/Footer.js";
+import Sidebar from "components-template/Sidebar/Sidebar.js";
 
-// core components
-import AdminNavbar from "components/Navbars/AdminNavbar.js";
-import Footer from "components/Footer/Footer.js";
-import Sidebar from "components/Sidebar/Sidebar.js";
+// serenity
 import ScrollToTop from "../util/components/ScrollToTop";
 
-import routes from "routes.js";
+// @material-ui/core 
+import { makeStyles } from "@material-ui/core/styles";
+
+// Styles
 import styles from "assets/jss/material-dashboard-pro-react/layouts/adminStyle.js";
-
-let ps;
-
 const useStyles = makeStyles(styles);
+let ps;
 
 const Dashboard = (props) => {
   const { ...rest } = props;
-
-  // states and functions
   const dispatch = useDispatch();
-  const { scrolling, backUp } = useSelector((state) => state.ui);
+  const { scrolling } = useSelector((state) => state.ui);
   const { authenticated, credentials } = useSelector((state) => state.user);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [miniActive, setMiniActive] = useState(false);
   const image = require("assets/img/backgr2.jpg");
   const color = "rose";
   const bgColor ="black";
-  const logo =require("assets/img/icon-white.png");
+  const logo = require("assets/img/icon-white.png");
+  const mainPanel = createRef();
   
-  // styles
   const classes = useStyles();
   const mainPanelClasses =
     classes.mainPanel +
@@ -49,10 +50,6 @@ const Dashboard = (props) => {
         navigator.platform.indexOf("Win") > -1
     });
 
-  // ref for main panel div
-  const mainPanel = createRef();
-
-  // effect instead of componentDidMount, componentDidUpdate and componentWillUnmount
   useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
@@ -65,8 +62,7 @@ const Dashboard = (props) => {
 
     window.addEventListener("resize", resizeFunction);
 
-    // Specify how to clean up after this effect:
-    return function cleanup() {
+    return () => {
       if (navigator.platform.indexOf("Win") > -1) {
         ps.destroy();
       }
@@ -168,7 +164,6 @@ const Dashboard = (props) => {
           user={authenticated ? credentials : null}
           {...rest}
         />
-        {/* On the /maps/full-screen-maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
         {getRoute() ? (
           <div className={classes.content}>
             <div className={classes.container}>

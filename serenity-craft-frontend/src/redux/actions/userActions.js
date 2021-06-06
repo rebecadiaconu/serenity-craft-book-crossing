@@ -354,6 +354,7 @@ export const getNotifications = () => (dispatch) => {
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {
+        console.log(err);
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,

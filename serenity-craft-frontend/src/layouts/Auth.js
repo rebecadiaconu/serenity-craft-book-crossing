@@ -1,18 +1,18 @@
 import React, { useEffect, createRef } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+import backgrImage from "assets/img/backgr2.jpg";
+import routes from "routes.js";
+
+// Components
+
+// template
+import AuthNavbar from "components-template/Navbars/AuthNavbar.js";
+import Footer from "components-template/Footer/Footer.js";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 
-// core components
-import AuthNavbar from "components/Navbars/AuthNavbar.js";
-import Footer from "components/Footer/Footer.js";
-
-import routes from "routes.js";
-
 import styles from "assets/jss/material-dashboard-pro-react/layouts/authStyle.js";
-import backgrImage from "assets/img/backgr2.jpg";
-
 const useStyles = makeStyles(styles);
 
 const Pages = (props) => {
@@ -22,7 +22,6 @@ const Pages = (props) => {
 
   useEffect(() => {
     document.body.style.overflow = "unset";
-    // Specify how to clean up after this effect:
     return function cleanup() {};
   });
 

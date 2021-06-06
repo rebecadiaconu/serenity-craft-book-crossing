@@ -12,29 +12,38 @@ import { Actions } from "redux/types";
 import { getCrossingData, changeCrossingType, cancelCrossing, deleteCrossing, getTopic, deleteTopic } from "redux/actions/crossingActions";
 
 // Components
+
+// template
+import Button from "components-template/CustomButtons/Button";
+import CustomTabs from 'components-template/CustomTabs/CustomTabs';
+import GridContainer from 'components-template/Grid/GridContainer';
+import GridItem from 'components-template/Grid/GridItem';
+import Timeline from 'components-template/Timeline/Timeline';
+
+// serenity
+import AddTopic from "components-serenity/Topic/AddTopic";
+import ChangeBookModal from "components-serenity/Crossing/ChangeBookModal";
+import CrossingInfo from "components-serenity/Crossing/CrossingInfo";
+import EditTopic from "components-serenity/Topic/EditTopic";
 import ReportForm from "util/components/ReportForm";
-import ChangeBookModal from "components serenity/Crossing/ChangeBookModal";
-import AddTopic from "components serenity/Topic/AddTopic";
-import EditTopic from "components serenity/Topic/EditTopic";
-import Button from "components/CustomButtons/Button";
-import TopicCard from "components serenity/Topic/TopicCard";
-import Stages from "components serenity/Crossing/Stages";
-import CrossingInfo from "components serenity/Crossing/CrossingInfo";
-import GridContainer from 'components/Grid/GridContainer';
-import GridItem from 'components/Grid/GridItem';
-import CustomTabs from 'components/CustomTabs/CustomTabs';
+import Stages from "components-serenity/Crossing/Stages";
+import TopicCard from "components-serenity/Topic/TopicCard";
 
-// @material-ui/core
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles, Tooltip, Typography } from '@material-ui/core';
+// @material-ui core
+import { 
+    FormControl,
+    FormControlLabel,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    makeStyles, 
+    Switch,
+    Tooltip, 
+    Typography
+ } from '@material-ui/core';
 
-// @material-ui/icons
+// icons
 import ReportIcon from '@material-ui/icons/Report';
 import SettingsIcon from '@material-ui/icons/Settings';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -44,8 +53,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import InfoIcon from '@material-ui/icons/Info';
 import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check';
-import Timeline from 'components/Timeline/Timeline';
-import CustomDropdown from 'components/CustomDropdown/CustomDropdown';
+import CustomDropdown from 'components-template/CustomDropdown/CustomDropdown';
 
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/customCheckboxRadioSwitch.js";

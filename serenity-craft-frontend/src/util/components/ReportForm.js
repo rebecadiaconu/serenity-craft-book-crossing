@@ -6,21 +6,25 @@ import { useSelector, useDispatch } from "react-redux";
 import { addReport} from "redux/actions/userActions";
 import { Actions } from 'redux/types';
 
-// @material-ui core
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Slide from "@material-ui/core/Slide";
-import Dialog from "@material-ui/core/Dialog";
-import { makeStyles } from "@material-ui/core/styles";
-import { TextField, Typography } from '@material-ui/core';
-
-
 // Components
-import Danger from "components/Typography/Danger.js";
-import GridContainer from 'components/Grid/GridContainer';
-import GridItem from 'components/Grid/GridItem';
-import Button from "components/CustomButtons/Button";
+
+// template
+import Button from "components-template/CustomButtons/Button";
+import Danger from "components-template/Typography/Danger.js";
+import GridContainer from 'components-template/Grid/GridContainer';
+import GridItem from 'components-template/Grid/GridItem';
+
+// @material-ui core
+import { 
+    Dialog,
+    FormControlLabel,
+    makeStyles,
+    Radio,
+    RadioGroup,
+    Slide,
+    TextField, 
+    Typography
+ } from '@material-ui/core';
 
 // Styles
 import styles from "assets/jss/serenity-craft/components/addForm"

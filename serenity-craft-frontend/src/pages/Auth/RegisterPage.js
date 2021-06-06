@@ -2,35 +2,39 @@ import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import history from "util/history";
+import AppIcon from "assets/img/icon.png";
 
-// Redux stuff
+// Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { signUp } from '../../redux/actions/userActions';
 import { Actions } from "../../redux/types";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
-import { Typography } from '@material-ui/core';
+// Components
 
-// @material-ui/icons
+// template
+import Button from "components-template/CustomButtons/Button.js";
+import Card from "components-template/Card/Card.js";
+import CardBody from "components-template/Card/CardBody.js";
+import GridContainer from "components-template/Grid/GridContainer.js";
+import GridItem from "components-template/Grid/GridItem.js";
+import InfoArea from "components-template/InfoArea/InfoArea.js";
+
+// @material-ui/core
+import { 
+  IconButton,
+  InputAdornment,
+  makeStyles,
+  Typography
+ } from '@material-ui/core';
+ import TextField from "@material-ui/core/TextField";
+
+// icons
 import Timeline from "@material-ui/icons/Timeline";
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-// core components
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import Button from "components/CustomButtons/Button.js";
-import InfoArea from "components/InfoArea/InfoArea.js";
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
-
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/views/registerPageStyle";
-import AppIcon from "assets/img/icon.png";
 
 const useStyles = makeStyles(styles);
 

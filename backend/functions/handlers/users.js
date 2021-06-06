@@ -1208,7 +1208,7 @@ exports.standByReport = (req, res) => {
 
 // Mark reports seen on card click
 exports.markReportSeen = (req, res) => {
-    let reportData = {};
+    let reportData;
 
     realtime.ref(`/reports/${req.params.reportId}`).get()
     .then((data) => {

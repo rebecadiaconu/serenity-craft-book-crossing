@@ -6,19 +6,22 @@ import { sortBooks } from "../../redux/actions/bookActions";
 import { sortCrossings } from "redux/actions/userActions";
 import { sortReports } from "redux/actions/adminActions";
 
-// @material-ui components
-import { makeStyles } from "@material-ui/core/styles";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+// Components
 
-// core components
-import GridItem from "components/Grid/GridItem.js";
+// template
+import GridItem from "components-template/Grid/GridItem.js";
+
+// @material-ui 
+import { 
+    FormControl,
+    InputLabel,
+    makeStyles,
+    MenuItem,
+    Select
+ } from "@material-ui/core";
 
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/customSelectStyle";
-
 const useStyles = makeStyles(styles);
 
 const SelectInput = ({ book, crossing, admin, label, items, defaultValue }) => {

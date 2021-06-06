@@ -2,36 +2,39 @@ import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import history from "util/history";
+import AppIcon from "assets/img/icon.png";
 
-// Redux stuff
+// Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from '../../redux/actions/userActions';
 import { Actions } from "../../redux/types";
 
+// Components
+
+// template
+import Button from "components-template/CustomButtons/Button.js";
+import Card from "components-template/Card/Card.js";
+import CardBody from "components-template/Card/CardBody.js";
+import CardHeader from "components-template/Card/CardHeader.js";
+import CardFooter from "components-template/Card/CardFooter.js";
+import GridContainer from "components-template/Grid/GridContainer.js";
+import GridItem from "components-template/Grid/GridItem.js";
+import TypographyDanger from "components-template/Typography/Danger.js";
+
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
+import { 
+  IconButton,
+  InputAdornment,
+  makeStyles,
+  Typography
+ } from "@material-ui/core";
+ import TextField from "@material-ui/core/TextField";
 
-// @material-ui/icons
+// icons
 import { Visibility, VisibilityOff } from '@material-ui/icons';
-
-// core components
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import Button from "components/CustomButtons/Button.js";
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardFooter from "components/Card/CardFooter.js";
-import TypographyDanger from "components/Typography/Danger.js";
-import { Typography } from '@material-ui/core';
 
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/views/loginPageStyle.js";
-import AppIcon from "assets/img/icon.png";
-
 const useStyles = makeStyles(styles);
 
 const LoginPage = () => {

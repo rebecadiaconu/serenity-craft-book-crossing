@@ -21,15 +21,15 @@ import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import AvTimer from "@material-ui/icons/AvTimer";
 
 // core components
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import CustomDropdown from "components/CustomDropdown/CustomDropdown.js";
-import CustomLinearProgress from "components/CustomLinearProgress/CustomLinearProgress.js";
-import ImageUpload from "components/CustomUpload/ImageUpload.js";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
-import CardBody from "components/Card/CardBody.js";
+import GridContainer from "components-template/Grid/GridContainer.js";
+import GridItem from "components-template/Grid/GridItem.js";
+import CustomDropdown from "components-template/CustomDropdown/CustomDropdown.js";
+import CustomLinearProgress from "components-template/CustomLinearProgress/CustomLinearProgress.js";
+import ImageUpload from "components-template/CustomUpload/ImageUpload.js";
+import Card from "components-template/Card/Card.js";
+import CardHeader from "components-template/Card/CardHeader.js";
+import CardIcon from "components-template/Card/CardIcon.js";
+import CardBody from "components-template/Card/CardBody.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/extendedFormsStyle.js";
 

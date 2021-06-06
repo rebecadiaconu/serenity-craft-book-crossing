@@ -4,22 +4,25 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { getUserData } from "redux/actions/userActions";
 
+// Components
 
-// @material-ui icons
+// template
+import Card from "components-template/Card/Card.js";
+import CardBody from "components-template/Card/CardBody.js";
+import GridContainer from "components-template/Grid/GridContainer.js";
+import GridItem from "components-template/Grid/GridItem.js";
+import NavPills from "components-template/NavPills/NavPills.js";
+
+// serenity
+import BooksCarousel from "components-serenity/Book/BooksCarousel";
+import CrossingsCarousel from "components-serenity/Crossing/CrossingsCarousel";
+import EditProfile from "components-serenity/User/EditProfile";
+import Settings from "components-serenity/User/Settings";
+import UserCard from "components-serenity/User/UserCard";
+
+// icons
 import SettingsIcon from '@material-ui/icons/Settings';
 import EditIcon from '@material-ui/icons/Edit';
-
-// core components
-import Settings from "../../components serenity/User/Settings";
-import EditProfile from "../../components serenity/User/EditProfile";
-import BooksCarousel from "../../components serenity/Book/BooksCarousel";
-import CrossingsCarousel from "../../components serenity/Crossing/CrossingsCarousel";
-import UserCard from "../../components serenity/User/UserCard";
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import CardBody from "components/Card/CardBody.js";
-import Card from "components/Card/Card.js";
-import NavPills from "components/NavPills/NavPills.js";
 
 const UserAuthPage = () => {
     const dispatch = useDispatch();

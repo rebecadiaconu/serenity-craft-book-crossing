@@ -1,5 +1,5 @@
 import React from "react";
-// @material-ui/core components
+// @material-ui/core components-template
 import { makeStyles } from "@material-ui/core/styles";
 
 // @material-ui/icons
@@ -10,17 +10,17 @@ import LocationOn from "@material-ui/icons/LocationOn";
 import Gavel from "@material-ui/icons/Gavel";
 import HelpOutline from "@material-ui/icons/HelpOutline";
 
-// core components
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import NavPills from "components/NavPills/NavPills.js";
-import Accordion from "components/Accordion/Accordion.js";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
+// template
+import GridContainer from "components-template/Grid/GridContainer.js";
+import GridItem from "components-template/Grid/GridItem.js";
+import NavPills from "components-template/NavPills/NavPills.js";
+import Accordion from "components-template/Accordion/Accordion.js";
+import Card from "components-template/Card/Card.js";
+import CardHeader from "components-template/Card/CardHeader.js";
+import CardBody from "components-template/Card/CardBody.js";
 
+// Styles
 import { cardTitle } from "assets/jss/material-dashboard-pro-react.js";
-
 const styles = {
   cardTitle,
   pageSubcategoriesTitle: {

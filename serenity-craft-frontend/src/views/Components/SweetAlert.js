@@ -4,16 +4,16 @@ import PropTypes from "prop-types";
 // react component used to create sweet alerts
 import SweetAlert from "react-bootstrap-sweetalert";
 
-// @material-ui/core components
+// @material-ui/core components-template
 import { makeStyles } from "@material-ui/core/styles";
 
-// core components
-import Heading from "components/Heading/Heading.js";
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import Button from "components/CustomButtons/Button.js";
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
+// core components-template
+import Heading from "components-template/Heading/Heading.js";
+import GridContainer from "components-template/Grid/GridContainer.js";
+import GridItem from "components-template/Grid/GridItem.js";
+import Button from "components-template/CustomButtons/Button.js";
+import Card from "components-template/Card/Card.js";
+import CardBody from "components-template/Card/CardBody.js";
 
 import styles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
 

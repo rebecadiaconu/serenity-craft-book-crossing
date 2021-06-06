@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import SweetAlert from "react-bootstrap-sweetalert";
 import { realtime } from "util/realtime";
 import { reportSort } from "util/general";
+import PerfectScrollbar from "perfect-scrollbar";
+import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 // Redux 
 import { useDispatch, useSelector } from "react-redux";
@@ -9,28 +11,32 @@ import { logOutUser } from "redux/actions/userActions";
 import { getReports, setSearchValue } from "redux/actions/adminActions";
 import { Actions } from 'redux/types';
 
-// creates a beautiful scrollbar
-import PerfectScrollbar from "perfect-scrollbar";
-import "perfect-scrollbar/css/perfect-scrollbar.css";
-
 // Components
+
+// template
+import Button from "components-template/CustomButtons/Button";
+import Danger from "components-template/Typography/Danger.js";
+import GridContainer from 'components-template/Grid/GridContainer';
+import GridItem from 'components-template/Grid/GridItem';
+
+// serenity
+import ReportInfo from 'components-serenity/Admin/ReportInfo';
+import ReportCard from "components-serenity/Admin/ReportCard";
 import SortInput from "util/components/SortInput";
-import Danger from "components/Typography/Danger.js";
-import GridContainer from 'components/Grid/GridContainer';
-import GridItem from 'components/Grid/GridItem';
-import ReportInfo from 'components serenity/Admin/ReportInfo';
-import ReportCard from "components serenity/Admin/ReportCard";
-import Button from "components/CustomButtons/Button";
 
 // @material-ui core
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Textfield from "@material-ui/core/Textfield";
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Slide from "@material-ui/core/Slide";
-import Dialog from "@material-ui/core/Dialog";
-import { makeStyles, Tooltip, Typography } from '@material-ui/core';
+import TextField from "@material-ui/core/TextField";
+import { 
+    Dialog,
+    FormControlLabel,
+    InputAdornment,
+    makeStyles, 
+    Radio,
+    RadioGroup,
+    Slide,
+    Tooltip, 
+    Typography
+ } from '@material-ui/core';
 
 // icons
 import LockOpen from "@material-ui/icons/LockOpen";
@@ -259,7 +265,7 @@ const JustAdmin = () => {
                     </Typography>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={6}>
-                            <Textfield
+                            <TextField
                                 style={{color: 'white'}}
                                 id="book-search"
                                 label="SEARCH"

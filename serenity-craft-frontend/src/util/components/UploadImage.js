@@ -7,11 +7,10 @@ import { useSelector, useDispatch } from  "react-redux";
 import { changeImage, removeImage } from '../../redux/actions/userActions';
 import { changeCoverImage, removeCover } from '../../redux/actions/bookActions';
 
-// components
-import Button from "components/CustomButtons/Button.js";
-import { Actions } from "redux/types";
+// Components
 
-// Styles
+// template
+import Button from "components-template/CustomButtons/Button.js";
 
 const UploadImage = ({ changeButtonProps, removeButtonProps, bookCover }) => {
     const dispatch = useDispatch();

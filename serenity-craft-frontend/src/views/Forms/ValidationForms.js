@@ -14,16 +14,16 @@ import Check from "@material-ui/icons/Check";
 import Close from "@material-ui/icons/Close";
 
 // core components
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Button from "components/CustomButtons/Button.js";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardText from "components/Card/CardText.js";
-import CardIcon from "components/Card/CardIcon.js";
-import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
+import GridContainer from "components-template/Grid/GridContainer.js";
+import GridItem from "components-template/Grid/GridItem.js";
+import CustomInput from "components-template/CustomInput/CustomInput.js";
+import Button from "components-template/CustomButtons/Button.js";
+import Card from "components-template/Card/Card.js";
+import CardHeader from "components-template/Card/CardHeader.js";
+import CardText from "components-template/Card/CardText.js";
+import CardIcon from "components-template/Card/CardIcon.js";
+import CardBody from "components-template/Card/CardBody.js";
+import CardFooter from "components-template/Card/CardFooter.js";
 
 // style for this view
 import styles from "assets/jss/material-dashboard-pro-react/views/validationFormsStyle.js";

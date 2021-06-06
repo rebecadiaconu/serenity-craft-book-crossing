@@ -6,18 +6,21 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAnyUser } from "redux/actions/userActions";
 import { Actions } from 'redux/types';
 
-// components
-import Button from "components/CustomButtons/Button";
-import UserCard from "components serenity/User/UserCard";
-import BookContainer from "components serenity/Book/BookContainer";
-import GridContainer from 'components/Grid/GridContainer';
-import GridItem from 'components/Grid/GridItem';
+// Components
 
-// @material-ui components
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Textfield from "@material-ui/core/Textfield";
+// template
+import Button from "components-template/CustomButtons/Button";
+import GridContainer from 'components-template/Grid/GridContainer';
+import GridItem from 'components-template/Grid/GridItem';
 
-// @material-ui/icons
+// serenity
+import BookContainer from "components-serenity/Book/BookContainer";
+import UserCard from "components-serenity/User/UserCard";
+
+// @material-ui core
+import TextField from "@material-ui/core/TextField";
+
+// icons
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const UserPage = () => {

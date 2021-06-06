@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import SweetAlert from "react-bootstrap-sweetalert";
 
+// Redux
 import { useDispatch, useSelector } from "react-redux";
 import { markRequestsRead } from "redux/actions/crossingActions";
 import { Actions } from "redux/types";
 
-import GridContainer from 'components/Grid/GridContainer';
-import GridItem from 'components/Grid/GridItem';
-import RequestCard from 'components serenity/User/RequestCard';
+// Components
+
+// template
+import GridContainer from 'components-template/Grid/GridContainer';
+import GridItem from 'components-template/Grid/GridItem';
+
+// serenity
+import RequestCard from 'components-serenity/User/RequestCard';
+
+// @material-ui core
 import { Typography, makeStyles } from '@material-ui/core';
 
 // Styles
