@@ -59,7 +59,7 @@ const TopicCard = ({ open, handleClose }) => {
     const bottom = useRef(null);
 
     useEffect(() => {
-        if(addedReply) {
+        if(addedReply && addedReply?.replyId) {
             if (addedReply?.replyId !== topic.replyData[topic.replyData.length - 1].replyId) {
                 topic.replyData.push(addedReply);
                 topic.replies.push(addedReply.replyId);

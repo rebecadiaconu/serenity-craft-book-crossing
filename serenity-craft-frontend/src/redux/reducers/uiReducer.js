@@ -14,6 +14,7 @@ const initialState = {
     sendingEmail: false,
     errors: null,
     message: '',
+    settings: false,
     user: {},
     userBooks: []
 }
@@ -36,7 +37,6 @@ const UiReducer = (state = initialState, action) => {
                 errors: action.payload
             };
         case Actions.UI.CLEAR_ERRORS:
-            console.log('CLEAR ERRORS!');
             return {
                 ...state,
                 errors: null
@@ -51,7 +51,7 @@ const UiReducer = (state = initialState, action) => {
             return {
                 ...state,
                 errors: null,
-                message: ''
+                message: null
             }
         case Actions.UI.SEND_EMAIL:
             return {
@@ -143,6 +143,18 @@ const UiReducer = (state = initialState, action) => {
                 reportOnTopic: false,
                 reportOnReply: false,
                 reportOnReview: null
+            }
+        case Actions.UI.SETTINGS:
+            return {
+                ...state,
+                settings: true
+            }
+        case Actions.UI.STOP_SETTINGS:
+            return {
+                ...state,
+                settings: false,
+                errors: null,
+                message: null
             }
         default:
             return state;

@@ -58,6 +58,8 @@ export const loginUser = (userData) => (dispatch) => {
 export const logOutUser = () => (dispatch) => {
     localStorage.removeItem('idToken');
     delete axios.defaults.headers.common['Authorization'];
+    dispatch({ type: Actions.UI.STOP_SETTINGS });
+    dispatch({ type: Actions.UI.CLEAR_ACTION });
     dispatch({ type: Actions.USER.SET_UNAUTHENTICATED });
     history.push('/auth/login-page');
 }
@@ -160,6 +162,7 @@ export const removeFromFavs = (bookId) => (dispatch) => {
 
 export const changeEmail = (formData) => (dispatch) => {
     dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.SETTINGS });
 
     axios.post('/user/email', formData)
     .then(({ data }) => {
@@ -167,7 +170,7 @@ export const changeEmail = (formData) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
-        dispatch(logOutUser());
+        // dispatch(logOutUser());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
@@ -183,6 +186,7 @@ export const changeEmail = (formData) => (dispatch) => {
 
 export const changeUsername = (formData) => (dispatch) => {
     dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.SETTINGS });
 
     axios.post('/user/username', formData)
     .then(({ data }) => {
@@ -190,7 +194,7 @@ export const changeUsername = (formData) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
-        dispatch(logOutUser());
+        // dispatch(logOutUser());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
@@ -206,6 +210,7 @@ export const changeUsername = (formData) => (dispatch) => {
 
 export const changePassword = (formData) => (dispatch) => {
     dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.SETTINGS });
 
     axios.post('/user/password', formData)
     .then(({ data }) => {
@@ -213,7 +218,7 @@ export const changePassword = (formData) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
-        dispatch(logOutUser());
+        // dispatch(logOutUser());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
@@ -320,6 +325,8 @@ export const getAnyUser = (username) => (dispatch) => {
 
 export const deleteAccount = (formData, books, crossings) => (dispatch) => {
     dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.SETTINGS });
+
     books.forEach((book) => dispatch(deleteBook(book.bookId)))
     crossings.forEach((crossing) => dispatch(cancelCrossing(crossing.crossingId)));
     axios.post('/user/delete', formData)

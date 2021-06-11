@@ -177,10 +177,6 @@ const BookPage = () => {
     const { message, errors, sendReport } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
-    // useEffect(() => {
-    //     if(!authenticated) history.push('/');
-    // }, []);
-
     useEffect(() => {
         return () => dispatch({ type: Actions.UI.CLEAR_ACTION });
     }, []);

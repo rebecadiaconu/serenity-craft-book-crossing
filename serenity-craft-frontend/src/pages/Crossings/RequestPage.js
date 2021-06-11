@@ -35,12 +35,6 @@ const RequestPage = () => {
         return () =>  dispatch({ type: Actions.UI.CLEAR_ACTION });
     }, []);
 
-    // useEffect(() => {
-    //     if (requests && requests.length > 0) {
-    //         let unreadRequestsIds = requests.filter((req) => !req.read).map((req) => req.crossingId);
-    //         if (unreadRequestsIds.length > 0) dispatch(markRequestsRead(unreadRequestsIds));
-    //     }
-    // }, [requests]);
 
     useEffect(() => {
         if (message) successAlert(message);
@@ -56,8 +50,14 @@ const RequestPage = () => {
                 success
                 style={{ display: "block", marginTop: "-100px" }}
                 title="Done!"
-                onConfirm={() => setAlert(null)}
-                onCancel={() => setAlert(null)}
+                onConfirm={() => {
+                    setAlert(null);
+                    dispatch({ type: Actions.UI.CLEAR_ACTION });
+                }}
+                onCancel={() => {
+                    setAlert(null);
+                    dispatch({ type: Actions.UI.CLEAR_ACTION });
+                }}
                 confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
             >
                 {text}
@@ -71,8 +71,14 @@ const RequestPage = () => {
                 danger
                 style={{ display: "block", marginTop: "-100px" }}
                 title="Error"
-                onConfirm={() => setAlert(null)}
-                onCancel={() => setAlert(null)}
+                onConfirm={() => {
+                    setAlert(null);
+                    dispatch({ type: Actions.UI.CLEAR_ACTION });
+                }}
+                onCancel={() => {
+                    setAlert(null);
+                    dispatch({ type: Actions.UI.CLEAR_ACTION });
+                }}
                 confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
             >
                 {error}

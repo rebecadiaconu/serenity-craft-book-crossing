@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 // Redux
 import { useSelector, useDispatch } from  "react-redux";
 import { changeEmail, changeUsername, changePassword, deleteAccount } from 'redux/actions/userActions';
+import { Actions } from 'redux/types';
 
 // Components
 
@@ -51,6 +52,7 @@ const Settings = () => {
     const { credentials, books, crossings } = useSelector((state) => state.user);
     const { errors } = useSelector((state) => state.ui);
 
+    const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [emailAlert, setEmailAlert] = useState(false);
@@ -61,22 +63,40 @@ const Settings = () => {
     useEffect(() => {
         setValue('newUsername', credentials.username);
         setValue('newEmail', credentials.email);
+        setValue('password', password);
     }, [credentials]);
+
+    const handleChangePassword = (event) =>{
+        setPassword(event.target.value);
+        setValue('password', password);
+    };
 
     const handleEmailChange = (formData) => {
         if (formData.newEmail !== credentials.email) {
-            dispatch(changeEmail(formData));
+            let userData = {
+                ...formData,
+                password: password
+            }
+            dispatch(changeEmail(userData));
         }
     };
 
     const handleUsernameChange = (formData) => {
         if (formData.newUsername !== credentials.username) {
-            dispatch(changeUsername(formData));
+            let userData = {
+                ...formData,
+                password: password
+            }
+            dispatch(changeUsername(userData));
         }
     };
 
     const handlePasswordChange = (formData) => {
-        dispatch(changePassword(formData));
+        let userData = {
+            ...formData,
+            password: password
+        }
+        dispatch(changePassword(userData));
     }
 
     const handleMouseDownPassword = (event) => {
@@ -85,7 +105,11 @@ const Settings = () => {
 
     const handleDeleteAccount = (formData) => {
         let userReq = crossings.filter((crossing) => crossing.sender === credentials.username && crossing.status === "pending");
-        dispatch(deleteAccount(formData, books, userReq));
+        let userData = {
+            ...formData,
+            password: formData.checkPassword
+        }
+        dispatch(deleteAccount(userData, books, userReq));
     };
 
     return (
@@ -192,7 +216,10 @@ const Settings = () => {
                 open={emailAlert}
                 TransitionComponent={Transition}
                 keepMounted
-                onClose={() => setEmailAlert(false)}
+                onClose={() => {
+                    setEmailAlert(false)
+                    dispatch({ type: Actions.UI.CLEAR_ACTION })    
+                }}
                 aria-labelledby="email-alert"
                 aria-describedby="email-alert"
             >
@@ -219,6 +246,7 @@ const Settings = () => {
                         name="password" 
                         type={showPassword ? "text" : "password"} 
                         label="Password" 
+                        onChange={handleChangePassword}
                         error={errors?.password ? true : false}
                         helperText={errors?.password}
                         inputRef={register()}
@@ -258,7 +286,10 @@ const Settings = () => {
                 open={usernameAlert}
                 TransitionComponent={Transition}
                 keepMounted
-                onClose={() => setUsernameAlert(false)}
+                onClose={() => {
+                    setUsernameAlert(false)
+                    dispatch({ type: Actions.UI.CLEAR_ACTION })    
+                }}
                 aria-labelledby="username-alert"
                 aria-describedby="username-alert"
             >
@@ -279,7 +310,6 @@ const Settings = () => {
                 </DialogTitle>
                 <DialogContent>
                     <TextField 
-                        required
                         className={classes.textField} 
                         variant="outlined"
                         name="password" 
@@ -287,6 +317,7 @@ const Settings = () => {
                         label="Password" 
                         error={errors?.password ? true : false}
                         helperText={errors?.password}
+                        onChange={handleChangePassword}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
@@ -324,7 +355,10 @@ const Settings = () => {
                 open={passwordAlert}
                 TransitionComponent={Transition}
                 keepMounted
-                onClose={() => setEmailAlert(false)}
+                onClose={() => {
+                    setEmailAlert(false)
+                    dispatch({ type: Actions.UI.CLEAR_ACTION })    
+                }}
                 aria-labelledby="password-alert"
                 aria-describedby="password-alert"
             >
@@ -349,8 +383,9 @@ const Settings = () => {
                         variant="outlined"
                         name="password" 
                         type={showPassword ? "text" : "password"} 
-                        label="Old Password" 
+                        label="Password" 
                         error={errors?.password ? true : false}
+                        onChange={handleChangePassword}
                         helperText={errors?.password}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
@@ -412,7 +447,10 @@ const Settings = () => {
                 open={deleteAlert}
                 TransitionComponent={Transition}
                 keepMounted
-                onClose={() => setDeleteAlert(false)}
+                onClose={() => {
+                    setDeleteAlert(false);
+                    dispatch({ type: Actions.UI.CLEAR_ACTION })    
+                }}
             >
                 <DialogTitle
                     disableTypography
@@ -437,6 +475,7 @@ const Settings = () => {
                         type={showPassword ? "text" : "password"} 
                         label="Password" 
                         error={errors?.password ? true : false}
+                        onChange={handleChangePassword}
                         helperText={errors?.password}
                         inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
@@ -445,7 +484,7 @@ const Settings = () => {
                             endAdornment: <InputAdornment position="end">
                                 <IconButton
                                 aria-label="toggle password visibility"
-                                onClick={() => setShowPassword(!showPassword)}
+                                onClick={() => setShowPassword(!showNewPassword)}
                                 onMouseDown={handleMouseDownPassword}
                                 >
                                     {showPassword ? <Visibility /> : <VisibilityOff />}

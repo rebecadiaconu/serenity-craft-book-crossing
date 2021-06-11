@@ -7,7 +7,6 @@ import { getRequests } from "./userActions";
 
 
 export const getCrossingData = (crossingId) => (dispatch) => {
-    console.log('here!!');
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.get(`/crossings/${crossingId}`)
     .then(({ data }) => {
@@ -165,7 +164,7 @@ export const acceptCrossing = (crossingId) => (dispatch) => {
         dispatch({
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
-        })
+        });
         dispatch(getRequests());     
         dispatch(getCrossingData(crossingId));   
         dispatch({ type: Actions.UI.CLEAR_ERRORS });

@@ -1,4 +1,3 @@
-import LockScreenPage from "pages/Admin/LockScreenPage.js";
 import LoginPage from "pages/Auth/LoginPage.js";
 import ResetPassword from "pages/Auth/ResetPassword.js";
 import RegisterPage from "pages/Auth/RegisterPage.js";

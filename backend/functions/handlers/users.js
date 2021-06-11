@@ -464,10 +464,13 @@ exports.changeEmail = (req, res) => {
         password: req.body.password
     };
 
+    console.log(user);
+
     const userDocument = db.doc(`/users/${req.user.username}`);
 
     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
+        console.log('logged');
         const { valid, errors } = validateEmail(user.newEmail);
 
         if (!valid) return res.status(400).json({ newEmail: errors.email });

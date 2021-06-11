@@ -8,6 +8,10 @@ export const addReview = (formData, bookId) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/book/${bookId}/review`, formData).
     then(({ data }) => {
+        dispatch({ 
+            type: Actions.UI.SET_ACTION_DONE,
+            payload: data.message
+        });
         dispatch(getBook(bookId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
         dispatch({ type: Actions.REVIEW.STOP_REVIEW });
