@@ -1,4 +1,8 @@
+import { tooltip } from "assets/jss/material-dashboard-pro-react";
+
+
 const settingsStyle = {
+    tooltip,
     central: {
         margin: '0 auto'
     },
@@ -16,9 +20,8 @@ const settingsStyle = {
     textField: {
         margin: '10px auto'
     },
-    toolTip: {
+    icon: {
         color: 'red',
-        marginRight: 0
     }
 };
 

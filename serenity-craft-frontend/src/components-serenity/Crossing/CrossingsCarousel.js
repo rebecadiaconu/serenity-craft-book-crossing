@@ -51,7 +51,7 @@ const responsive = {
 
 const CrossingsCarousel = () => {
     const dispatch = useDispatch();
-    const { initCrossings, crossings, searchValue } = useSelector((state) => state.user);
+    const { initCrossings, crossings, searchValue, credentials } = useSelector((state) => state.user);
 
     const handleSearch = (event) => {
         if (event.target.value !== searchValue) dispatch(setSearchValue(event.target.value, initCrossings));
@@ -113,7 +113,9 @@ const CrossingsCarousel = () => {
                                 swipeable
                             >
                                 {
-                                    crossings.map((crossing, index) => {
+                                    crossings
+                                    .filter((crossing) => (crossing.sender === credentials.username && crossing.senderData.show) || (crossing.recipient === credentials.username && crossing.recipientData.show))
+                                    .map((crossing, index) => {
                                         let color = "success";
                                         if (crossing.status === "pending") color="warning";
                                         if (crossing.status === "done") color="info";

@@ -48,14 +48,14 @@ const RegisterPage = () => {
   const [showConfirmed, setShowConfirmed] = useState(false);
 
   useEffect(() => {
-    dispatch({ type: Actions.UI.CLEAR_ERRORS });
+    return () => dispatch({ type: Actions.UI.CLEAR_ERRORS });
   }, []);
 
   useEffect(() => {
     if (authenticated) {
-      history.push("/");
+      history.push("/admin/all-books");
     }
-  }, [authenticated, errors]);
+  }, [authenticated]);
 
   const onSubmit = (formData) => {
     dispatch(signUp(formData));
@@ -96,7 +96,7 @@ const RegisterPage = () => {
                   />
                   <InfoArea
                     title="A nice gesture to our planet"
-                    description="We've developed the website to encourage book crossings. The less wasted paper, the more healthy planet."
+                    description="We've developed the website to encourage book crossings. The less wasted paper, the healthier the planet."
                     icon={LoyaltyIcon}
                     iconColor="rose"
                   />
@@ -107,7 +107,7 @@ const RegisterPage = () => {
                   variant="outlined"
                   name="email" 
                   type="email" 
-                  label="Email" 
+                  label="*Email" 
                   error={errors?.email ? true : false}
                   helperText={errors?.email}
                   inputRef={register()}
@@ -120,7 +120,7 @@ const RegisterPage = () => {
                   variant="outlined"
                   name="password" 
                   type={showPassword? "text" : "password"} 
-                  label="Password" 
+                  label="*Password" 
                   error={errors?.password ? true : false}
                   helperText={errors?.password}
                   inputRef={register()}
@@ -169,7 +169,7 @@ const RegisterPage = () => {
                   variant="outlined"
                   name="username" 
                   type="text" 
-                  label="Username" 
+                  label="*Username" 
                   error={errors?.username ? true : false}
                   helperText={errors?.username}
                   inputRef={register()}

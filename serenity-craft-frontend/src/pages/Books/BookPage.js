@@ -20,6 +20,7 @@ import Card from 'components-template/Card/Card';
 import CardHeader from 'components-template/Card/CardHeader';
 import CardAvatar from 'components-template/Card/CardAvatar';
 import CardBody from "components-template/Card/CardBody.js";
+import Danger from "components-template/Typography/Danger";
 import CardFooter from 'components-template/Card/CardFooter';
 import GridContainer from 'components-template/Grid/GridContainer';
 import GridItem from 'components-template/Grid/GridItem';
@@ -116,6 +117,7 @@ const OwnerReview = ({ content, owner, ownerImage, ownerReviewId }) => {
     };
 
     const handleEditReview = () => {
+        console.log('here!');
         dispatch({ type: Actions.REVIEW.EDIT_REVIEW, payload: ownerReviewId });
     };
 
@@ -175,12 +177,11 @@ const BookPage = () => {
     const { message, errors, sendReport } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
-    useEffect(() => {
-        if(!authenticated) history.push('/');
-    }, []);
+    // useEffect(() => {
+    //     if(!authenticated) history.push('/');
+    // }, []);
 
     useEffect(() => {
-        dispatch(getBook(bookId));
         return () => dispatch({ type: Actions.UI.CLEAR_ACTION });
     }, []);
 
@@ -263,7 +264,6 @@ const BookPage = () => {
 
     const handleCancelReq = () => {
         let crossingId = alreadyPending(book.bookId, crossings);
-        console.log(crossingId);
         dispatch(cancelCrossing(crossingId, bookId));
     };
 
@@ -467,10 +467,26 @@ const BookPage = () => {
                                 )
                         }
                         {
+                            book.available === false && (
+                                alreadyPending(book.bookId, crossings) ? (
+                                    <Button 
+                                        color="warning"
+                                        onClick={handleCancelReq}
+                                    >
+                                        REQUEST SENT
+                                    </Button>
+                                ) : (
+                                    <Danger>
+                                        UNAVAILABLE   
+                                    </Danger>  
+                                )               
+                            )
+                        }
+                        {
                             book.ownerReview ? (
                                 <OwnerReview content={book.ownerReview ?? ""} owner={book.owner} ownerImage={book.ownerImage} ownerReviewId={book.ownerReviewId ?? null} />
                             ) : (
-                                <OwnerReview content="Added by" owner={book.owner} ownerImage={book.ownerImage} />
+                                <OwnerReview content="Added by" owner={book.owner} ownerImage={book.ownerImage} ownerReviewId={book.ownerReviewId ?? null}  />
                             )
                         }
                         </GridItem>
@@ -478,9 +494,17 @@ const BookPage = () => {
                     {
                         (book.owner === credentials.username) ? (
                             <div className={classes.actions}>
-                                <Tooltip title="Edit" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
-                                    <Button color="success" simple justIcon onClick={handleEditBook}><Edit /></Button>
-                                </Tooltip>
+                                {
+                                    book.available ? (
+                                        <Tooltip title="Edit" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
+                                            <Button disabled={book.available === false} color="success" simple justIcon onClick={handleEditBook}><Edit /></Button>
+                                        </Tooltip>
+                                    ) : (
+                                        <Tooltip title="Unavailable book! Edit it after the crossing is done!" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
+                                            <Button color="success" simple justIcon><Edit /></Button>
+                                        </Tooltip>
+                                    )
+                                }
                                 <Tooltip title="Delete" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
                                     <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.BOOK.DELETE })}><HighlightOffIcon /></Button>
                                 </Tooltip>

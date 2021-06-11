@@ -20,8 +20,8 @@ import GridContainer from 'components-template/Grid/GridContainer';
 import GridItem from 'components-template/Grid/GridItem';
 
 // serenity
-import ReportInfo from 'components-serenity/Admin/ReportInfo';
-import ReportCard from "components-serenity/Admin/ReportCard";
+import ReportInfo from 'components-serenity/Report/ReportInfo';
+import ReportCard from "components-serenity/Report/ReportCard";
 import SortInput from "util/components/SortInput";
 
 // @material-ui core
@@ -246,11 +246,11 @@ const JustAdmin = () => {
                         <ExitToAppIcon />
                     </Button>
                 </Tooltip>
-                <Tooltip title="Lock Screen" classes={{ tooltip: classes.tooltip}}>
+                {/* <Tooltip title="Lock Screen" classes={{ tooltip: classes.tooltip}}>
                     <Button color="rose" round justIcon className={classes.lockBtn} onClick={handleLockPage}>
                         <LockOpen />
                     </Button>
-                </Tooltip>
+                </Tooltip> */}
                 {
                     view && report && <ReportInfo open={view} report={report} />
                 }

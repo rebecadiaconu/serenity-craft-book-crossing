@@ -18,10 +18,9 @@ export const signUp = (userData) => (dispatch) => {
         .post('/signup', userData)
         .then(({ data }) => {
             setAuth(data.token);
+            dispatch(getUserData());
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
             dispatch({ type: Actions.USER.STOP_LOADING_USER });
-            dispatch(getUserData());
-            history.push("/");
         })
         .catch((err) => {
             dispatch({
@@ -41,8 +40,8 @@ export const loginUser = (userData) => (dispatch) => {
         .post('/login', userData)
         .then(({ data }) => {
             setAuth(data.token);
-            dispatch({ type: Actions.UI.CLEAR_ERRORS });
             dispatch(getUserData());
+            dispatch({ type: Actions.UI.CLEAR_ERRORS });
         })
         .catch((err) => {
             dispatch({
@@ -68,12 +67,12 @@ export const forgotPassword = (userData) => (dispatch) => {
     dispatch({ type: Actions.UI.SEND_EMAIL });
     axios.post('/forgotPassword', userData)
     .then(({ data }) => {
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ 
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
         dispatch({ type: Actions.UI.STOP_SEND_EMAIL });
-        dispatch({ type: Actions.UI.CLEAR_ERRORS });
     })
     .catch((err) => {
         dispatch({ type: Actions.UI.STOP_SEND_EMAIL });
@@ -92,11 +91,11 @@ export const getUserData = () => (dispatch) => {
     .then(({ data }) => {
         let canSendReq = data.books.filter((book) => book.available === true).length > 0;
         data.credentials.canSendReq = canSendReq;
+        dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({
             type: Actions.USER.SET_USER,
             payload: data
         });
-        dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.USER.STOP_LOADING_USER });
         if (data.credentials.role === "admin") {
             dispatch({ type: Actions.ADMIN.SET_ADMIN });

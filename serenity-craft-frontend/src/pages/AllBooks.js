@@ -159,7 +159,7 @@ const AllBooks = () => {
                         <h2 style={{margin: '0 auto'}}>No book found by your custom search...</h2> : 
                         <h2 style={{margin: '0 auto'}}>No books added yet...</h2>
                     ) : (
-                        books.filter((book) => book.available).slice(0, showedBooks).map((book, index) => {
+                        books.slice(0, showedBooks).map((book, index) => {
                             return <BookContainer key={index} book={book} />
                         })
                     )

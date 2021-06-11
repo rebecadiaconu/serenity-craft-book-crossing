@@ -95,10 +95,10 @@ const Settings = () => {
                     arrow
                     interactive
                     title="After every change you will be logged out for validation"
-                    className={classes.toolTip}
+                    classes={{tooltip: classes.tooltip}}
                 >
                     <IconButton aria-label="Every time you make an account change you will be logged out for validation!">
-                        <ErrorOutlineIcon />
+                        <ErrorOutlineIcon className={classes.icon}/>
                     </IconButton>
                 </Tooltip>
                 <ListItem>

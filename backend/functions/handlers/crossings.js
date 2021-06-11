@@ -5,7 +5,7 @@ const { uuid } = require('uuidv4');
 
 realtime = firebase.database();
 
-
+    
 // Send crossing request
 exports.sendCrossingReq = (req, res) => {
     const newCrossing = {
@@ -55,7 +55,11 @@ exports.sendCrossingReq = (req, res) => {
     .get()
     .then((data) => {
         if (!data.empty) return res.status(400).json({ error: 'You already sent one crossing request to this user for this book!' });
-        return db.collection('crossings').add(newCrossing);
+
+        return db.doc(`/books/${newCrossing.randomBookId}`).update({ involved: true })
+        .then(() => {
+            return db.collection('crossings').add(newCrossing);
+        });
     })
     .then(() => {
         return res.json({ message: 'Crossing request send successfully!' });
@@ -71,12 +75,10 @@ exports.chooseRandomBook = (req, res) => {
     let sender = req.params.sender;
     let recipient = req.params.recipient;
 
-    let takenBooks = [];
     let randomBook = {};
     let mainInterests = [];
     let senderBooks = [];
     let filteredBooks = [];
-    let recipientBooks = [];
 
     db.doc(`/users/${recipient}`).get()
     .then((doc) => {
@@ -90,31 +92,23 @@ exports.chooseRandomBook = (req, res) => {
     .then((data) => {
         if(data.empty) return res.status(400).json({ error: 'Recipient has no books added!' });
         else {
-            data.forEach((doc) => {
-                let bookData = doc.data();
-                bookData.bookId = doc.id;
-                recipientBooks.push(bookData);
-            });
-            return db.collection('crossings').where('status', '==', 'pending').where('sender', '==', sender).get();
-        }
-    })
-    .then((data) => {
-        data.forEach((doc) => {
-            takenBooks.push(doc.data().randomBookId);
-        });
+            // data.forEach((doc) => {
+            //     let bookData = doc.data();
+            //     bookData.bookId = doc.id;
+            //     recipientBooks.push(bookData);
+            // });
 
-        return db.collection('books').where("owner", "==", sender).where('available', '==', true).get();
+            return db.collection('books').where("owner", "==", sender).where('available', '==', true).where("involved", '==', false).get();
+        }
     })
     .then((data) => {
         if (data.empty) return res.status(400).json({ error: 'Sender has no books added or none of them is available now!' });
         else {
             data.forEach((doc) => {
-                if (!takenBooks.includes(doc.id)) {
-                    let bookData = doc.data();
-                    bookData.bookId = doc.id;
-                    senderBooks.push(bookData);
-                    if(bookData.genres.some((genre) => mainInterests.includes(genre))) filteredBooks.push(bookData);
-                }
+                let bookData = doc.data();
+                bookData.bookId = doc.id;
+                senderBooks.push(bookData);
+                if(bookData.genres.some((genre) => mainInterests.includes(genre))) filteredBooks.push(bookData);
             });
 
             if (senderBooks.length === 0) return res.status(400).json({ error: 'Sender has no books unpromised in a crossing request!' });
@@ -256,6 +250,9 @@ exports.changeCrossingBook = (req, res) => {
 // Accept crossing request (only by recipient)
 exports.acceptCrossing = (req, res) => {
     const crossingDoc = db.doc(`/crossings/${req.params.crossingId}`);
+    let bookId;
+    let notifRecip;
+    let sendChecknotif = false;
     let bookIdx = [];
 
     crossingDoc.get()
@@ -264,36 +261,79 @@ exports.acceptCrossing = (req, res) => {
 
         if (doc.data().recipient === req.user.username) {
             bookIdx.push(doc.data().randomBookId);
-            bookIdx.push(doc.data().reqBookId);            
+            bookIdx.push(doc.data().reqBookId);  
+            
+            bookId = doc.data().reqBookId;
+            notifRecip = doc.data().sender;
 
-            return doc.ref.update({status: 'accepted', read: true})
-            .then(() => {
-                let newNotification = {
-                    notificationId: uuid(),
-                    createdAt: new Date().toISOString(),
-                    read: false,
-                    sender: req.user.username,
-                    senderImage: req.user.imageUrl,
-                    recipient: doc.data().sender,
-                    type: 'accept-request',
-                    crossingId: doc.id
+            return db.doc(`/books/${bookId}`).get()
+            .then((doc) => {
+                if (doc.data().available === false) return res.status(400).json({ error: 'Your book is not available now... Accept it later!' });
+                else {
+                    console.log('passed...');
+                    const batch = db.batch();
+
+                    return db.collection('crossings').where('randomBookId', '==', bookId).where('status', '==', 'pending').get()
+                    .then((data) => {
+                        let promises = [];
+                        if (!data.empty) sendChecknotif = true;
+                        data.forEach((doc) => {
+                            if (doc.data().sender === req.user.username) promises.push(batch.delete(db.doc(`/crossings/${doc.id}`)));
+                        });
+
+                        return Promise.all(promises);
+                    })
+                    .then(() => {
+                        return batch.commit();
+                    })
+                    .then(() =>  {
+                        if (sendChecknotif) {
+                                let newNotification = {
+                                notificationId: uuid(),
+                                createdAt: new Date().toISOString(),
+                                read: false,
+                                sender: req.user.username,
+                                senderImage: req.user.imageUrl,
+                                recipient: req.user.username,
+                                type: 'check-request',
+                                crossingId: req.params.crossingId
+                            }
+
+                            return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
+                        }
+                    })
+                    .then(() => {
+                        return crossingDoc.update({status: 'accepted', read: true})
+                        .then((doc) => {
+                            let newNotification = {
+                                notificationId: uuid(),
+                                createdAt: new Date().toISOString(),
+                                read: false,
+                                sender: req.user.username,
+                                senderImage: req.user.imageUrl,
+                                recipient: notifRecip,
+                                type: 'accept-request',
+                                crossingId: req.params.crossingId
+                            }
+
+                            return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
+                        })
+                        .then(() => {
+                            let promises = [];
+                            bookIdx.forEach((bookId) => {
+                                promises.push(db.doc(`/books/${bookId}`).update({available: false, involved: true}));
+                            });
+                    
+                            return Promise.all(promises);
+                        })
+                        .then(() => {
+                            return res.json({ message: 'Book crossing accepted!' })
+                        });
+                    });
                 }
-
-                return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
             });
         }
         else return res.status(403).json({ error: 'You can not accept the same request that you sent!' });
-    })
-    .then(() => {
-        let promises = [];
-        bookIdx.forEach((bookId) => {
-            promises.push(db.doc(`/books/${bookId}`).update({available: false, crossingId: req.params.crossingId}));
-        });
-
-        return Promise.all(promises);
-    })
-    .then(() => {
-        return res.json({ message: 'Book crossing accepted!' })
     })
     .catch((err) => {
         console.error(err);
@@ -313,7 +353,10 @@ exports.rejectCrossing = (req, res) => {
             return res.status(403).json({ error: 'Unauthorized!' });
         }
 
-        return crossingDoc.delete();
+        return db.doc(`/books/${doc.data().randomBookId}`).update({ involved: false})
+        .then(() => {
+            return crossingDoc.delete();
+        });
     })
     .then(() => {
         return res.json({ message: 'Book crossing rejected!' })
@@ -334,49 +377,59 @@ exports.cancelCrossing = (req, res) => {
     crossingDoc.get()
     .then((doc) => {
         if (!doc.exists) return res.status(404).json({ error: 'Book crossing not found!' });
+        else if (doc.data().status !== 'accepted' && doc.data().status !== 'pending') return res.status(400).json({ error: 'Seems like the crossing process has started, so it is too late to cancel it!' });
+        else {
+            bookIdx.push(doc.data().randomBookId);
+            bookIdx.push(doc.data().reqBookId);
 
-        if (doc.data().status !== 'accepted' && doc.data().status !== 'pending') return res.status(400).json({ error: 'Seems like the crossing process has started, so it is too late to cancel it!' });
-
-        if (doc.data().status === 'pending') {
-            if (doc.data().sender === req.user.username) {
-                bookIdx.push(doc.data().randomBookId);
-                bookIdx.push(doc.data().reqBookId);
-
-                return crossingDoc.delete();
-            }
-        } 
-
-        return crossingDoc.update({
-            canceled: true,
-            canceledBy: req.user.username
-        })
-        .then(() => { 
-            let newNotification = {
-                notificationId: uuid(),
-                createdAt: new Date().toISOString(),
-                read: false,
-                sender: req.user.username,
-                senderImage: req.user.imageUrl,
-                type: 'cancel-request',
-                crossingId: doc.id
-            }
-
-            if (doc.data().sender === req.user.username) newNotification.recipient = doc.data().recipient;
-            else newNotification.recipient = doc.data().sender;
-
-            return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
-        });
-    })
-    .then(() => {
-        let promises = [];
-        bookIdx.forEach((bookId) => {
-            promises.push(db.doc(`/books/${bookId}`).update({available: true, crossingId: admin.firestore.FieldValue.delete()}));
-        });
-
-        return Promise.all(promises);
-    })
-    .then(() => {
-        return res.json({ message: 'Book crossing canceled successfully!' });
+            if (doc.data().status === 'pending') {
+                if (doc.data().sender === req.user.username) {
+                    return crossingDoc.delete()
+                    .then(() => {
+                        let promises = [];
+                        bookIdx.forEach((bookId) => {
+                            promises.push(db.doc(`/books/${bookId}`).update({available: true, involved: false}));
+                        });
+                
+                        return Promise.all(promises)
+                        .then(() => {
+                            return res.json({ message: 'Book crossing canceled successfully!' });
+                        });
+                    });
+                }
+            } 
+            else return crossingDoc.update({
+                canceled: true,
+                canceledBy: req.user.username
+            })
+            .then(() => { 
+                let newNotification = {
+                    notificationId: uuid(),
+                    createdAt: new Date().toISOString(),
+                    read: false,
+                    sender: req.user.username,
+                    senderImage: req.user.imageUrl,
+                    type: 'cancel-request',
+                    crossingId: doc.id
+                }
+    
+                if (doc.data().sender === req.user.username) newNotification.recipient = doc.data().recipient;
+                else newNotification.recipient = doc.data().sender;
+    
+                return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification);
+            })
+            .then(() => {
+                let promises = [];
+                bookIdx.forEach((bookId) => {
+                    promises.push(db.doc(`/books/${bookId}`).update({available: true, involved: false}));
+                });
+        
+                return Promise.all(promises)
+                .then(() => {
+                    return res.json({ message: 'Book crossing canceled successfully!' });
+                });
+            });
+        }
     })
     .catch((err) => {
         console.error(err);
@@ -457,23 +510,50 @@ exports.changeCrossingStatus = (req, res) => {
     .then(() => {
         let promises = [];
 
+        if (status === 'done') {
+            let senderNotification = {
+                notificationId: uuid(),
+                createdAt: new Date().toISOString(),
+                read: false,
+                sender: req.user.username,
+                senderImage: req.user.imageUrl,
+                recipient: crossingData.sender,
+                type: 'crossing-done',
+                crossingId: req.params.crossingId
+            }
+
+            let recipientNotification = {
+                notificationId: uuid(),
+                createdAt: new Date().toISOString(),
+                read: false,
+                sender: req.user.username,
+                senderImage: req.user.imageUrl,
+                recipient: crossingData.recipient,
+                type: 'crossing-done',
+                crossingId: req.params.crossingId
+            }
+
+            promises.push(realtime.ref(`/notifications/${senderNotification.notificationId}`).set(senderNotification));
+            promises.push(realtime.ref(`/notifications/${recipientNotification.notificationId}`).set(recipientNotification));
+        }
+
         if (status === 'done' && crossingData.type === "permanent" && bookIdx.length === 2) {
             promises.push(db.doc(`/books/${bookIdx[0]}`).update({
                 owner: crossingData.recipient,
                 ownerImage: crossingData.recipientData.userImage,
                 available: true,
-                crossingId: admin.firestore.FieldValue.delete()
+                involved: false
             }));
             promises.push(db.doc(`/books/${bookIdx[1]}`).update({
                 owner: crossingData.sender,
                 ownerImage: crossingData.senderData.userImage,
                 available: true,
-                crossingId: admin.firestore.FieldValue.delete()
+                involved: false
             }));
         } else {
             bookIdx.forEach((bookId) => {
                 promises.push(db.doc(`/books/${bookId}`).update(
-                        {available: true, crossingId: admin.firestore.FieldValue.delete()}
+                        {available: true, involved: false}
                     ));
             });
         }
@@ -508,7 +588,6 @@ exports.getCrossingDetails = (req, res) => {
             crossingData.topics = Object.values(data.val()).reverse();
         } else crossingData.topics = [];
 
-        console.log(crossingData.topics);
         let prom = [];
         crossingData.topics.map((topic) => {    
             topic.replyData = [];
@@ -556,7 +635,7 @@ exports.deleteCrossing = (req, res) => {
         crossingData = doc.data();
         crossingData.crossingId = req.params.crossingId;
 
-        if (doc.data().status !== 'done') return res.status(404).json({error: 'This crossing is not finished yet. You can not delete it!'});
+        if (doc.data().status !== 'done' && !doc.data().canceled) return res.status(404).json({error: 'This crossing is not finished yet. You can not delete it!'});
 
         if (doc.data().sender === req.user.username) {
             isSender = true;

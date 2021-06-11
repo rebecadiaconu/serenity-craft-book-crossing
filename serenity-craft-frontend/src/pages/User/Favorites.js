@@ -55,7 +55,7 @@ const Favorites = () => {
         >
             <GridItem xs={12} sm={12} md={12}>
                 <Typography variant="h2" className={classes.special} style={{textAlign: 'center', marginBottom: 10}}>
-                    Your favorites books
+                    Your favorites
                 </Typography>
             </GridItem>
             {

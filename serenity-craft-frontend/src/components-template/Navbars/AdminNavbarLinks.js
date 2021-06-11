@@ -12,8 +12,8 @@ import { logOutUser } from '../../redux/actions/userActions';
 import Button from "components-template/CustomButtons/Button.js";
 
 // serenity
-import NotificationContainer from "components-serenity/User/NotificationContainer";
-import RequestsButton from "components-serenity/User/RequestsButton";
+import NotificationContainer from "components-serenity/Notification/NotificationContainer";
+import RequestButton from "components-serenity/Crossing/RequestButton";
 
 // @material-ui core
 import { Hidden, makeStyles } from "@material-ui/core";
@@ -45,7 +45,7 @@ const HeaderLinks = (props) => {
       {
         props.authenticated ? (
           <>
-          <RequestsButton />
+          <RequestButton />
           <NotificationContainer />
           <Button
             color="transparent"

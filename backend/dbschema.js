@@ -31,13 +31,14 @@ let db = {
             bookQuality: '',
             owner: '',
             ownerImage: '',
-            publicationYear: 1998,
             summary: '',
+            publicationYear: 1998,
             ownerRating: '',
             ownerReview: '',
+            ownerReviewId: '',
             numExchanges: 3,
             numReviews: 1,
-            coverImageUrl: '',
+            coverImage: '',
             averageRating: 4
         }
     ],

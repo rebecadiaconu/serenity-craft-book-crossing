@@ -196,11 +196,19 @@ const NotificationContainer =() => {
                                                 break
                                             case 'report-delete':
                                                 message = `The admin accepted one report on your name and deleted the specific content!`
-                                                icon = <ReportIcon fontSize="small" className={classes.icon} />;     
+                                                icon = <ReportIcon fontSize="small" className={classes.icon} />;    
+                                            case 'check-request':
+                                                message = `Check your pending requests! Some of them might be gone!`
+                                                icon = <ShareIcon fontSize="small" className={classes.icon} />; 
+                                                redirectTo = `/admin/user`;
+                                            case 'crossing-done':
+                                                message = `Book crossing done!`
+                                                icon = <ShareIcon fontSize="small" className={classes.icon} />; 
+                                                redirectTo = `/admin/crossings/${notif.crossingId}`;      
                                         }
 
                                         return (
-                                            notif.type === "report-delete" ? (
+                                            (notif.type === "report-delete") ? (
                                                 <MenuItem 
                                                     className={notif.read ? classes.read + " " + classes.dropdownItem : classes.noRead + " " + classes.dropdownItem}
                                                     key={notif.notificationId}

@@ -700,8 +700,9 @@ exports.getUserDetails = (req, res) => {
     })
     .then((data) => {
         userData.books = [];
+        let unsorted = [];
         data.forEach((doc) => {
-            userData.books.push({
+            unsorted.push({
                 title: doc.data().title,
                 author: doc.data().author,
                 publisher: doc.data().publisher,
@@ -719,6 +720,9 @@ exports.getUserDetails = (req, res) => {
                 bookId: doc.id
             });
         });
+
+        unsorted.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+        userData.books = (unsorted.filter((book) => book.available === true)).concat(unsorted.filter((book) => book.available === false));
 
         return res.json(userData);
     })

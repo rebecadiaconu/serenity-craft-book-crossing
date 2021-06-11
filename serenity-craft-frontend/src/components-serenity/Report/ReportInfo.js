@@ -16,8 +16,8 @@ import GridContainer from 'components-template/Grid/GridContainer';
 import GridItem from 'components-template/Grid/GridItem';
 
 // serenity
-import ReportOnBookInfo from "components-serenity/Admin/ReportOnBookInfo";
-import ReportOnReplyTopicReview from "components-serenity/Admin/ReportOnReplyTopicReview";
+import ReportOnBookInfo from "components-serenity/Report/ReportOnBookInfo";
+import ReportOnReplyTopicReview from "components-serenity/Report/ReportOnReplyTopicReview";
 
 // @material-ui core
 import { Dialog, Divider, makeStyles, Slide, Typography } from '@material-ui/core';

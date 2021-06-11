@@ -3,6 +3,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 
 // Redux
 import { useDispatch, useSelector } from "react-redux";
+import { getRequests } from "redux/actions/userActions";
 import { markRequestsRead } from "redux/actions/crossingActions";
 import { Actions } from "redux/types";
 
@@ -13,7 +14,7 @@ import GridContainer from 'components-template/Grid/GridContainer';
 import GridItem from 'components-template/Grid/GridItem';
 
 // serenity
-import RequestCard from 'components-serenity/User/RequestCard';
+import RequestCard from 'components-serenity/Crossing/RequestCard';
 
 // @material-ui core
 import { Typography, makeStyles } from '@material-ui/core';
@@ -30,6 +31,7 @@ const RequestPage = () => {
     const [alert, setAlert] = useState(null);
 
     useEffect(() =>{
+        dispatch(getRequests());
         return () =>  dispatch({ type: Actions.UI.CLEAR_ACTION });
     }, []);
 

@@ -71,7 +71,7 @@ const UserPage = () => {
                                 <h2>No books added by {username}...</h2>
                         ) : (
                             books.slice(0, showedBooks).map((book, index) => {
-                                return book.available ? <BookContainer key={index} book={book} /> :   null
+                                return <BookContainer key={index} book={book} />
                             })
                         )
                     }

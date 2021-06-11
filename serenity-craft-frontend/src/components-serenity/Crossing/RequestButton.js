@@ -20,7 +20,7 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarLinksStyle.js";
 const useStyles = makeStyles(styles);
 
-const RequestsButton =() => {
+const RequestButton =() => {
     const classes = useStyles();
     const { authenticated, requests } = useSelector((state) => state.user);
 
@@ -61,4 +61,4 @@ const RequestsButton =() => {
     )
 }
 
-export default RequestsButton;
+export default RequestButton;

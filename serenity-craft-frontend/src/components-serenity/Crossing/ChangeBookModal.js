@@ -38,7 +38,7 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const ChangeBookModal = ({ open, user, recipient }) => {
+const ChangeBookModal = ({ open, recipient }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { crossingId } = useParams();
@@ -85,42 +85,28 @@ const ChangeBookModal = ({ open, user, recipient }) => {
                     className={classes.grid}
                 >
                 {
-                    user ? (
-                        books.map((book) => {
-                            return book.available ? (
-                                <GridItem xs={12} sm={12} md={4} onClick={() => handleChange(book.bookId)}>
-                                    <Card className={newbook !== book.bookId ? classes.card : classes.card + " " + classes.selected}>
-                                        <CardBody className={classes.cover} >
-                                            <FormControlLabel value={book.bookId} control={<Radio />} />
-                                            <Tooltip title={`Average rating: ${book.averageRating}`} classes={{ tooltip: classes.tooltip }} >
-                                                <img src={book.coverImage} />
-                                            </Tooltip>
-                                        </CardBody>
-                                        <Typography variant="body2" className={classes.footer}>
-                                            {`${book.title}, by `}<small>{`${book.author}`}</small>
-                                        </Typography>
-                                    </Card>
-                                </GridItem>
-                            ) : null
-                        })
-                    ) : (
-                        userBooks.map((book) => {
-                            return book.available ? (
-                                <GridItem xs={12} sm={12} md={4} onClick={() => handleChange(book.bookId)}>
-                                    <Card className={newbook !== book.bookId ? classes.card : classes.card + " " + classes.selected}>
-                                        <CardBody className={classes.cover} >
-                                            <FormControlLabel value={book.bookId} control={<Radio />} />
-                                            <Tooltip title={`Average rating: ${book.averageRating}`} classes={{ tooltip: classes.tooltip }} >
-                                                <img src={book.coverImage} />
-                                            </Tooltip>
-                                        </CardBody>
-                                        <Typography variant="body2" className={classes.footer}>
-                                            {`${book.title}, by `}<small>{`${book.author}`}</small>
-                                        </Typography>
-                                    </Card>
-                                </GridItem>
-                            ) : null
-                        })
+                    userBooks && (
+                        userBooks.filter((book) => book.available && !book.involved).length === 0 ? (
+                            <h2>Your crossing partener do not have any other book available...</h2>
+                        ) : (
+                            userBooks.filter((book) => book.available && !book.involved).map((book) => {
+                                return (
+                                    <GridItem xs={12} sm={12} md={4} onClick={() => handleChange(book.bookId)}>
+                                        <Card className={newbook !== book.bookId ? classes.card : classes.card + " " + classes.selected}>
+                                            <CardBody className={classes.cover} >
+                                                <FormControlLabel value={book.bookId} control={<Radio />} />
+                                                <Tooltip title={`Average rating: ${book.averageRating}`} classes={{ tooltip: classes.tooltip }} >
+                                                    <img src={book.coverImage} />
+                                                </Tooltip>
+                                            </CardBody>
+                                            <Typography variant="body2" className={classes.footer}>
+                                                {`${book.title}, by `}<small>{`${book.author}`}</small>
+                                            </Typography>
+                                        </Card>
+                                    </GridItem>
+                                ) 
+                            })
+                        )
                     )
                 }
                 <GridItem xs={12} sm={12} md={12}>

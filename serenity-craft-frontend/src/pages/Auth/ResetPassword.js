@@ -50,7 +50,7 @@ const ResetPassword = () => {
   const [cardAnimaton, setCardAnimation] = useState("cardHidden");
 
     useEffect(() => {
-      dispatch({ type: Actions.UI.CLEAR_ERRORS });
+      return () => dispatch({ type: Actions.UI.CLEAR_ERRORS });
     }, []);
 
     useEffect(() => {
@@ -60,7 +60,7 @@ const ResetPassword = () => {
 
     useEffect(() => {
       if (authenticated) {
-          history.push("/");
+          history.push("/admin/all-books");
       }
     }, [authenticated, errors]);
 

@@ -23,7 +23,7 @@ import GridItem from 'components-template/Grid/GridItem';
 
 // serenity
 import ReportForm from "util/components/ReportForm";
-import ReplyCard from "components-serenity/Topic/ReplyCard";
+import ReplyCard from "components-serenity/Reply/ReplyCard";
 
 // @material-ui core
 import { 

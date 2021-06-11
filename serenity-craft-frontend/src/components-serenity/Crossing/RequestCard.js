@@ -15,7 +15,7 @@ import GridContainer from 'components-template/Grid/GridContainer';
 import GridItem from 'components-template/Grid/GridItem';
 
 // serenity
-import RequestInfo from "components-serenity/User/RequestInfo";
+import RequestInfo from "components-serenity/Crossing/RequestInfo";
 
 // @material-ui core
 import { makeStyles, Tooltip, Typography } from '@material-ui/core';

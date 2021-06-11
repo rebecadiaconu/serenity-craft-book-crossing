@@ -47,12 +47,12 @@ const LoginPage = () => {
   const [cardAnimaton, setCardAnimation] = useState("cardHidden");
 
   useEffect(() => {
-    dispatch({ type: Actions.UI.CLEAR_ERRORS });
+    return () => dispatch({ type: Actions.UI.CLEAR_ERRORS });
   }, []);
 
   useEffect(() => {
     if (authenticated) {
-      history.push("/");
+      history.push("/admin/all-books");
     }
   }, [authenticated, errors]);
 

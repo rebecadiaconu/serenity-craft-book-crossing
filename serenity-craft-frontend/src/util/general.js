@@ -138,8 +138,11 @@ const userReviewFirst = (reviews, username) => {
         }
     });
 
-    reviews.splice(indexData, 1);
-    reviews.unshift(data);
+    if (indexData && data) {
+        reviews.splice(indexData, 1);
+        reviews.unshift(data);
+    }
+    
     return reviews;
 };
 

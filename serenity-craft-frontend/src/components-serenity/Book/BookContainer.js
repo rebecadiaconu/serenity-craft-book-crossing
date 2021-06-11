@@ -42,10 +42,12 @@ const BookContainer = ({ book, carousel }) => {
         if (authenticated && credentials && credentials.favs) {
             setStyles(classNames({
                 [classes.cardHover]: true,
-                [classes.fav]: credentials.favs.includes(book.bookId)
+                [classes.fav]: credentials.favs.includes(book.bookId) && book.owner !== credentials.username,
+                [classes.unavailable]: !book.available,
+                [classes.owner]: credentials.username === book.owner,
             }));
         }
-    }, [authenticated, credentials])
+    }, [authenticated, credentials, book])
 
     const handleViewClick = () => {
         history.push(`/admin/books/${book.bookId}`);
@@ -66,6 +68,13 @@ const BookContainer = ({ book, carousel }) => {
         <GridItem xs={12} sm={12} md={carousel ? 12 : 4}>
             <Card product className={cardStyles}>
                 <CardHeader image className={classes.cardHeaderHover}>
+                    {
+                        book.available === false && (
+                            <div className={classes.grayOverlay}>
+                                <h4 className={classes.unavMessage}>UNAVAILABLE</h4>
+                            </div>
+                        )
+                    }
                     <a href="#" onClick={e => e.preventDefault()}>
                         <img src={book.coverImage} className={classes.cardImage} alt="book-cover" />
                     </a>
@@ -109,22 +118,6 @@ const BookContainer = ({ book, carousel }) => {
                                     </Button>
                                 </Tooltip>
                             ))
-                        }
-                        {
-                            (authenticated && book.owner === credentials.username) && (
-                                <>
-                                <Tooltip
-                                    id="tooltip-top"
-                                    title="Edit"
-                                    placement="bottom"
-                                    classes={{ tooltip: classes.tooltip }}
-                                >
-                                    <Button color="success" simple justIcon>
-                                        <Edit className={classes.underChartIcons} />
-                                    </Button>
-                                </Tooltip>
-                                </>
-                            )
                         }
                     </div>
                     <h4 className={classes.cardProductTitle}>

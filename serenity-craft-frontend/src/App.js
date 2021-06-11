@@ -51,7 +51,7 @@ const App = () => {
                 <Route path="/serenity-admin" component={JustAdmin} />
                 <Route path="/auth" component={AuthLayout} />
                 <Route path="/admin" component={AdminLayout} />
-                <Redirect from="/" to="/admin/all-books" />
+                <Redirect from="/" to="/auth/register-page" />
             </Switch>
         </Router>
     )

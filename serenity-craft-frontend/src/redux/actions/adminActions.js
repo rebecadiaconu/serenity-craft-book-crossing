@@ -23,6 +23,10 @@ export const getReports = () => (dispatch) => {
             type: Actions.ADMIN.SET_INIT,
             payload: []
         });
+        dispatch({ 
+            type: Actions.UI.SET_ERRORS,
+            payload: err.response.data
+        });
     });
 };
 
