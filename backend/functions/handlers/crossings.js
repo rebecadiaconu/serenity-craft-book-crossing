@@ -149,6 +149,8 @@ exports.chooseRandomBook = (req, res) => {
 // Change crossing status from temporar to permanent
 exports.changeToPermanent = (req, res) => {
     let status;
+    let isSender = false;
+    let permanent = false;
     let crossingType = {};
     const crossingDoc = db.doc(`/crossings/${req.params.crossingId}`);
 
@@ -158,6 +160,7 @@ exports.changeToPermanent = (req, res) => {
         else if (doc.data().type === "permanent") return res.status(400).json({ error: 'Crossing already permanent!' });
         else {
             if (req.user.username === doc.data().sender) {
+                isSender = true;
                 crossingType.senderPermanent = true;
                 crossingType.recipientPermanent = doc.data().recipientPermanent;
             } else {
@@ -179,11 +182,32 @@ exports.changeToPermanent = (req, res) => {
             })
             .then(() => {
                 let message;
-                if (crossingType.senderPermanent && crossingType.recipientPermanent) message = 'Crossing type set to permanent!';
+                if (crossingType.senderPermanent && crossingType.recipientPermanent) {
+                    permanent = true;
+                    message = 'Crossing type set to permanent!';
+                }
                 else message = 'Changes updated successfully! We are waiting for your crossing mate updates to make it official!';
                 
-                return res.json({ message: message });
-            });
+                if (!permanent) {
+                    return res.json({ message: message });
+                } else {
+                    let newNotification = {
+                        notificationId: uuid(),
+                        createdAt: new Date().toISOString(),
+                        read: false,
+                        sender: req.user.username,
+                        senderImage: req.user.imageUrl,
+                        recipient: isSender ? doc.data().recipient : doc.data().sender,
+                        type: 'type-permanent',
+                        crossingId: req.params.crossingId
+                    }
+
+                    return realtime.ref(`/notifications/${newNotification.notificationId}`).set(newNotification)
+                    .then(() => {
+                        return res.json({ message: message });
+                    })
+                }
+            })
         }
     })
     .catch((err) => {

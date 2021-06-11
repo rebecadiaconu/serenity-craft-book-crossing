@@ -204,6 +204,10 @@ const NotificationContainer =() => {
                                             case 'crossing-done':
                                                 message = `Book crossing done!`
                                                 icon = <ShareIcon fontSize="small" className={classes.icon} />; 
+                                                redirectTo = `/admin/crossings/${notif.crossingId}`; 
+                                            case 'type-permanent':
+                                                message = `Crossing type set to permanent!`
+                                                icon = <ShareIcon fontSize="small" className={classes.icon} />; 
                                                 redirectTo = `/admin/crossings/${notif.crossingId}`;      
                                         }
 
