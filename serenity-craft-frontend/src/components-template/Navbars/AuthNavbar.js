@@ -8,6 +8,9 @@ import { NavLink } from "react-router-dom";
 // template
 import Button from "components-template/CustomButtons/Button";
 
+// Redux
+import { useSelector } from "react-redux";
+
 // @material-ui core
 import { 
   AppBar,
@@ -33,6 +36,7 @@ import styles from "assets/jss/material-dashboard-pro-react/components/authNavba
 const useStyles = makeStyles(styles);
 
 const AuthNavbar = (props) => {
+  const {authenticated} = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
   const handleDrawerToggle = () => {
     setOpen(!open);
@@ -59,51 +63,57 @@ const AuthNavbar = (props) => {
           />
         </NavLink>
       </ListItem>
-      <ListItem className={classes.listItem}>
-        <NavLink
-          to={"/auth/register-page"}
-          className={cx(classes.navLink, {
-            [classes.navLinkActive]: activeRoute("/auth/register-page")
-          })}
-        >
-          <PersonAdd className={classes.listItemIcon} />
-          <ListItemText
-            primary={"Register"}
-            disableTypography={true}
-            className={classes.listItemText}
-          />
-        </NavLink>
-      </ListItem>
-      <ListItem className={classes.listItem}>
-        <NavLink
-          to={"/auth/login-page"}
-          className={cx(classes.navLink, {
-            [classes.navLinkActive]: activeRoute("/auth/login-page")
-          })}
-        >
-          <Fingerprint className={classes.listItemIcon} />
-          <ListItemText
-            primary={"Login"}
-            disableTypography={true}
-            className={classes.listItemText}
-          />
-        </NavLink>
-      </ListItem>
-      <ListItem className={classes.listItem}>
-        <NavLink
-          to={"/auth/reset-password"}
-          className={cx(classes.navLink, {
-            [classes.navLinkActive]: activeRoute("/auth/reset-password")
-          })}
-        >
-          <CachedIcon className={classes.listItemIcon} />
-          <ListItemText
-            primary={"Reset Pass"}
-            disableTypography={true}
-            className={classes.listItemText}
-          />
-        </NavLink>
-      </ListItem>
+      {
+        !authenticated && (
+          <>
+          <ListItem className={classes.listItem}>
+          <NavLink
+            to={"/auth/register-page"}
+            className={cx(classes.navLink, {
+              [classes.navLinkActive]: activeRoute("/auth/register-page")
+            })}
+          >
+            <PersonAdd className={classes.listItemIcon} />
+            <ListItemText
+              primary={"Register"}
+              disableTypography={true}
+              className={classes.listItemText}
+            />
+          </NavLink>
+        </ListItem>
+        <ListItem className={classes.listItem}>
+          <NavLink
+            to={"/auth/login-page"}
+            className={cx(classes.navLink, {
+              [classes.navLinkActive]: activeRoute("/auth/login-page")
+            })}
+          >
+            <Fingerprint className={classes.listItemIcon} />
+            <ListItemText
+              primary={"Login"}
+              disableTypography={true}
+              className={classes.listItemText}
+            />
+          </NavLink>
+        </ListItem>
+        <ListItem className={classes.listItem}>
+          <NavLink
+            to={"/auth/reset-password"}
+            className={cx(classes.navLink, {
+              [classes.navLinkActive]: activeRoute("/auth/reset-password")
+            })}
+          >
+            <CachedIcon className={classes.listItemIcon} />
+            <ListItemText
+              primary={"Reset Pass"}
+              disableTypography={true}
+              className={classes.listItemText}
+            />
+          </NavLink>
+        </ListItem>
+        </>
+        )
+      }
     </List>
   );
   return (

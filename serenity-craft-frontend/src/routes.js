@@ -9,6 +9,7 @@ import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 
 // Components Serenity
+import ErrorPage from "pages/Errors/ErrorPage";
 import Favorites from "pages/User/Favorites";
 import RequestPage from "pages/Crossings/RequestPage";
 import CrossingPage from "pages/Crossings/CrossingPage";
@@ -45,6 +46,16 @@ const routes = [
     icon: ShareIcon,
     component: BookPage,
     layout: "/admin",
+    invisible:  true,
+    logged: false,
+    unauth: false 
+  },
+  {
+    path: '/errors',
+    name: '',
+    icon: ShareIcon,
+    component: ErrorPage,
+    layout: "/auth",
     invisible:  true,
     logged: false,
     unauth: false 
