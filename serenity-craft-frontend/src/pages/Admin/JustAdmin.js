@@ -145,7 +145,6 @@ const JustAdmin = () => {
     const mainPanel = useRef(null);
 
     useEffect(() => {
-        console.log(mainPanel);
         dispatch(getReports());
         return () => {
             dispatch({ type: Actions.UI.CLEAR_ACTION });

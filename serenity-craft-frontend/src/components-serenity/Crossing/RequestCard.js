@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import classNames from "classnames";
 
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { acceptCrossing, rejectCrossing } from "redux/actions/crossingActions";
+import { acceptCrossing, rejectCrossing, markRequestsRead } from "redux/actions/crossingActions";
 import { Actions } from 'redux/types';
 
 // Components
@@ -24,14 +25,25 @@ import { makeStyles, Tooltip, Typography } from '@material-ui/core';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
 
-import topicStyle from "assets/jss/serenity-craft/components/crossingRequest";
-const useStyles = makeStyles(topicStyle);
+import requestStyle from "assets/jss/serenity-craft/components/crossingRequest";
+const useStyles = makeStyles(requestStyle);
 
 
 const RequestCard = ({ req }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const [cardStyles, setStyles] = useState(undefined);
     const { seeRequest, request } = useSelector((state) => state.ui);
+
+    useEffect(() => {
+        setStyles(classNames({
+            [classes.unseen]: !req.read
+        }))
+    }, []);
+
+    useEffect(() => {
+        if (seeRequest && request && !request.read) dispatch(markRequestsRead(request.crossingId));
+    }, [seeRequest, request]);
 
     const handleClick = (event) => {
         event.preventDefault();
@@ -47,7 +59,7 @@ const RequestCard = ({ req }) => {
     };
 
     return (
-        <Card>
+        <Card className={cardStyles}>
         {
             req && (
                 <GridContainer

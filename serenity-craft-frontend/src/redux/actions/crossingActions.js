@@ -220,10 +220,10 @@ export const cancelCrossing = (crossingId, bookId) => (dispatch) => {
     });
 };  
 
-export const markRequestsRead = (reqIds) => (dispatch) => {
-    axios.post('/requests', reqIds)
+export const markRequestsRead = (crossingId) => (dispatch) => {
+    axios.post(`/request/${crossingId}`)
     .then(({ data }) => {
-        dispatch(getUserData());
+        dispatch(getRequests());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
     })
     .catch((err) => {

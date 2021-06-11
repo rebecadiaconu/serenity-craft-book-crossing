@@ -11,6 +11,9 @@ const crossingRequest = {
         fontFamily: "'Sacramento', cursive",
         textAlign: "center",
     },
+    unseen: {
+        boxShadow: '1px 2px 10px 1px #ff1744'
+    },
     modalGrid: {
         width: '99%', 
         position: 'relative',

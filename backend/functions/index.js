@@ -111,7 +111,7 @@ app.delete('/books/:bookId', bookOwnerAuth, deleteBook);          // Delete book
 app.get('/reviews/:reviewId', fbAuth, getReview);       // Get review
 
 // Crossing routes
-app.post('/requests', fbAuth, markCrossingReqRead); // Mark crossing requests seen
+app.post('/request/:crossingId', fbAuth, markCrossingReqRead); // Mark crossing requests seen
 app.post('/crossing/:bookId', fbAuth, sendCrossingReq);       // Send crossing request + add crossing
 app.post('/crossing/:crossingId/accept', crossingPartener, acceptCrossing);     // Accept crossing request by recipient
 app.post('/crossing/:crossingId/reject', crossingPartener, rejectCrossing);     // Reject crossing request by recipient

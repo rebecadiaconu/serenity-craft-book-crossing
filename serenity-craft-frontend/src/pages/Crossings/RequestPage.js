@@ -35,12 +35,12 @@ const RequestPage = () => {
         return () =>  dispatch({ type: Actions.UI.CLEAR_ACTION });
     }, []);
 
-    useEffect(() => {
-        if (requests && requests.length > 0) {
-            let unreadRequestsIds = requests.filter((req) => !req.read).map((req) => req.crossingId);
-            if (unreadRequestsIds.length > 0) dispatch(markRequestsRead(unreadRequestsIds));
-        }
-    }, [requests]);
+    // useEffect(() => {
+    //     if (requests && requests.length > 0) {
+    //         let unreadRequestsIds = requests.filter((req) => !req.read).map((req) => req.crossingId);
+    //         if (unreadRequestsIds.length > 0) dispatch(markRequestsRead(unreadRequestsIds));
+    //     }
+    // }, [requests]);
 
     useEffect(() => {
         if (message) successAlert(message);

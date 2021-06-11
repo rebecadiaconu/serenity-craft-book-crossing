@@ -51,12 +51,14 @@ exports.sendCrossingReq = (req, res) => {
     .where('sender', '==', newCrossing.sender)
     .where('recipient', '==', newCrossing.recipient)
     .where('reqBookId', '==', newCrossing.reqBookId)
+    .where('status', '!=', 'done')
+    .where('canceled', '==', false)
     .limit(1)
     .get()
     .then((data) => {
+        console.log(data);
         if (!data.empty) return res.status(400).json({ error: 'You already sent one crossing request to this user for this book!' });
-
-        return db.doc(`/books/${newCrossing.randomBookId}`).update({ involved: true })
+        else return db.doc(`/books/${newCrossing.randomBookId}`).update({ involved: true })
         .then(() => {
             return db.collection('crossings').add(newCrossing);
         });
@@ -710,18 +712,9 @@ exports.deleteCrossing = (req, res) => {
 
 // Mark crossing requests read
 exports.markCrossingReqRead = (req, res) => {
-    const batch = db.batch(); 
-    let promises = [];
-    req.body.forEach(crossingId => {
-        promises.push(batch.update(db.doc(`/crossings/${crossingId}`), { read: true }));
-    });
-
-    Promise.all(promises)
+    db.doc(`/crossings/${req.params.crossingId}`).update({ read: true })
     .then(() => {
-        return batch.commit();
-    })
-    .then(() => {
-        return res.json({message: 'Crossing requests marked read.'});
+        return res.json({message: 'Crossing request marked read.'});
     })
     .catch(err => {
         console.error(err);

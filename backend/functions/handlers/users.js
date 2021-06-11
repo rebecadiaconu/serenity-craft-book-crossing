@@ -734,6 +734,7 @@ exports.getUserDetails = (req, res) => {
 
 exports.getRequests = (req, res) => {
     let requests = [];
+    let unseenFirst = [];
 
     db.collection('crossings').where('recipient', '==', req.user.username).where('status', '==', 'pending').get()
     .then((data) => {
@@ -744,7 +745,10 @@ exports.getRequests = (req, res) => {
             });
         });
 
-        return res.json({ requests: requests });
+        requests.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+        unseenFirst = (requests.filter((req) => req.read === false)).concat(requests.filter((req) => req.read === true));
+
+        return res.json({ requests: unseenFirst });
     })
     .catch((err) => {
         console.error(err);
