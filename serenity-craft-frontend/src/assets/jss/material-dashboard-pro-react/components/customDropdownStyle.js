@@ -25,22 +25,23 @@ const customDropdownStyle = theme => ({
   },
   popperNav: {
     [theme.breakpoints.down("sm")]: {
-      position: "static !important",
-      left: "unset !important",
-      top: "unset !important",
-      transform: "none !important",
+      position: "absolute !important",
+      // left: "unset !important",
+      // right: 0,
+      // top: "unset !important",
+      // transform: "none !important",
       willChange: "unset !important",
       "& > div": {
         boxShadow: "none !important",
         marginLeft: "0rem",
         marginRight: "0rem",
         transition: "none !important",
-        marginTop: "0px !important",
+        // marginTop: "0px !important",
         marginBottom: "0px !important",
         padding: "0px !important",
-        backgroundColor: "transparent !important",
+        backgroundColor: "whiteColor !important",
         "& ul li": {
-          color: whiteColor + " !important",
+          // color: roseColor[0] + " !important",
           margin: "10px 15px 0!important",
           padding: "10px 15px !important",
           "&:hover": {
@@ -176,9 +177,6 @@ const customDropdownStyle = theme => ({
       color: whiteColor,
       ...roseBoxShadow
     }
-  },
-  dropdownItemRTL: {
-    textAlign: "right"
   },
   dropdownDividerItem: {
     margin: "5px 0",

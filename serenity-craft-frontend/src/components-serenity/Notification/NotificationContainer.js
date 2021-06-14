@@ -37,7 +37,6 @@ import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/components/adminNavbarLinksStyle.js";
-
 const useStyles = makeStyles(styles);
 
 const NotificationContainer =() => {
@@ -90,10 +89,6 @@ const NotificationContainer =() => {
 
     const handleCloseNotification = () => {
         setOpenNotification(null);
-    };
-
-    const handleClick = () => {
-
     };
     
     const dropdownItem = classNames(classes.dropdownItem, classes.roseHover);

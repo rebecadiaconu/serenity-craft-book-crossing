@@ -3,7 +3,6 @@ import {
   dangerColor,
   roseColor, 
   grayColor,
-  primaryColor,
   whiteColor
 } from "assets/jss/material-dashboard-pro-react.js";
 
@@ -79,6 +78,8 @@ const adminNavbarLinksStyle = theme => ({
   buttonLink: {
     [theme.breakpoints.down("sm")]: {
       display: "flex",
+      position: "absolute",
+      right: 65,
       margin: "5px 15px 0",
       width: "auto",
       height: "auto",
@@ -116,11 +117,11 @@ const adminNavbarLinksStyle = theme => ({
     height: "20px",
     zIndex: "4",
     [theme.breakpoints.down("sm")]: {
-      display: "block",
+      // display: "block",
       width: "30px",
       height: "30px",
       color: "inherit",
-      opacity: "0.8",
+      // opacity: "0.8",
       marginRight: "16px",
       marginLeft: "-5px"
     }
@@ -146,36 +147,8 @@ const adminNavbarLinksStyle = theme => ({
     [theme.breakpoints.down("sm")]: {
       ...defaultFont,
       fontSize: "14px",
-      marginRight: "8px"
-    }
-  },
-  wrapperRTL: {
-    [theme.breakpoints.up("md")]: {
-      paddingLeft: "16px"
-    }
-  },
-  buttonLinkRTL: {
-    [theme.breakpoints.down("sm")]: {
-      alignItems: "center",
-      justifyContent: "flex-end",
-      width: "-webkit-fill-available",
-      margin: "10px 15px 0",
-      padding: "10px 15px",
-      display: "block",
-      position: "relative"
-    }
-  },
-  labelRTL: {
-    [theme.breakpoints.down("sm")]: {
-      flexDirection: "row-reverse",
-      justifyContent: "initial",
-      display: "flex"
-    }
-  },
-  linksRTL: {
-    [theme.breakpoints.down("sm")]: {
-      marginRight: "-5px !important",
-      marginLeft: "16px !important"
+      marginRight: "8px",
+      color: roseColor[0]
     }
   },
   managerClasses: {

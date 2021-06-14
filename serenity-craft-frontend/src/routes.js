@@ -61,16 +61,6 @@ const routes = [
     unauth: false 
   },
   {
-    path: '/requests',
-    name: '',
-    icon: BookIcon,
-    component: RequestPage,
-    layout: "/admin",
-    invisible:  true,
-    logged: false,
-    unauth: false 
-  },
-  {
     path: '/crossings/:crossingId/:topicIndex',
     name: '',
     icon: ShareIcon,
@@ -114,6 +104,16 @@ const routes = [
     name: 'My favorites',
     icon: FavoriteIcon,
     component: Favorites,
+    layout: "/admin",
+    invisible:  false,
+    logged: true,
+    unauth: false 
+  },
+  {
+    path: '/requests',
+    name: 'My requests',
+    icon: ShareIcon,
+    component: RequestPage,
     layout: "/admin",
     invisible:  false,
     logged: true,

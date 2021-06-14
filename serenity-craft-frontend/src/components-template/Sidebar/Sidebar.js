@@ -297,8 +297,7 @@ class Sidebar extends Component {
       image,
       logoText,
       routes,
-      bgColor,
-      color
+      bgColor
     } = this.props;
 
     const itemText =
@@ -308,14 +307,6 @@ class Sidebar extends Component {
         [classes.itemTextMini]: this.props.miniActive && this.state.miniActive
       });
 
-    const collapseItemText =
-      classes.collapseItemText +
-      " " +
-      cx({
-        [classes.collapseItemTextMini]:
-          this.props.miniActive && this.state.miniActive
-      });
-
     const userWrapperClass =
       classes.user +
       " " +
@@ -323,10 +314,7 @@ class Sidebar extends Component {
         [classes.whiteAfter]: bgColor === "white"
       });
 
-    const collapseItemMini = classes.collapseItemMini;
-    const caret = classes.caret;
     const photo = classes.photo;
-    const itemIcon = classes.itemIcon;
 
     var user = this.props.authenticated ? (
       <div className={userWrapperClass}>
@@ -422,7 +410,7 @@ class Sidebar extends Component {
             <SidebarWrapper
               className={sidebarWrapper}
               user={user}
-              headerLinks={<AdminNavbarLinks />}
+              // headerLinks={<AdminNavbarLinks />}
               links={links}
             />
             {image !== undefined ? (

@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { realtime } from 'util/realtime';
 import { reportOnBookReviewTopicReply } from "util/general";
 
 // Redux
@@ -58,20 +59,34 @@ const TopicCard = ({ open, handleClose }) => {
 
     const bottom = useRef(null);
 
+    // useEffect(() => {
+    //     if(addedReply && addedReply?.replyId && topic) {
+    //         if (topic.replyData.length === 0 || (addedReply?.replyId !== topic.replyData[topic.replyData.length - 1].replyId)) {
+    //             topic.replyData.push(addedReply);
+    //             // topic.replies.push(addedReply.replyId);
+    //         }
+    //     }
+    //     if (bottom.current)  bottom.current.scrollTo({ top: bottom.current.scrollHeight, behavior: 'smooth' });
+    // }, [addedReply]);
+
     useEffect(() => {
-        if(addedReply && addedReply?.replyId) {
-            if (addedReply?.replyId !== topic.replyData[topic.replyData.length - 1].replyId) {
-                topic.replyData.push(addedReply);
-                topic.replies.push(addedReply.replyId);
-            }
+        if (!!credentials) {
+
+            realtime.ref(`/replies/`).on("child_added", (snapshot) => {
+                if (snapshot.val().topicId === topic.topicId && topic.replyData.filter((reply) => reply.replyId === snapshot.val().replyId).length === 0) {
+                    topic.replyData.push(snapshot.val());
+                    if (bottom.current)  bottom.current.scrollTo({ top: bottom.current.scrollHeight, behavior: 'smooth' });
+                }
+            });
+            realtime.ref(`/replies/`).on("child_removed", (snapshot) => {
+                if (snapshot.val().topicId === topic.topicId && topic.replyData.filter((reply) => reply.replyId === snapshot.val().replyId).length > 0) {
+                    topic.replyData.splice(topic.replyData.indexOf(snapshot.val()), 1);
+                }
+            });
         }
-        if (bottom.current)  bottom.current.scrollTo({ top: bottom.current.scrollHeight, behavior: 'smooth' });
-    }, [addedReply]);
+    }, [credentials]);
 
     const handleDeleteReply = (replyId) => {
-        topic.replyData = topic.replyData.filter((reply) => reply.replyId !== replyId);
-        let index = topic.replies.indexOf(replyId);
-        topic.replies.splice(index, 1);
         dispatch(deleteReply(topic.topicId, replyId));
     };
 
@@ -140,7 +155,7 @@ const TopicCard = ({ open, handleClose }) => {
                 <Divider style={{margin: '15px 0 20px'}} />
                 <div style={{maxHeight: 500, overflowX: 'hidden'}} ref={bottom}>
                 {
-                    topic.replyData.map((reply, index) => {
+                    topic.replyData.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1).map((reply, index) => {
                         return (
                             <ReplyCard key={index} reply={reply} classes={classes} handleDelete={handleDeleteReply} />
                         );

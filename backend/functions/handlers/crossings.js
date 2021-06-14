@@ -632,7 +632,6 @@ exports.getCrossingDetails = (req, res) => {
 
             crossingData.topics.map((topic) => {
                 if (topic.topicId === reply.topicId) topic.replyData.push(reply);
-                topic.replyData.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1));
             });
         });
 
