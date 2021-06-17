@@ -31,7 +31,7 @@ const Dashboard = (props) => {
   const { ...rest } = props;
   const dispatch = useDispatch();
   const { scrolling } = useSelector((state) => state.ui);
-  const { authenticated, credentials } = useSelector((state) => state.user);
+  const { authenticated, credentials, loading } = useSelector((state) => state.user);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [miniActive, setMiniActive] = useState(false);
   const image = require("assets/img/backgr2.jpg");
@@ -151,6 +151,7 @@ const Dashboard = (props) => {
         bgColor={bgColor}
         miniActive={miniActive}
         authenticated={authenticated}
+        loading={loading}
         user={authenticated ? credentials : null}
         {...rest}
       />

@@ -13,18 +13,18 @@ export const setAuth = (token) => {
 
 
 export const signUp = (userData) => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios
         .post('/signup', userData)
         .then(({ data }) => {
             setAuth(data.token);
+            dispatch({ type: Actions.UI.STOP_LOADING_DATA });
             dispatch(getUserData());
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
-            dispatch({ type: Actions.USER.STOP_LOADING_USER });
         })
         .catch((err) => {
             dispatch({
-                type: Actions.USER.STOP_LOADING_USER
+                type: Actions.UI.STOP_LOADING_DATA
             });
             dispatch({ 
                 type: Actions.UI.SET_ERRORS,
@@ -35,17 +35,18 @@ export const signUp = (userData) => (dispatch) => {
 
  
 export const loginUser = (userData) => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios
         .post('/login', userData)
         .then(({ data }) => {
             setAuth(data.token);
+            dispatch({ type: Actions.UI.STOP_LOADING_DATA });
             dispatch(getUserData());
             dispatch({ type: Actions.UI.CLEAR_ERRORS });
         })
         .catch((err) => {
             dispatch({
-                type: Actions.USER.STOP_LOADING_USER
+                type: Actions.UI.STOP_LOADING_DATA
             });
             dispatch({ 
                 type: Actions.UI.SET_ERRORS,
@@ -66,6 +67,7 @@ export const logOutUser = () => (dispatch) => {
 
 
 export const forgotPassword = (userData) => (dispatch) => {
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     dispatch({ type: Actions.UI.SEND_EMAIL });
     axios.post('/forgotPassword', userData)
     .then(({ data }) => {
@@ -74,9 +76,11 @@ export const forgotPassword = (userData) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ type: Actions.UI.STOP_SEND_EMAIL });
     })
     .catch((err) => {
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ type: Actions.UI.STOP_SEND_EMAIL });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
@@ -98,7 +102,7 @@ export const getUserData = () => (dispatch) => {
             type: Actions.USER.SET_USER,
             payload: data
         });
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        // dispatch({ type: Actions.USER.STOP_LOADING_USER });
         if (data.credentials.role === "admin") {
             dispatch({ type: Actions.ADMIN.SET_ADMIN });
             history.push("/serenity-admin");
@@ -127,41 +131,41 @@ export const getUserFavs = (bookIds, books) => (dispatch) => {
 };
 
 export const addToFavs = (bookId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/user/favs/${bookId}`)
     .then(({ data }) => {
         dispatch(getUserData());
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 
 export const removeFromFavs = (bookId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/user/noFavs/${bookId}`)
     .then(({ data }) => {
         dispatch(getUserData());
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 
 export const changeEmail = (formData) => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     dispatch({ type: Actions.UI.SETTINGS });
 
     axios.post('/user/email', formData)
@@ -172,10 +176,10 @@ export const changeEmail = (formData) => (dispatch) => {
         });
         // dispatch(logOutUser());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -185,7 +189,7 @@ export const changeEmail = (formData) => (dispatch) => {
 
 
 export const changeUsername = (formData) => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     dispatch({ type: Actions.UI.SETTINGS });
 
     axios.post('/user/username', formData)
@@ -196,10 +200,10 @@ export const changeUsername = (formData) => (dispatch) => {
         });
         // dispatch(logOutUser());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -209,7 +213,7 @@ export const changeUsername = (formData) => (dispatch) => {
 
 
 export const changePassword = (formData) => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     dispatch({ type: Actions.UI.SETTINGS });
 
     axios.post('/user/password', formData)
@@ -220,10 +224,10 @@ export const changePassword = (formData) => (dispatch) => {
         });
         // dispatch(logOutUser());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -233,7 +237,7 @@ export const changePassword = (formData) => (dispatch) => {
 
 
 export const editDetails = (formData) => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
 
     axios.post('/user', formData)
     .then(({ data }) => {
@@ -241,12 +245,12 @@ export const editDetails = (formData) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch(getUserData());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -256,7 +260,7 @@ export const editDetails = (formData) => (dispatch) => {
 
 
 export const changeImage = (formData) => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
 
     axios.post('/user/image', formData)
     .then(({ data }) => {
@@ -264,12 +268,12 @@ export const changeImage = (formData) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch(getUserData());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -278,7 +282,7 @@ export const changeImage = (formData) => (dispatch) => {
 };
 
 export const removeImage = () => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
 
     axios.post('/user/noImage')
     .then(({ data }) => {
@@ -286,12 +290,12 @@ export const removeImage = () => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch(getUserData());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -324,7 +328,7 @@ export const getAnyUser = (username) => (dispatch) => {
 };
 
 export const deleteAccount = (formData, books, crossings) => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     dispatch({ type: Actions.UI.SETTINGS });
 
     books.forEach((book) => dispatch(deleteBook(book.bookId)))
@@ -337,10 +341,10 @@ export const deleteAccount = (formData, books, crossings) => (dispatch) => {
         });
         dispatch(logOutUser());
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -349,7 +353,7 @@ export const deleteAccount = (formData, books, crossings) => (dispatch) => {
 };
 
 export const getNotifications = () => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    // dispatch({ type: Actions.USER.LOADING_USER });
     axios.get('/user/notifications')
     .then(({ data }) => {
         dispatch({
@@ -357,11 +361,11 @@ export const getNotifications = () => (dispatch) => {
             payload: data.notifications
         });
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        // dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {
         console.log(err);
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        // dispatch({ type: Actions.USER.STOP_LOADING_USER });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -370,7 +374,7 @@ export const getNotifications = () => (dispatch) => {
 };
 
 export const getRequests = () => (dispatch) => {
-    dispatch({ type: Actions.USER.LOADING_USER });
+    dispatch({ type: Actions.UI.LOADING_DATA });
     axios.get('/user/requests')
     .then(({ data }) => {
         dispatch({
@@ -378,10 +382,10 @@ export const getRequests = () => (dispatch) => {
             payload: data.requests
         });
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
-        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -405,7 +409,8 @@ export const markNotificationRead = (notifIds) => (dispatch) => {
 
 
 export const addReport = (formData, username) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/report/${username}`, formData)
     .then(({ data }) => {
         dispatch({

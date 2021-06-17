@@ -3,6 +3,8 @@ import { Actions } from '../types';
 const initialState = {
     authenticated: !!localStorage.getItem('idToken'),
     loading: false,
+    loadingImage: false,
+    loadingDetails: false,
     deleted: false,
     credentials: {},
     books: [],
@@ -33,13 +35,25 @@ const UserReducer = (state = initialState, action) => {
             };
         case Actions.USER.LOADING_USER:
             return {
-              loading: true,
-              ...state
+              ...state,
+              loading: true
             };
+        case Actions.USER.LOADING_IMAGE:
+            return {
+              ...state,
+              loadingImage: true
+            };
+        case Actions.USER.LOADING_DETAILS:
+            return {
+              ...state,
+              loadingDetails: true
+            }
         case Actions.USER.STOP_LOADING_USER:
             return {
+              ...state,
               loading: false,
-              ...state
+              loadingImage: false,
+              loadingDetails: false
             };
         case Actions.USER.CHANGE_EMAIL:
           return {

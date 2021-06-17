@@ -20,7 +20,7 @@ import GridItem from "components-template/Grid/GridItem.js";
 import SortInput from "util/components/SortInput";
 
 // @material-ui core
-import { InputAdornment, makeStyles } from "@material-ui/core";
+import { CircularProgress, InputAdornment, makeStyles } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField"
 
 // icons
@@ -76,6 +76,7 @@ const UserCard = ({ user, search }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { initBooks, books, searchValue } = useSelector((state) => state.books);
+    const { loadingDetails, loadingImage } = useSelector((state) => state.user);
 
     const handleSearch = (event) => {
         if (event.target.value !== searchValue) dispatch(setSearchValue(event.target.value, initBooks));
@@ -85,43 +86,51 @@ const UserCard = ({ user, search }) => {
     return (
         <GridItem xs={12} sm={12} md={4}>
             <Card profile>
-                <CardAvatar profile>
-                    <img style={{objectFit: "cover"}} src={user.imageUrl} alt={user.username} />
-                </CardAvatar>
-                <CardBody profile>
-                <h3 className={classes.user}>{user.username}</h3>
-                {
-                    user?.bio ? <p className={classes.description}>{user.bio}</p> : null
-                }
-                {
-                    user?.mainInterests ? (
-                        <>
-                        <h4 className={classes.user}>I'm interested in: </h4>
-                        {
-                            user.mainInterests.map((item, index) => {
-                                return (
-                                    <Button round color="primary" size="sm" key={index}>{item}</Button>
-                                )
-                            })
-                        }
-                        </>
-                    ) : null
-                }
-                </CardBody>
-                <CardFooter>
-                    <div className={classes.location}>
-                        <AlternateEmailIcon />
-                        <span>{user.email}</span>
-                    </div>
+            {
+                loadingDetails ? (
+                    <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={50} color='secondary' />
+                ) : (
+                <>
+                    <CardAvatar profile>
+                            <img style={{objectFit: "cover"}} src={user.imageUrl} alt={user.username} />
+                    </CardAvatar>
+                    <CardBody profile>
+                    <h3 className={classes.user}>{user.username}</h3>
                     {
-                        user?.location ? (
-                            <div className={classes.location}>
-                                <LocationOnIcon />
-                                <span>{user.location}</span>
-                            </div>
+                        user?.bio ? <p className={classes.description}>{user.bio}</p> : null
+                    }
+                    {
+                        user?.mainInterests ? (
+                            <>
+                            <h4 className={classes.user}>I'm interested in: </h4>
+                            {
+                                user.mainInterests.map((item, index) => {
+                                    return (
+                                        <Button round color="primary" size="sm" key={index}>{item}</Button>
+                                    )
+                                })
+                            }
+                            </>
                         ) : null
                     }
-                </CardFooter>
+                    </CardBody>
+                    <CardFooter>
+                        <div className={classes.location}>
+                            <AlternateEmailIcon />
+                            <span>{user.email}</span>
+                        </div>
+                        {
+                            user?.location ? (
+                                <div className={classes.location}>
+                                    <LocationOnIcon />
+                                    <span>{user.location}</span>
+                                </div>
+                            ) : null
+                        }
+                    </CardFooter>
+                </>
+                )
+            }
             </Card>
             {
                 search ? (

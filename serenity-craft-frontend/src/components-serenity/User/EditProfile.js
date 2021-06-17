@@ -20,6 +20,7 @@ import UploadImage from "util/components/UploadImage";
 import { 
     Chip,
     Checkbox,
+    CircularProgress,
     IconButton,
     InputAdornment,
     List,
@@ -47,6 +48,7 @@ const EditProfile = () => {
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
     const { credentials } = useSelector((state) => state.user);
+    const { loadingButton } = useSelector((state) => state.ui);
     const [anchorEl, setAnchorEl] = useState(null);
     const [mainInterests, setInterests] = useState([]);
 
@@ -198,10 +200,16 @@ const EditProfile = () => {
                 <Button 
                     round
                     color="info"
+                    disabled={loadingButton}
                     onClick={handleSubmit(onSubmit)}
                     className={classes.submitButton}
                 >
                     UPDATE DETAILS
+                    {
+                        loadingButton && (
+                            <CircularProgress style={{position: 'absolute'}} size={32} color='secondary' />
+                        )
+                    }
                 </Button>
            </GridItem>
            <GridItem xs={12} sm={12} md={4}>

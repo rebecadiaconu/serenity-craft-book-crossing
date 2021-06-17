@@ -127,7 +127,7 @@ const ResetPassword = () => {
                   }
                 </CardBody>
                 <CardFooter className={classes.justifyContentCenter}>
-                  <Button onClick={handleSubmit(onSubmit)} type="submit" color="rose" simple size="lg" block>
+                  <Button disabled={sendingEmail} onClick={handleSubmit(onSubmit)} type="submit" color="rose" simple size="lg" block>
                     Send password reset email
                     {
                       sendingEmail && (

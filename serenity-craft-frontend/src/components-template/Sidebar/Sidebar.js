@@ -317,28 +317,30 @@ class Sidebar extends Component {
     const photo = classes.photo;
 
     var user = this.props.authenticated ? (
-      <div className={userWrapperClass}>
-        <div className={photo}>
-          <img src={this.props.user.imageUrl} className={classes.avatarImg} alt="user" />
+      this.props.loading ? null : (
+        <div className={userWrapperClass}>
+          <div className={photo}>
+            <img src={this.props.user.imageUrl} className={classes.avatarImg} alt="user" />
+          </div>
+          <List className={classes.list}>
+            <ListItem className={classes.item + " " + classes.userItem}>
+              <NavLink
+                to={"/admin/user"}
+                className={
+                  classes.itemLink + " " + classes.userCollapseLinks
+                }
+                onClick={() => this.openCollapse("openAvatar")}
+              >
+                <ListItemText
+                  primary={this.props.user.username}
+                  disableTypography={true}
+                  className={itemText + " " + classes.userItemText}
+                />
+              </NavLink>
+            </ListItem>
+          </List>
         </div>
-        <List className={classes.list}>
-          <ListItem className={classes.item + " " + classes.userItem}>
-            <NavLink
-              to={"/admin/user"}
-              className={
-                classes.itemLink + " " + classes.userCollapseLinks
-              }
-              onClick={() => this.openCollapse("openAvatar")}
-            >
-              <ListItemText
-                primary={this.props.user.username}
-                disableTypography={true}
-                className={itemText + " " + classes.userItemText}
-              />
-            </NavLink>
-          </ListItem>
-        </List>
-      </div>
+      )
     ) : null;
 
     var links = (

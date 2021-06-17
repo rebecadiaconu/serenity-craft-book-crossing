@@ -9,6 +9,7 @@ const initialState = {
     reportOnReply: false,
     reportOnReview: null,
     loading: false,
+    loadingButton: false,
     seeRequest: false,
     request: null,
     sendingEmail: false,
@@ -26,9 +27,15 @@ const UiReducer = (state = initialState, action) => {
                 ...state,
                 loading: true
             };
+        case Actions.UI.LOADING_BUTTON:
+            return {
+                ...state,
+                loadingButton: true
+            };
         case Actions.UI.STOP_LOADING_DATA:
             return {
                 ...state,
+                loadingButton: false,
                 loading: false
             };
         case Actions.UI.SET_ERRORS:

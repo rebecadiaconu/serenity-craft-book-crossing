@@ -12,10 +12,14 @@ import { changeCoverImage, removeCover } from '../../redux/actions/bookActions';
 // template
 import Button from "components-template/CustomButtons/Button.js";
 
+// @material-ui core
+import { CircularProgress } from "@material-ui/core";
+
 const UploadImage = ({ changeButtonProps, removeButtonProps, bookCover }) => {
     const dispatch = useDispatch();
     const { credentials } = useSelector((state) => state.user);
     const { book, justAdded } = useSelector((state) => state.books);
+    const { loadingButton } = useSelector((state) => state.ui);
     const [file, setFile] = useState(null);
     const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
     const [noImage, setNoImage] = useState(false);
@@ -84,8 +88,13 @@ const UploadImage = ({ changeButtonProps, removeButtonProps, bookCover }) => {
                     </span>
                     )
                 }
-                <Button {...changeButtonProps} disabled={bookCover ? imagePreviewUrl === book.coverImage : imagePreviewUrl === credentials.imageUrl} onClick={() => handleSubmit()}>
+                <Button {...changeButtonProps} disabled={bookCover ? (imagePreviewUrl === book.coverImage) || loadingButton : (imagePreviewUrl === credentials.imageUrl) || loadingButton} onClick={() => handleSubmit()}>
                     UPDATE
+                    {
+                        loadingButton && (
+                            <CircularProgress style={{position: 'absolute'}} size={32} color='secondary' />
+                        )
+                    }
                 </Button>
             </div>
         </div>

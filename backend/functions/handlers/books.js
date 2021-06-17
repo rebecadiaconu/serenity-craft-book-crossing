@@ -479,7 +479,7 @@ exports.reviewBook = (req, res) => {
     })
     .then((doc) => {
         newReview.reviewId = doc.id;
-        return res.json({newReview});
+        return res.json({ message: 'Review added successfully!' });
     })
     .catch((err) => {
         console.error(err);

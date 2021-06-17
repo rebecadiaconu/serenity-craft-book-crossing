@@ -23,7 +23,7 @@ import Settings from "components-serenity/User/Settings";
 import UserCard from "components-serenity/User/UserCard";
 
 // @material-ui core
-import { makeStyles } from "@material-ui/core";
+import { CircularProgress, makeStyles } from "@material-ui/core";
 
 // icons
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -37,7 +37,7 @@ const useAlert = makeStyles(alertStyles);
 const UserAuthPage = () => {
     const alertClasses = useAlert();
     const dispatch = useDispatch();
-    const { credentials, authenticated } = useSelector(state => state.user);
+    const { credentials, authenticated, loading, loadingImage, loadingDetails } = useSelector(state => state.user);
     const { errors, message, settings } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
@@ -64,13 +64,17 @@ const UserAuthPage = () => {
                     setAlert(null);
                     if (settings) {
                         dispatch(logOutUser());
+                    } else if(loadingImage || loading || loadingDetails) {
+                        dispatch({ type: Actions.USER.STOP_LOADING_USER });
                     } else dispatch({ type: Actions.UI.CLEAR_ACTION });
                 }}
                 onCancel={() => {
                     setAlert(null);
                     if (settings) {
                         dispatch(logOutUser());
-                    } else dispatch({ type: Actions.UI.CLEAR_ACTION });
+                    } else if(loadingImage || loading || loadingDetails) {
+                        dispatch({ type: Actions.USER.STOP_LOADING_USER });
+                    }else dispatch({ type: Actions.UI.CLEAR_ACTION });
                 }}
                 confirmBtnCssClass={alertClasses.button + " " + alertClasses.success}
             >
@@ -98,58 +102,68 @@ const UserAuthPage = () => {
         setAlert(null);
         if (settings) {
             dispatch({ type: Actions.UI.STOP_SETTINGS });
+        } else if(loadingImage || loading || loadingDetails) {
+            dispatch({ type: Actions.USER.STOP_LOADING_USER });
         } else dispatch({ type: Actions.UI.CLEAR_ACTION });
     };
 
     return (
         <div>
-            <GridContainer
-                display="flex"
-                justify="center"
-                alignItems="center"
-                alignContent="center"
-            >   
-                {alert}
-                <UserCard user={credentials} />
-                <GridItem xs={12} sm={12} md={8}>
-                    <Card>
-                        <CardBody>
-                            <NavPills 
-                                color="rose"
-                                horizontal={{
-                                    tabsGrid: { xs: 12, sm: 12, md: 2 },
-                                    contentGrid: { xs: 12, sm: 12, md: 10 }
-                                }}
-                                tabs={[
-                                    {
-                                        tabButton: "Edit",
-                                        tabIcon: EditIcon,
-                                        tabContent: (
-                                            <EditProfile />
-                                        )
-                                    },
-                                    {
-                                        tabButton: "Settings",
-                                        tabIcon: SettingsIcon,
-                                        tabContent: (
-                                            <Settings />
-                                        )
-                                    }
-                                ]}
-                            />
-                        </CardBody>
-                    </Card>
-                </GridItem>
-            </GridContainer>
-            <GridContainer
-                display="flex"
-                justify="center"
-                alignItems="center"
-                alignContent="center"
-            >
-                <CrossingsCarousel />
-                <BooksCarousel />
-            </GridContainer>
+        {
+            loading ? (
+                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={72} color='secondary' />
+            ) : (
+                <>
+                <GridContainer
+                    display="flex"
+                    justify="center"
+                    alignItems="center"
+                    alignContent="center"
+                >   
+                    {alert}
+                    <UserCard user={credentials} />
+                    <GridItem xs={12} sm={12} md={8}>
+                        <Card>
+                            <CardBody>
+                                <NavPills 
+                                    color="rose"
+                                    horizontal={{
+                                        tabsGrid: { xs: 12, sm: 12, md: 2 },
+                                        contentGrid: { xs: 12, sm: 12, md: 10 }
+                                    }}
+                                    tabs={[
+                                        {
+                                            tabButton: "Edit",
+                                            tabIcon: EditIcon,
+                                            tabContent: (
+                                                <EditProfile />
+                                            )
+                                        },
+                                        {
+                                            tabButton: "Settings",
+                                            tabIcon: SettingsIcon,
+                                            tabContent: (
+                                                <Settings />
+                                            )
+                                        }
+                                    ]}
+                                />
+                            </CardBody>
+                        </Card>
+                    </GridItem>
+                </GridContainer>
+                <GridContainer
+                    display="flex"
+                    justify="center"
+                    alignItems="center"
+                    alignContent="center"
+                >
+                    <CrossingsCarousel />
+                    <BooksCarousel />
+                </GridContainer>
+                </>
+            )
+        }
         </div>
     );
 }

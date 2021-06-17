@@ -13,6 +13,7 @@ import Button from "components-template/CustomButtons/Button";
 
 // @material-ui core
 import { 
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -50,7 +51,7 @@ const Settings = () => {
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
     const { credentials, books, crossings } = useSelector((state) => state.user);
-    const { errors } = useSelector((state) => state.ui);
+    const { errors, loadingButton } = useSelector((state) => state.ui);
 
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -276,9 +277,15 @@ const Settings = () => {
                     <Button
                         color="success"
                         round
+                        disabled={loadingButton}
                         onClick={handleSubmit(handleEmailChange)}
                     >
                         Sounds Good
+                        {
+                            loadingButton && (
+                                <CircularProgress style={{position: 'absolute'}} size={32} color='secondary' />
+                            )
+                        }
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -345,9 +352,15 @@ const Settings = () => {
                     <Button
                         color="success"
                         round
+                        disabled={loadingButton}
                         onClick={handleSubmit(handleUsernameChange)}
                     >
-                        Sounds good
+                        Sounds Good
+                        {
+                            loadingButton && (
+                                <CircularProgress style={{position: 'absolute'}} size={32} color='secondary' />
+                            )
+                        }
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -437,9 +450,15 @@ const Settings = () => {
                     <Button
                         color="success"
                         round
+                        disabled={loadingButton}
                         onClick={handleSubmit(handlePasswordChange)}
                     >
                         Sounds Good
+                        {
+                            loadingButton && (
+                                <CircularProgress style={{position: 'absolute'}} size={32} color='secondary' />
+                            )
+                        }
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -504,9 +523,15 @@ const Settings = () => {
                     <Button
                         color="success"
                         round
+                        disabled={loadingButton}
                         onClick={handleSubmit(handleDeleteAccount)}
                     >
                         Sounds Good
+                        {
+                            loadingButton && (
+                                <CircularProgress style={{position: 'absolute'}} size={32} color='secondary' />
+                            )
+                        }
                     </Button>
                 </DialogActions>
             </Dialog>
