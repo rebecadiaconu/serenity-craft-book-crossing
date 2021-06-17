@@ -134,8 +134,6 @@ exports.deleteTopic = (req, res) => {
     let topicData = {};
     let promises = [];
 
-    console.log('HERE!!!');
-
     realtime.ref(`/topics/${req.params.topicId}`).get()
     .then((data) => {
         if (!data.exists()) return res.status(404).json({ error: 'Topic already deleted!' });
@@ -290,7 +288,6 @@ exports.deleteReply = (req, res) => {
         let promises = [];
         if (data.exists()) {
             let notifications = Object.values(data.val());
-            console.log(notifications);
             notifications.forEach((notif) => {
                 promises.push(realtime.ref(`/notifications/${notif.notificationId}`).remove());
             });

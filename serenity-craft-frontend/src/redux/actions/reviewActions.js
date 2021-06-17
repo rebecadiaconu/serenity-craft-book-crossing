@@ -31,7 +31,6 @@ export const getReview = (reviewId) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.get(`/reviews/${reviewId}`)
     .then(({ data }) => {
-        console.log(data);
         dispatch({ 
             type: Actions.REVIEW.SET_REVIEW,
             payload: data

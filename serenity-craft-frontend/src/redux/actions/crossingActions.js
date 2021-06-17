@@ -235,7 +235,6 @@ export const markRequestsRead = (crossingId) => (dispatch) => {
 
 export const getTopic = (topicId) => (dispatch) => {
     dispatch({ type: Actions.UI.LOADING_DATA });
-    console.log('xfdcghjk');
     axios.get(`/topics/${topicId}`).
     then(({ data }) => {
         dispatch({
@@ -321,11 +320,9 @@ export const deleteTopic = (topicId, crossingId) => (dispatch) => {
 };
 
 export const addReply = (formData, topicId) => (dispatch) => {
-    console.log(formData, topicId);
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/topics/${topicId}/reply`, formData)
     .then(({ data }) => {
-        console.log(data);
         dispatch({
             type: Actions.CROSSING.ADD_REPLY,
             payload: data

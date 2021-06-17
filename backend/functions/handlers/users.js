@@ -536,13 +536,10 @@ exports.changeEmail = (req, res) => {
         password: req.body.password
     };
 
-    console.log(user);
-
     const userDocument = db.doc(`/users/${req.user.username}`);
 
     firebase.auth().signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
-        console.log('logged');
         const { valid, errors } = validateEmail(user.newEmail);
 
         if (!valid) return res.status(400).json({ newEmail: errors.email });
@@ -613,8 +610,6 @@ exports.changeUsername = (req, res) => {
         userData = doc.data();
         userData.username = user.newUsername;
 
-        console.log(userData);
-
         return db.doc(`/users/${user.newUsername}`).get();
     })
     .then((doc) => {
@@ -660,9 +655,7 @@ exports.changeUsername = (req, res) => {
     
             if (data.exists()) {
                 topicData = Object.values(data.val()).reverse();
-                console.log(topicData);
                 topicData.forEach((doc) => {
-                    console.log(doc.id);
                     let updates = {};
                     updates['username'] = user.newUsername;
                     promises.push(realtime.ref(`/topics/${doc.topicId}`).update(updates));
@@ -680,10 +673,8 @@ exports.changeUsername = (req, res) => {
             let promises = [];
             if (data.exists()) {
                 replyData = Object.values(data.val()).reverse();
-                console.log(replyData);
-    
+
                 replyData.forEach((doc) => {
-                    console.log(doc.id);
                     let updates = {};
                     updates['username'] = user.newUsername;
                     promises.push(realtime.ref(`/replies/${doc.replyId}`).update(updates));
@@ -760,8 +751,6 @@ exports.changePassword = (req, res) => {
         password: req.body.password,
         newPassword: req.body.newPassword
     };
-
-    console.log(user);
 
     const { valid, errors } = validateLogInData(user);
 
@@ -953,7 +942,6 @@ exports.markNotificationRead = (req, res) => {
 
 // Delete user account
 exports.deleteUserAccount = (req, res) => {
-    console.log(req.body);
     const user = {
         email: req.user.email,
         password: req.body.password
@@ -1287,7 +1275,6 @@ exports.acceptReport = (req, res) => {
 // Reject report by admin
 exports.rejectReport = (req, res) => {
     let reportData = {};
-    console.log('reject!!');
 
     realtime.ref(`/reports/${req.params.reportId}`).get()
     .then((data) => {
@@ -1345,8 +1332,6 @@ exports.standByReport = (req, res) => {
                 subject: "Report on crossing",
                 text: `Hi there! \nThe Serenity Craft Admin has seen you report with ${reportData.recipient}. Tell us more details and proofs (if you have) to fix the problem! \nYour reason: ${reportData.reason}.`
             });
-
-            console.log("Email send successfully! --> ", info.messageId);
         })
         .then(() => {
             return res.json({ message: 'Email send successfully! Do the talk there!' });

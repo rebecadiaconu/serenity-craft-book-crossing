@@ -56,7 +56,6 @@ exports.sendCrossingReq = (req, res) => {
     .limit(1)
     .get()
     .then((data) => {
-        console.log(data);
         if (!data.empty) return res.status(400).json({ error: 'You already sent one crossing request to this user for this book!' });
         else return db.doc(`/books/${newCrossing.randomBookId}`).update({ involved: true })
         .then(() => {
@@ -298,7 +297,6 @@ exports.acceptCrossing = (req, res) => {
             .then((doc) => {
                 if (doc.data().available === false) return res.status(400).json({ error: 'Your book is not available now... Accept it later!' });
                 else {
-                    console.log('passed...');
                     const batch = db.batch();
 
                     return db.collection('crossings').where('randomBookId', '==', bookId).where('status', '==', 'pending').get()

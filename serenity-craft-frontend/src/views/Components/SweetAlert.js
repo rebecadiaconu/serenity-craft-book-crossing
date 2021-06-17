@@ -155,16 +155,6 @@ export default function SweetAlertPage() {
     );
   };
 
-  // const inputConfirmAlert = e => {
-  //   console.log(e);
-  //   setInputValue(e);
-  //   setAlert(null);
-  //   console.log(inputValue,alert);
-  //   setTimeout(() => {
-  //     inputConfirmAlertNext();
-  //   }, 5000);
-  // };
-
   const inputConfirmAlertNext = e => {
     setAlert(e);
     setTimeout(() => {

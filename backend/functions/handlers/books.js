@@ -142,7 +142,6 @@ exports.getBook = (req, res) => {
     .then((data) => {
         bookData.reviews = [];
         data.forEach(doc => {
-            console.log(doc.data().username);
             let review = doc.data();
             review.reviewId = doc.id;
             bookData.reviews.push(review);
@@ -501,7 +500,6 @@ exports.getReview = (req, res) => {
         reviewData = doc.data();
         reviewData.reviewId = doc.id;
 
-        console.log(reviewData);
         return res.json(reviewData);
     })
     .catch(err => {
@@ -592,8 +590,6 @@ exports.deleteReview = (req, res) => {
             bookData.numReviews--;
             if (bookData.numReviews === 0) bookData.averageRating = 0;
             else bookData.averageRating = ((bookData.averageRating * (bookData.numReviews + 1) - deletedRating) / (bookData.numReviews)).toFixed(2);
-
-            console.log(bookData.averageRating);
 
             if (bookData.owner === req.user.username) {
                 return bookDoc.update({

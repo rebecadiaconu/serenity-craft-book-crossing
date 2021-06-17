@@ -112,7 +112,6 @@ exports.crossingPartener = (req, res, next) => {
         
         else return db.doc(`/crossings/${req.params.crossingId}`).get()
         .then((doc) => {
-            console.log(doc);
             if (!doc.exists) return res.status(404).json({ error: 'Crossing not found!' });
 
             if (doc.data().recipient === req.user.username || doc.data().sender === req.user.username) return next();

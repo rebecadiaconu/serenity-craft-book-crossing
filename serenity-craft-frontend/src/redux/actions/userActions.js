@@ -405,7 +405,6 @@ export const markNotificationRead = (notifIds) => (dispatch) => {
 
 
 export const addReport = (formData, username) => (dispatch) => {
-    console.log(formData);
     dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/report/${username}`, formData)
     .then(({ data }) => {

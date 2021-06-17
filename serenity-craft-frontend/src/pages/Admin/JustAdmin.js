@@ -171,7 +171,6 @@ const JustAdmin = () => {
     
         return function cleanup() {
             if (navigator.platform.indexOf("Win") > -1) {
-                console.log('Destroy');
                 ps.destroy();
             }
         };

@@ -37,28 +37,6 @@ const ReportInfo = ({ report, open }) => {
     const classes = useStyles();
     const [info, setInfo] = useState(null);
 
-    // const mainPanel = useRef(null);
-
-    // useEffect(() => {
-    //     if (navigator.platform.indexOf("Win") > -1) {
-    //       ps = new PerfectScrollbar(mainPanel.current, {
-    //         suppressScrollX: true,
-    //         suppressScrollY: false
-    //       });
-    
-    //       document.body.style.overflow = "hidden";
-    //     }
-    
-    
-    //     return function cleanup() {
-    //       if (navigator.platform.indexOf("Win") > -1) {
-    //           console.log('Destroy');
-    //         ps.destroy();
-    //       }
-    //     };
-    
-    //   }, []);
-
     useEffect(() => {
         switch(report.type) {
             case 'book':
