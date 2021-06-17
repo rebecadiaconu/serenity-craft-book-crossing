@@ -329,6 +329,42 @@ exports.uploadImage = (req, res) => {
                 return Promise.all(promises);
             })
             .then(() => {
+                return realtime.ref(`/reports/`).orderByChild("recipient").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let reportData = [];
+                let promises = [];
+                if (data.exists()) {
+                    reportData = Object.values(data.val()).reverse();
+
+                    reportData.forEach((doc) => {
+                        let updates = {};
+                        updates['recipientImage'] = imageUrl;
+                        promises.push(realtime.ref(`/reports/${doc.reportId}`).update(updates));
+                    });
+                }
+
+                return Promise.all(promises);
+            })
+            .then(() => {
+                return realtime.ref(`/reports/`).orderByChild("sender").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let reportData = [];
+                let promises = [];
+                if (data.exists()) {
+                    reportData = Object.values(data.val()).reverse();
+
+                    reportData.forEach((doc) => {
+                        let updates = {};
+                        updates['senderImage'] = imageUrl;
+                        promises.push(realtime.ref(`/reports/${doc.reportId}`).update(updates));
+                    });
+                }
+
+                return Promise.all(promises);
+            })
+            .then(() => {
                 return batch.commit();
             });
         })
@@ -429,6 +465,42 @@ exports.deleteImage = (req, res) => {
                     let updates = {};
                     updates['userImage'] = imageUrl;
                     promises.push(realtime.ref(`/replies/${doc.replyId}`).update(updates));
+                });
+            }
+
+            return Promise.all(promises);
+        })
+        .then(() => {
+            return realtime.ref(`/reports/`).orderByChild("recipient").equalTo(req.user.username).get();
+        })
+        .then((data) => {
+            let reportData = [];
+            let promises = [];
+            if (data.exists()) {
+                reportData = Object.values(data.val()).reverse();
+
+                reportData.forEach((doc) => {
+                    let updates = {};
+                    updates['recipientImage'] = imageUrl;
+                    promises.push(realtime.ref(`/reports/${doc.reportId}`).update(updates));
+                });
+            }
+
+            return Promise.all(promises);
+        })
+        .then(() => {
+            return realtime.ref(`/reports/`).orderByChild("sender").equalTo(req.user.username).get();
+        })
+        .then((data) => {
+            let reportData = [];
+            let promises = [];
+            if (data.exists()) {
+                reportData = Object.values(data.val()).reverse();
+
+                reportData.forEach((doc) => {
+                    let updates = {};
+                    updates['senderImage'] = imageUrl;
+                    promises.push(realtime.ref(`/reports/${doc.reportId}`).update(updates));
                 });
             }
 
@@ -618,6 +690,42 @@ exports.changeUsername = (req, res) => {
                 });
             }
     
+            return Promise.all(promises);
+        })
+        .then(() => {
+            return realtime.ref(`/reports/`).orderByChild("recipient").equalTo(req.user.username).get();
+        })
+        .then((data) => {
+            let reportData = [];
+            let promises = [];
+            if (data.exists()) {
+                reportData = Object.values(data.val()).reverse();
+
+                reportData.forEach((doc) => {
+                    let updates = {};
+                    updates['recipient'] = user.newUsername;
+                    promises.push(realtime.ref(`/reports/${doc.reportId}`).update(updates));
+                });
+            }
+
+            return Promise.all(promises);
+        })
+        .then(() => {
+            return realtime.ref(`/reports/`).orderByChild("sender").equalTo(req.user.username).get();
+        })
+        .then((data) => {
+            let reportData = [];
+            let promises = [];
+            if (data.exists()) {
+                reportData = Object.values(data.val()).reverse();
+
+                reportData.forEach((doc) => {
+                    let updates = {};
+                    updates['sender'] = user.newUsername;
+                    promises.push(realtime.ref(`/reports/${doc.reportId}`).update(updates));
+                });
+            }
+
             return Promise.all(promises);
         })
         .then(() => {
