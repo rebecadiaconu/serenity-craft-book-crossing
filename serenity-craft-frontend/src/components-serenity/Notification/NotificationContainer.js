@@ -192,18 +192,22 @@ const NotificationContainer =() => {
                                             case 'report-delete':
                                                 message = `The admin accepted one report on your name and deleted the specific content!`
                                                 icon = <ReportIcon fontSize="small" className={classes.icon} />;    
+                                                break
                                             case 'check-request':
                                                 message = `Check your pending requests! Some of them might be gone!`
                                                 icon = <ShareIcon fontSize="small" className={classes.icon} />; 
                                                 redirectTo = `/admin/user`;
+                                                break
                                             case 'crossing-done':
                                                 message = `Book crossing done!`
                                                 icon = <ShareIcon fontSize="small" className={classes.icon} />; 
                                                 redirectTo = `/admin/crossings/${notif.crossingId}`; 
+                                                break
                                             case 'type-permanent':
                                                 message = `Crossing type set to permanent!`
                                                 icon = <ShareIcon fontSize="small" className={classes.icon} />; 
-                                                redirectTo = `/admin/crossings/${notif.crossingId}`;      
+                                                redirectTo = `/admin/crossings/${notif.crossingId}`;    
+                                                break  
                                         }
 
                                         return (

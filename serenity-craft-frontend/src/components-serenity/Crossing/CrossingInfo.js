@@ -64,7 +64,7 @@ const CrossingInfo = () => {
             crossing && (
                 <>
                 {
-                    (credentials.username === crossing.recipient && crossing.type === "temporar") && (
+                    (credentials.username === crossing.recipient) && (
                         !crossing.senderProgress.sendBook ? (
                         <Tooltip title="Choose to receive other book!" classes={{ tooltip: classes.tooltip }}>
                             <Button disabled={crossing.canceled} size="sm" round justIcon color="rose" className={classes.changeBookBtn} onClick={() => dispatch({ type: Actions.CROSSING.CHANGE_BOOK })} ><EditIcon /></Button>

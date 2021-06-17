@@ -333,7 +333,7 @@ const CrossingPage = () => {
                                         }).filter((index) => index !== false)
                                     }
                                     tasksIndexes={crossing.type === "temporar" ? [0, 1, 2, 3] : [0, 1]}
-                                    tasks={crossing.type === "temporar" ? crossingStages : crossingStages.slice(1)}
+                                    tasks={crossing.type === "temporar" ? crossingStages : crossingStages.slice(0)}
                                 />
                             )
                         },
