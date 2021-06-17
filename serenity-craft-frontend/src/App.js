@@ -40,7 +40,7 @@ const App = () => {
     useEffect(() => {
         let token = localStorage.idToken;
         if (!token) {
-          history.push("/");  
+        //   history.push("/");  
           dispatch({ type: Actions.USER.SET_UNAUTHENTICATED });
         } 
     }, []);

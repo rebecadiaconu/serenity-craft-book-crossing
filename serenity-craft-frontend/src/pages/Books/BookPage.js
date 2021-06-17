@@ -104,7 +104,7 @@ const Details = ({ numPages, language, publisher, bookQuality, publicationYear, 
 const OwnerReview = ({ content, owner, ownerImage, ownerReviewId }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { credentials } = useSelector((state) => state.user);
+    const { credentials, authenticated } = useSelector((state) => state.user);
     const { book } = useSelector((state) => state.books);
     const { reviewId } = useSelector((state) => state.review);
 
@@ -117,7 +117,6 @@ const OwnerReview = ({ content, owner, ownerImage, ownerReviewId }) => {
     };
 
     const handleEditReview = () => {
-        console.log('here!');
         dispatch({ type: Actions.REVIEW.EDIT_REVIEW, payload: ownerReviewId });
     };
 
@@ -154,7 +153,7 @@ const OwnerReview = ({ content, owner, ownerImage, ownerReviewId }) => {
             <CardFooter testimonial>
                 <h6 className={classes.cardCategory}>{owner}</h6>
                 <NavLink
-                    to={owner !== credentials.username ? `/admin/users/${owner}` : `/admin/user`}
+                    to={authenticated ? (owner !== credentials.username ? `/admin/users/${owner}` : `/admin/user`) : `/auth/errors`}
                 >
                     <CardAvatar testimonial testimonialFooter>
                         <img src={ownerImage} />
@@ -339,13 +338,13 @@ const BookPage = () => {
         <GridContainer className={classes.root}>
             {alert}
             {
-                edit && <EditBook open={edit} />
+                edit && authenticated && <EditBook open={edit} />
             }
             {
-                addReview && <AddReview open={addReview} />
+                addReview && authenticated && <AddReview open={addReview} />
             }
             {
-                editReview && reviewId && reviewData && <EditReview open={editReview} />
+                editReview && authenticated && reviewId && reviewData && <EditReview open={editReview} />
             }
             {
                 sendReport && authenticated && 
@@ -359,6 +358,13 @@ const BookPage = () => {
                 />
             }
             <ChangeCoverImage justAdded={justAdded} handleClose={handleJustAdded} />
+            {
+                !authenticated && (
+                    <GridItem xs={12} sm={12} md={12} style={{textAlign: 'center'}}>
+                        <Danger><h3>Account needed for available actions on this page!</h3></Danger>
+                    </GridItem>
+                )
+            }
             <GridItem xs={12} sm={12} md={12}>
                 <Card testimonial>
                     <GridContainer
@@ -455,6 +461,7 @@ const BookPage = () => {
                         {
                             (book.owner !== credentials.username && book.available && crossings) && (
                                 <Button 
+                                    disabled={!authenticated}
                                     color={alreadyPending(book.bookId, crossings) ? "warning" : "success"} 
                                     onClick={alreadyPending(book.bookId, crossings) ? handleCancelReq : handleSendReq}
                                 >
@@ -466,6 +473,7 @@ const BookPage = () => {
                             book.available === false && (
                                 alreadyPending(book.bookId, crossings) ? (
                                     <Button 
+                                        disabled={!authenticated}
                                         color="warning"
                                         onClick={handleCancelReq}
                                     >
@@ -513,7 +521,7 @@ const BookPage = () => {
                                     placement="bottom"
                                     classes={{ tooltip: classes.tooltip }}
                                 >
-                                    <Button color="primary" simple justIcon onClick={handleAddReview}>
+                                    <Button disabled={!authenticated} color="primary" simple justIcon onClick={handleAddReview}>
                                         <RateReviewIcon className={classes.underChartIcons} />
                                     </Button>
                                 </Tooltip>
@@ -523,7 +531,7 @@ const BookPage = () => {
                                     placement="bottom"
                                     classes={{ tooltip: classes.tooltip }}
                                 >
-                                    <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
+                                    <Button disabled={!authenticated} color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
                                         <ReportIcon className={classes.underChartIcons} />
                                     </Button>
                                 </Tooltip>
@@ -535,7 +543,7 @@ const BookPage = () => {
                                     placement="bottom"
                                     classes={{ tooltip: classes.tooltip }}
                                 >
-                                    <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
+                                    <Button disabled={!authenticated} color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
                                         <ReportIcon className={classes.underChartIcons} />
                                     </Button>
                                 </Tooltip> 

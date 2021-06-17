@@ -37,12 +37,12 @@ const useAlert = makeStyles(alertStyles);
 const UserAuthPage = () => {
     const alertClasses = useAlert();
     const dispatch = useDispatch();
-    const { credentials } = useSelector(state => state.user);
+    const { credentials, authenticated } = useSelector(state => state.user);
     const { errors, message, settings } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
     useEffect(() => {
-        dispatch(getUserData());
+        if (authenticated) dispatch(getUserData());
         return () => dispatch({ type: Actions.UI.CLEAR_ACTION });
     }, []);
 

@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
+
+// Redux
+import { useDispatch } from "react-redux";
+import { Actions } from "redux/types";
 
 // Components
 
@@ -14,12 +18,18 @@ const useStyles = makeStyles(styles);
 
 const ErrorPage = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => dispatch({ type: Actions.UI.CLEAR_ACTION });
+  }, []);
+
   return (
     <div className={classes.contentCenter}>
       <GridContainer>
         <GridItem md={12}>
           <h1 className={classes.title}>403</h1>
-          <h2 className={classes.subTitle}>Unauthorized: (</h2>
+          <h2 className={classes.subTitle}>Unauthorized :(</h2>
           <h4 className={classes.description}>
             Ooooups! Looks like you got lost.
           </h4>

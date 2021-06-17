@@ -27,13 +27,14 @@ const UserPage = () => {
     const { username } = useParams();
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.ui);
+    const { authenticated } = useSelector((state) => state.user);
     const { initBooks, books, searchApplied } = useSelector((state) => state.books);
     const booksPerPage = 6;
     const [index, setIndex] = useState(1);
     const [showedBooks, setShowed] = useState(Math.min(booksPerPage, books.length));
 
     useEffect(() => {
-        dispatch(getAnyUser(username));
+        if (authenticated) dispatch(getAnyUser(username));
 
         return () => {
             dispatch({ 
