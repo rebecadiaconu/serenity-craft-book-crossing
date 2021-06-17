@@ -67,7 +67,7 @@ export const logOutUser = () => (dispatch) => {
 
 
 export const forgotPassword = (userData) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_BUTTON });
+    // dispatch({ type: Actions.UI.LOADING_BUTTON });
     dispatch({ type: Actions.UI.SEND_EMAIL });
     axios.post('/forgotPassword', userData)
     .then(({ data }) => {
@@ -76,11 +76,11 @@ export const forgotPassword = (userData) => (dispatch) => {
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ type: Actions.UI.STOP_SEND_EMAIL });
     })
     .catch((err) => {
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ type: Actions.UI.STOP_SEND_EMAIL });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,

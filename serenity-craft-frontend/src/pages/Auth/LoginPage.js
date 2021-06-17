@@ -23,6 +23,7 @@ import TypographyDanger from "components-template/Typography/Danger.js";
 
 // @material-ui/core components
 import { 
+  CircularProgress,
   IconButton,
   InputAdornment,
   makeStyles,
@@ -42,7 +43,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const { authenticated } = useSelector((state) => state.user);
-  const { errors } = useSelector((state) => state.ui);
+  const { errors, loadingButton } = useSelector((state) => state.ui);
   const [showPassword, setShowPassword] = useState(false);
   const [cardAnimaton, setCardAnimation] = useState("cardHidden");
 
@@ -149,8 +150,13 @@ const LoginPage = () => {
                 }
               </CardBody>
               <CardFooter className={classes.justifyContentCenter}>
-                <Button onClick={handleSubmit(onSubmit)} type="submit" color="rose" simple size="lg" block>
+                <Button disabled={loadingButton} onClick={handleSubmit(onSubmit)} type="submit" color="rose" simple size="lg" block>
                   Let{`'`}s go!
+                  {
+                    loadingButton && (
+                      <CircularProgress style={{position: 'absolute'}} size={32} color='secondary' />
+                    )
+                  }
                 </Button>
               </CardFooter>
             </Card>

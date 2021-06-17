@@ -21,6 +21,7 @@ import InfoArea from "components-template/InfoArea/InfoArea.js";
 
 // @material-ui/core
 import { 
+  CircularProgress,
   IconButton,
   InputAdornment,
   makeStyles,
@@ -43,7 +44,7 @@ const RegisterPage = () => {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const { authenticated } = useSelector((state) => state.user);
-  const { errors } = useSelector((state) => state.ui);
+  const { errors, loadingButton } = useSelector((state) => state.ui);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmed, setShowConfirmed] = useState(false);
 
@@ -189,8 +190,13 @@ const RegisterPage = () => {
                   )
                 }
                 <div className={classes.center}>
-                  <Button onClick={handleSubmit(onSubmit)} onMouseDown={handleMouseDown} type="submit" className={classes.submitButton} round color="primary">
+                  <Button disabled={loadingButton} onClick={handleSubmit(onSubmit)} onMouseDown={handleMouseDown} type="submit" className={classes.submitButton} round color="primary">
                     Get started
+                    {
+                      loadingButton && (
+                        <CircularProgress style={{position: 'absolute'}} size={32} color='secondary' />
+                      )
+                    }
                   </Button>
                 </div>
                 </GridItem>
