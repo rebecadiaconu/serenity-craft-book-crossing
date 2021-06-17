@@ -416,12 +416,12 @@ const CrossingPage = () => {
                                         hoverColor={credentials.username === topic.username ? "warning" : "info"}
                                         buttonText="More"
                                         buttonProps={{
-                                            disabled: crossing.canceled || crossing.status === "done",
+                                            // disabled: crossing.canceled || crossing.status === "done",
                                             round: true,
                                             style: { marginBottom: "0" },
                                             color: credentials.username === topic.username ? "warning" : "info"
                                         }}
-                                        dropdownList={credentials.username === topic.username ? [
+                                        dropdownList={((credentials.username === topic.username) && !(crossing.canceled || crossing.status === "done")) ? [
                                             {
                                                 text: "VIEW",
                                                 data: topic

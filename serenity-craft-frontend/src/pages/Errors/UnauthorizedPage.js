@@ -16,7 +16,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import styles from "assets/jss/material-dashboard-pro-react/views/errorPageStyles.js";
 const useStyles = makeStyles(styles);
 
-const ErrorPage = () => {
+const UnauthorizedPage = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -40,4 +40,4 @@ const ErrorPage = () => {
 }
 
 
-export default ErrorPage;
+export default UnauthorizedPage;

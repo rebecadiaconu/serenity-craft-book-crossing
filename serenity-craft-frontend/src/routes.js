@@ -1,7 +1,3 @@
-import LoginPage from "pages/Auth/LoginPage.js";
-import ResetPassword from "pages/Auth/ResetPassword.js";
-import RegisterPage from "pages/Auth/RegisterPage.js";
-
 // @material-ui/icons
 import BookIcon from '@material-ui/icons/Book';
 import DashboardIcon from "@material-ui/icons/Dashboard";
@@ -9,7 +5,11 @@ import PersonAdd from "@material-ui/icons/PersonAdd";
 import Fingerprint from "@material-ui/icons/Fingerprint";
 
 // Components Serenity
-import ErrorPage from "pages/Errors/ErrorPage";
+import LoginPage from "pages/Auth/LoginPage.js";
+import ResetPassword from "pages/Auth/ResetPassword.js";
+import RegisterPage from "pages/Auth/RegisterPage.js";
+import UnauthorizedPage from "pages/Errors/UnauthorizedPage";
+import NotFoundPage from "pages/Errors/NotFoundPage";
 import Favorites from "pages/User/Favorites";
 import RequestPage from "pages/Crossings/RequestPage";
 import CrossingPage from "pages/Crossings/CrossingPage";
@@ -54,7 +54,17 @@ const routes = [
     path: '/errors',
     name: '',
     icon: ShareIcon,
-    component: ErrorPage,
+    component: UnauthorizedPage,
+    layout: "/auth",
+    invisible:  true,
+    logged: false,
+    unauth: false 
+  },
+  {
+    path: '/not-found',
+    name: '',
+    icon: ShareIcon,
+    component: NotFoundPage,
     layout: "/auth",
     invisible:  true,
     logged: false,

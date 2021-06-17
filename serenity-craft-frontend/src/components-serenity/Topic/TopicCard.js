@@ -54,7 +54,7 @@ const TopicCard = ({ open, handleClose }) => {
     const { crossingId } = useParams();
     const { register, handleSubmit, setValue } = useForm();
     const { credentials } = useSelector((state) => state.user);
-    const { topic, addedReply } = useSelector((state) => state.crossing);
+    const { topic, crossing } = useSelector((state) => state.crossing);
     const { errors, reportOnTopic } = useSelector((state) => state.ui);
 
     const bottom = useRef(null);
@@ -188,6 +188,7 @@ const TopicCard = ({ open, handleClose }) => {
                     <GridItem xs={2} sm={2} md={2}>
                         <Button 
                             fullWidth
+                            disabled={crossing.canceled || crossing.status === "done"}
                             color={credentials.username === topic.username ? "info" : "warning"}
                             onClick={handleSubmit(handleAddReply)}
                             className={classes.submitButton}

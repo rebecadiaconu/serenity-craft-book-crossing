@@ -879,7 +879,7 @@ exports.deleteUserAccount = (req, res) => {
             })
             .then((data) => {
                 data.forEach((doc) => {
-                    if (doc.data().status !== 'done' && doc.data().status !== 'pending') return res.status(400).json({ error: 'Seems like you are involved in an on-going book crossing. Try delete your account after it is ended!' });
+                    if (doc.data().status !== 'done' && doc.data().status !== 'pending' && !doc.data().canceled) return res.status(400).json({ error: 'Seems like you are involved in an on-going book crossing. Try delete your account after it is ended!' });
                     
                     let senderData = doc.data().senderData;
                     senderData.userImage = imageUrl;
@@ -890,7 +890,7 @@ exports.deleteUserAccount = (req, res) => {
             })
             .then((data) => {
                 data.forEach((doc) => {
-                    if (doc.data().status !== 'done' && doc.data().status !== 'pending') return res.status(400).json({ error: 'Seems like you are involved in an on-going book crossing. Try delete your account after it is ended!' });
+                    if (doc.data().status !== 'done' && doc.data().status !== 'pending' && !doc.data().canceled) return res.status(400).json({ error: 'Seems like you are involved in an on-going book crossing. Try delete your account after it is ended!' });
     
                     let recipientData = doc.data().recipientData;
                     recipientData.userImage = imageUrl;
@@ -943,6 +943,39 @@ exports.deleteUserAccount = (req, res) => {
                     let notifications = Object.values(data.val());
                     notifications.forEach((notif) => {
                         promises.push(realtime.ref(`/notifications/${notif.notificationId}`).remove());
+                    });
+                }
+    
+                return Promise.all(promises);
+            })
+            .then(() => {
+                return realtime.ref(`/reports/`).orderByChild("recipient").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let promises = [];
+                if (data.exists()) {
+                    let reports = Object.values(data.val());
+                    reports.forEach((report) => {
+                        promises.push(realtime.ref(`/reports/${report.reportId}`).remove());
+                    });
+                }
+    
+                return Promise.all(promises);
+            })
+            .then(() => {
+                return realtime.ref(`/reports/`).orderByChild("sender").equalTo(req.user.username).get();
+            })
+            .then((data) => {
+                let reportData = [];
+                let promises = [];
+    
+                if (data.exists()) {
+                    reportData = Object.values(data.val());
+                    reportData.forEach((doc) => {
+                        let updates = {};
+                        updates['senderImage'] = imageUrl;
+                        updates['sender'] = 'deletedUser';
+                        promises.push(realtime.ref(`/reports/${doc.reportId}`).update(updates));
                     });
                 }
     

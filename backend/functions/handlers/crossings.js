@@ -110,7 +110,9 @@ exports.chooseRandomBook = (req, res) => {
                 let bookData = doc.data();
                 bookData.bookId = doc.id;
                 senderBooks.push(bookData);
-                if(bookData.genres.some((genre) => mainInterests.includes(genre))) filteredBooks.push(bookData);
+                if (mainInterests) {
+                    if(bookData.genres.some((genre) => mainInterests.includes(genre))) filteredBooks.push(bookData);
+                }
             });
 
             if (senderBooks.length === 0) return res.status(400).json({ error: 'Sender has no books unpromised in a crossing request!' });

@@ -68,7 +68,7 @@ const ReviewCard = ({ show, review, classes }) => {
         >
             <GridItem xs={4} sm={4} md={2}>
                 <NavLink
-                        to={`/admin/users/${review.username}`}
+                        to={review.username === "deletedUser" ? "/auth/not-found" : `/admin/users/${review.username}`}
                     >
                         <CardAvatar>
                             <img src={review.userImage} style={{objectFit: 'cover', width: 130, height: 130}} />

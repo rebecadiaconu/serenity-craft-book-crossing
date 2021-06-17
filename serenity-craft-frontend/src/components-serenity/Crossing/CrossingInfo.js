@@ -104,49 +104,28 @@ const CrossingInfo = () => {
                         >
                             <GridItem xs={6} sm={6} md={6}>
                                 <CardHeader>
-                                {
-                                    crossing.reqBookId === "deletedBook" ? (
-                                        <Tooltip title="Deleted Book" classes={{ tooltip: classes.tooltip }}>
-                                            <CardText color="warning">
-                                                <h5>{crossing.sender === credentials.username ? "What you give" : "What you get"}</h5>
-                                                <p>{crossing.randomBook.title}, by {crossing.randomBook.author}</p> 
-                                            </CardText>
-                                        </Tooltip>
-                                    ) : (
-                                        <NavLink to={`/admin/books/${crossing.randomBookId}`} className={classes.link}>
-                                            <CardText color="warning" >
-                                                <h5>{crossing.sender === credentials.username ? "What you give" : "What you get"}</h5>
-                                                <p>{crossing.randomBook.title}, by {crossing.randomBook.author}</p>
-                                            </CardText>
-                                        </NavLink>
-                                    )
-                                }
+                                    <NavLink to={crossing.randomBookId === "deletedBook" ? `/auth/not-found` : `/admin/books/${crossing.randomBookId}`} className={classes.link}>
+                                        <CardText color="warning" >
+                                            <h5>{crossing.sender === credentials.username ? "What you give" : "What you get"}</h5>
+                                            <p>{crossing.randomBook.title}, by {crossing.randomBook.author}</p>
+                                        </CardText>
+                                    </NavLink>
                                 </CardHeader>
-                                <NavLink to={crossing.recipient === credentials.username ? `/admin/user` : `/admin/users/${crossing.recipient}`} className={classes.link}>
+                                <NavLink to={crossing.sender === "deletedUser" ? `/auth/not-found` : (crossing.sender === credentials.username ? `/admin/user` : `/admin/users/${crossing.sender}`)} className={classes.link}>
                                     <CardAvatar profile className={classes.avatar}>
                                         <img src={crossing.senderData.userImage} />
                                     </CardAvatar>
                                 </NavLink>
                                 <CardFooter>
-                                    <Typography className={classes.info} variant="body2" >{crossing.recipient === credentials.username ? "You" : crossing.recipient}</Typography>
+                                    <Typography className={classes.info} variant="body2" >{crossing.sender === credentials.username ? "You" : crossing.sender}</Typography>
                                 </CardFooter>
                             </GridItem>
                             <GridItem xs={6} sm={6} md={6}>
-                            {
-                                crossing.reqBookId === "deletedBook" ? (
-                                    <Tooltip title="Deleted Book" classes={{ tooltip: classes.tooltip }}>
-                                        <CardAvatar className={classes.cover} >
-                                            <img src={crossing.randomBook.coverImage}  style={{boxShadow: '1px 1px 10px 1px #ffcccb'}}  />
-                                        </CardAvatar>
-                                    </Tooltip>
-                                ) : (
-                                    <NavLink to={`/admin/books/${crossing.randomBookId}`} className={classes.link}>
-                                        <CardAvatar className={classes.cover} >
-                                            <img src={crossing.randomBook.coverImage} />
-                                        </CardAvatar>
-                                    </NavLink>
-                                )
-                            }
+                                <NavLink to={crossing.randomBookId === "deletedBook" ? `/auth/not-found` : `/admin/books/${crossing.randomBookId}`} className={classes.link}>
+                                    <CardAvatar className={classes.cover} >
+                                        <img src={crossing.randomBook.coverImage} style={crossing.randomBookId === "deletedBook" ? {boxShadow: '1px 1px 10px 1px #ffcccb'} : null}/>
+                                    </CardAvatar>
+                                </NavLink>
                             </GridItem>
                         </GridContainer>
                     </Card>
@@ -158,49 +137,28 @@ const CrossingInfo = () => {
                         >
                             <GridItem xs={6} sm={6} md={6}>
                                 <CardHeader>
-                                {
-                                    crossing.randomBookId === "deletedBook" ? (
-                                        <Tooltip title="Deleted Book" classes={{tooltip: classes.tooltop}}>
-                                            <CardText color="warning">
-                                                <h5>{crossing.recipient === credentials.username ? "What you give" : "What you give"}</h5>
-                                                <p>{crossing.reqBook.title}, by {crossing.reqBook.author}</p> 
-                                            </CardText>
-                                        </Tooltip>
-                                    ) : (
-                                        <NavLink to={`/admin/books/${crossing.reqBookId}`} className={classes.link}>
+                                        <NavLink to={crossing.reqBookId === "deletedBook" ? `/auth/not-found` : `/admin/books/${crossing.reqBookId}`} className={classes.link}>
                                             <CardText color="warning" >
                                                 <h5>{crossing.recipient === credentials.username ? "What you give" : "What you give"}</h5>
                                                 <p>{crossing.reqBook.title}, by {crossing.reqBook.author}</p> 
                                             </CardText>
                                         </NavLink>
-                                    )
-                                }
                                 </CardHeader>
-                                <NavLink to={crossing.sender === credentials.username ? `/admin/user` : `/admin/users/${crossing.sender}`} className={classes.link}>
+                                <NavLink to={crossing.recipient === "deletedUser" ? `/auth/not-found` : (crossing.recipient === credentials.username ? `/admin/user` : `/admin/users/${crossing.recipient}`)} className={classes.link}>
                                     <CardAvatar profile className={classes.avatar}>
                                         <img src={crossing.recipientData.userImage} />
                                     </CardAvatar>
                                 </NavLink>
                                 <CardFooter>
-                                    <Typography className={classes.info} variant="body2" >{crossing.sender === credentials.username ? "You" : crossing.sender}</Typography>
+                                    <Typography className={classes.info} variant="body2" >{crossing.recipient === credentials.username ? "You" : crossing.recipient}</Typography>
                                 </CardFooter>
                             </GridItem>
                             <GridItem xs={6} sm={6} md={6}>
-                            {
-                                crossing.randomBookId === "deletedBook" ? (
-                                    <Tooltip title="Deleted Book" classes={{tooltip: classes.tooltop}}>
-                                        <CardAvatar className={classes.cover} >
-                                            <img src={crossing.reqBook.coverImage} style={{boxShadow: '1px 1px 10px 1px #ffcccb'}} />
-                                        </CardAvatar>
-                                    </Tooltip>
-                                ) : (
-                                    <NavLink to={`/admin/books/${crossing.reqBookId}`} className={classes.link}>
+                                    <NavLink to={crossing.reqBookId === "deletedBook" ? `/auth/not-found` : `/admin/books/${crossing.reqBookId}`} className={classes.link}>
                                         <CardAvatar className={classes.cover}>
-                                            <img src={crossing.reqBook.coverImage} />
+                                            <img src={crossing.reqBook.coverImage} style={ crossing.reqBookId === "deletedBook" ? {boxShadow: '1px 1px 10px 1px #ffcccb'} : null} />
                                         </CardAvatar>
                                     </NavLink>
-                                )
-                            }
                             </GridItem>
                         </GridContainer>
                     </Card>

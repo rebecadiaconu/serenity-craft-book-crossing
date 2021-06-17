@@ -107,7 +107,7 @@ const Settings = () => {
         let userReq = crossings.filter((crossing) => crossing.sender === credentials.username && crossing.status === "pending");
         let userData = {
             ...formData,
-            password: formData.checkPassword
+            password: password
         }
         dispatch(deleteAccount(userData, books, userReq));
     };
@@ -249,7 +249,7 @@ const Settings = () => {
                         onChange={handleChangePassword}
                         error={errors?.password ? true : false}
                         helperText={errors?.password}
-                        inputRef={register()}
+                        // inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
                         InputProps={{
@@ -318,7 +318,7 @@ const Settings = () => {
                         error={errors?.password ? true : false}
                         helperText={errors?.password}
                         onChange={handleChangePassword}
-                        inputRef={register()}
+                        // inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
                         InputProps={{
@@ -387,7 +387,7 @@ const Settings = () => {
                         error={errors?.password ? true : false}
                         onChange={handleChangePassword}
                         helperText={errors?.password}
-                        inputRef={register()}
+                        // inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
                         InputProps={{
@@ -477,14 +477,14 @@ const Settings = () => {
                         error={errors?.password ? true : false}
                         onChange={handleChangePassword}
                         helperText={errors?.password}
-                        inputRef={register()}
+                        // inputRef={register()}
                         InputLabelProps={{ shrink: true }}  
                         fullWidth
                         InputProps={{
                             endAdornment: <InputAdornment position="end">
                                 <IconButton
                                 aria-label="toggle password visibility"
-                                onClick={() => setShowPassword(!showNewPassword)}
+                                onClick={() => setShowPassword(!showPassword)}
                                 onMouseDown={handleMouseDownPassword}
                                 >
                                     {showPassword ? <Visibility /> : <VisibilityOff />}

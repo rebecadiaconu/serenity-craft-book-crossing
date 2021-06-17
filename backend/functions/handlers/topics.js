@@ -247,6 +247,7 @@ exports.addReply = (req, res) => {
                 type: 'reply',
                 recipient: recipientName,
                 topicId: topicData.topicId,
+                replyId: newReply.replyId,
                 crossingId: req.body.crossingId
             };
 
@@ -281,6 +282,21 @@ exports.deleteReply = (req, res) => {
         topicUpdates['replies'] = topicData.replies;
 
         return realtime.ref(`/topics/${req.params.topicId}`).update(topicUpdates);
+    })
+    .then(() => {
+        return realtime.ref(`/notifications/`).orderByChild("replyId").equalTo(req.params.replyId).get();
+    })
+    .then((data) => {
+        let promises = [];
+        if (data.exists()) {
+            let notifications = Object.values(data.val());
+            console.log(notifications);
+            notifications.forEach((notif) => {
+                promises.push(realtime.ref(`/notifications/${notif.notificationId}`).remove());
+            });
+        }
+
+        return Promise.all(promises);
     })
     .then(() => {
         return realtime.ref(`/replies/${req.params.replyId}`).remove();
