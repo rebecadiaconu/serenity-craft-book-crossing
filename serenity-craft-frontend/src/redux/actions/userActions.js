@@ -97,16 +97,16 @@ export const getUserData = () => (dispatch) => {
     .then(({ data }) => {
         let canSendReq = data.books.filter((book) => book.available === true).length > 0;
         data.credentials.canSendReq = canSendReq;
+        if (data.credentials.role === "admin") {
+            dispatch({ type: Actions.ADMIN.SET_ADMIN });
+            history.push("/serenity-admin");
+        } 
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({
             type: Actions.USER.SET_USER,
             payload: data
         });
-        // dispatch({ type: Actions.USER.STOP_LOADING_USER });
-        if (data.credentials.role === "admin") {
-            dispatch({ type: Actions.ADMIN.SET_ADMIN });
-            history.push("/serenity-admin");
-        } 
+        dispatch({ type: Actions.USER.STOP_LOADING_USER });
     })
     .catch((err) => {
         dispatch({

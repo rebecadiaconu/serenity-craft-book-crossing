@@ -31,7 +31,7 @@ export const getReports = () => (dispatch) => {
 };
 
 export const rejectReport = (reportId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/reports/${reportId}/reject`)
     .then(({ data }) => {
         dispatch({ 
@@ -52,7 +52,7 @@ export const rejectReport = (reportId) => (dispatch) => {
 };
 
 export const acceptReport = (report, formData) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     if (formData.decision === "delete") {
         switch(report.type) {
             case 'book':
@@ -112,7 +112,7 @@ export const markSeen = (report) => (dispatch) => {
 };
 
 export const sendEmail = (report) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/reports/${report.reportId}/standBy`)
     .then(({ data }) => {
         dispatch({ 
@@ -133,7 +133,7 @@ export const sendEmail = (report) => (dispatch) => {
 };
 
 export const sortReports = (value, reports) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
     let newReports = [];
     switch(value) {
         case 0:
@@ -167,7 +167,7 @@ export const sortReports = (value, reports) => (dispatch) => {
 };
 
 export const setSearchValue = (data, reports) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
 
     if(!!data) {
         let newReports = reports.filter((report) => {

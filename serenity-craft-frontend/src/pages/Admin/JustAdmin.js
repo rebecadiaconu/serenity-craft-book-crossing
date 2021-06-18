@@ -8,7 +8,7 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 // Redux 
 import { useDispatch, useSelector } from "react-redux";
 import { logOutUser } from "redux/actions/userActions";
-import { getReports, setSearchValue } from "redux/actions/adminActions";
+import { getReports, setSearchValue, acceptReport } from "redux/actions/adminActions";
 import { Actions } from 'redux/types';
 
 // Components
@@ -27,6 +27,7 @@ import SortInput from "util/components/SortInput";
 // @material-ui core
 import TextField from "@material-ui/core/TextField";
 import { 
+    CircularProgress,
     Dialog,
     FormControlLabel,
     InputAdornment,
@@ -47,7 +48,6 @@ import backgrImage from "assets/img/backgr6.jpg";
 import styles from "assets/jss/serenity-craft/components/justAdminStyle";
 import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
 import formStyles from "assets/jss/serenity-craft/components/addForm"
-import { acceptReport } from 'redux/actions/adminActions';
 const useForm = makeStyles(formStyles);
 const useAlert = makeStyles(alertStyles);
 const useStyles = makeStyles((theme) => ({
@@ -68,6 +68,7 @@ const DecideOnAccept = ({ open }) => {
     const dispatch = useDispatch();
     const [decision, setDecision] = useState(null);
     const [error, setError] = useState(null);
+    const { loadingButton } = useSelector((state) => state.ui);
     const { report, accept } = useSelector((state) => state.admin);
 
     const handleChange = (value) => {
@@ -122,10 +123,16 @@ const DecideOnAccept = ({ open }) => {
                 </RadioGroup>
                     <Button 
                         color="success"
+                        disabled={loadingButton}
                         onClick={onSubmit}
                         className={classes.submitButton}
                     >
                         ACCEPT REPORT
+                        {
+                            loadingButton && (
+                                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />
+                            )
+                        }
                     </Button>
                 </GridItem>
             </GridContainer>
@@ -138,7 +145,7 @@ const JustAdmin = () => {
     const classes = useStyles();
     const alertClasses = useAlert();
     const { admin, initReports, reports, view, report, accept, searchValue } = useSelector((state) => state.admin);
-    const { message, errors } = useSelector((state) => state.ui);
+    const { message, errors, loading } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
     const mainPanel = useRef(null);
@@ -276,13 +283,17 @@ const JustAdmin = () => {
                         </GridItem>
                     </GridContainer>
                 {
-                    admin && reports && (
-                        reports.length > 0 ? (
-                            reports.map((report) => {
-                                return <ReportCard key={report.reportId} report={report} />
-                            })
-                        ) : (
-                            <h2>No new reports for now...</h2>
+                    loading ? (
+                        <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={72} color='secondary' />
+                    ) : (
+                        admin && reports && (
+                            reports.length > 0 ? (
+                                reports.map((report) => {
+                                    return <ReportCard key={report.reportId} report={report} />
+                                })
+                            ) : (
+                                <h2>No new reports for now...</h2>
+                            )
                         )
                     )
                 }  
