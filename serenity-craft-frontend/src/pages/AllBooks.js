@@ -22,6 +22,7 @@ import SortInput from "util/components/SortInput";
 
 // @material-ui core
 import {
+    CircularProgress,
     InputAdornment,
     Tooltip
 } from "@material-ui/core";
@@ -79,108 +80,116 @@ const AllBooks = () => {
 
     return (
         <div>
-            <GridContainer
-                justify="center"
-                alignContent="center"
-                alignItems="center"
-                direction="row"
-                style={{marginBottom: 15}}
-            >
-                {
-                    open && <AddBook open={open} handleClose={handleClose} />
-                }
-                <GridItem xs={12} sm={12} md={4}>
-                    <TextField
-                        id="book-search"
-                        label="SEARCH"
-                        fullWidth
-                        onChange={handleSearch}
-                        InputProps={{
-                            endAdornment: <InputAdornment position="end">
-                                <Search />
-                            </InputAdornment>,
-                        }}
-                    />
-                </GridItem>
-            </GridContainer>
-            <GridContainer >
-                <GridItem xs={12} sm={12} md={2}>
-                    <SortInput book label="Sort By" items={booksSort} defaultValue={0}/>
-                </GridItem>
-                {
-                    Object.values(filterData).map((data, index) => {
-                        return (
-                             <FilterMenu key={index} label={data.label} items={data.data} onlyOne={data.onlyOne} type={data.type}/>
-                        )
-                    })
-                }
-            </GridContainer> 
-            <GridContainer justify="flex-end" style={{position: 'relative'}}>
-                <GridItem xs={12} sm={12} md={12}>
-                    <Button 
-                        style={{margin: '0 auto', display: "flex"}}
-                        disabled={loading || !filterApplied}
-                        color="rose"
-                        onClick={handleRefresh}
-                    >
-                        <RefreshIcon />
-                        <span>Refresh filters</span>
-                    </Button>
-                </GridItem>
-                <GridItem>
-                {
-                    authenticated && (
-                        <Tooltip title="Add new book">
-                            <Button
-                                style={{position: 'absolute', right: 10, top: 0}}
-                                round
-                                color="rose"
-                                justIcon
-                                onClick={() => setOpen(true)}
-                            >
-                                <AddIcon />
-                            </Button>
-                        </Tooltip>
-                    )
-                }
-                </GridItem>
-            </GridContainer>
-            <br />
-            <GridContainer 
-                justify="flex-start"
-                direction="row"
-                alignContent="center"
-                alignItems="center"
-            >
-                {
-                    books.length === 0 ? 
-                    (
-                        (filterApplied || searchApplied) ?
-                        <h2 style={{margin: '0 auto'}}>No book found by your custom search...</h2> : 
-                        <h2 style={{margin: '0 auto'}}>No books added yet...</h2>
-                    ) : (
-                        books.slice(0, showedBooks).map((book, index) => {
-                            return <BookContainer key={index} book={book} />
+        {
+            loading ? (
+                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={72} color='secondary' />
+            ) : (
+            <>
+                <GridContainer
+                    justify="center"
+                    alignContent="center"
+                    alignItems="center"
+                    direction="row"
+                    style={{marginBottom: 15}}
+                >
+                    {
+                        open && <AddBook open={open} handleClose={handleClose} />
+                    }
+                    <GridItem xs={12} sm={12} md={4}>
+                        <TextField
+                            id="book-search"
+                            label="SEARCH"
+                            fullWidth
+                            onChange={handleSearch}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">
+                                    <Search />
+                                </InputAdornment>,
+                            }}
+                        />
+                    </GridItem>
+                </GridContainer>
+                <GridContainer >
+                    <GridItem xs={12} sm={12} md={2}>
+                        <SortInput book label="Sort By" items={booksSort} defaultValue={0}/>
+                    </GridItem>
+                    {
+                        Object.values(filterData).map((data, index) => {
+                            return (
+                                <FilterMenu key={index} label={data.label} items={data.data} onlyOne={data.onlyOne} type={data.type}/>
+                            )
                         })
-                    )
-                }
-            </GridContainer> 
-            <br />
-            {
-                (showedBooks < books.length) ? (
-                    <Button 
-                        style={{margin: '0 auto', display: "flex"}}
-                        disabled={showedBooks >= books.length ? true : false}
-                        color="primary" 
-                        round 
-                        size="lg"
-                        onClick={handleShowMore}
-                    >
-                        <ExpandMoreIcon />
-                        <span>Show more</span>
-                    </Button>
-                ) : null
-            } 
+                    }
+                </GridContainer> 
+                <GridContainer justify="flex-end" style={{position: 'relative'}}>
+                    <GridItem xs={12} sm={12} md={12}>
+                        <Button 
+                            style={{margin: '0 auto', display: "flex"}}
+                            disabled={loading || !filterApplied}
+                            color="rose"
+                            onClick={handleRefresh}
+                        >
+                            <RefreshIcon />
+                            <span>Refresh filters</span>
+                        </Button>
+                    </GridItem>
+                    <GridItem>
+                    {
+                        authenticated && (
+                            <Tooltip title="Add new book">
+                                <Button
+                                    style={{position: 'absolute', right: 10, top: 0}}
+                                    round
+                                    color="rose"
+                                    justIcon
+                                    onClick={() => setOpen(true)}
+                                >
+                                    <AddIcon />
+                                </Button>
+                            </Tooltip>
+                        )
+                    }
+                    </GridItem>
+                </GridContainer>
+                <br />
+                <GridContainer 
+                    justify="flex-start"
+                    direction="row"
+                    alignContent="center"
+                    alignItems="center"
+                >
+                    {
+                        books.length === 0 ? 
+                        (
+                            (filterApplied || searchApplied) ?
+                            <h2 style={{margin: '0 auto'}}>No book found by your custom search...</h2> : 
+                            <h2 style={{margin: '0 auto'}}>No books added yet...</h2>
+                        ) : (
+                            books.slice(0, showedBooks).map((book, index) => {
+                                return <BookContainer key={index} book={book} />
+                            })
+                        )
+                    }
+                </GridContainer> 
+                <br />
+                {
+                    (showedBooks < books.length) ? (
+                        <Button 
+                            style={{margin: '0 auto', display: "flex"}}
+                            disabled={showedBooks >= books.length ? true : false}
+                            color="primary" 
+                            round 
+                            size="lg"
+                            onClick={handleShowMore}
+                        >
+                            <ExpandMoreIcon />
+                            <span>Show more</span>
+                        </Button>
+                    ) : null
+                } 
+            </>
+            )
+        }
         </div>
     );
 };

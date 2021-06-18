@@ -17,7 +17,7 @@ import GridItem from 'components-template/Grid/GridItem';
 import RequestCard from 'components-serenity/Crossing/RequestCard';
 
 // @material-ui core
-import { Typography, makeStyles } from '@material-ui/core';
+import { CircularProgress, Typography, makeStyles } from '@material-ui/core';
 
 // Styles
 import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
@@ -27,7 +27,7 @@ const RequestPage = () => {
     const alertClasses = useAlert();
     const dispatch = useDispatch();
     const { requests } = useSelector((state) => state.user);
-    const { message, errors } = useSelector((state) => state.ui);
+    const { message, errors, loading } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
     useEffect(() =>{
@@ -94,20 +94,28 @@ const RequestPage = () => {
             alignContent="center"
         >
             {alert}
-            <GridItem xs={12} sm={12} md={12}>
-            <Typography variant="h3" style={{fontFamily: "'Sacramento', cursive", textAlign: "center"}}>
-                Your crossing requests
-            </Typography>
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
             {
-                (requests && requests.length > 0) ? (
-                    requests.map((req) => {
-                        return <RequestCard key={req.crossingId} req={req} />
-                    })
-                ) : <h4 style={{textAlign: 'center', marginTop: 20}}>You have no crossing requests yet...</h4>
+                loading ? (
+                    <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={72} color='secondary' />
+                ) : (
+                <>
+                <GridItem xs={12} sm={12} md={12}>
+                    <Typography variant="h3" style={{fontFamily: "'Sacramento', cursive", textAlign: "center"}}>
+                        Your crossing requests
+                    </Typography>
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                    {
+                        (requests && requests.length > 0) ? (
+                            requests.map((req) => {
+                                return <RequestCard key={req.crossingId} req={req} />
+                            })
+                        ) : <h4 style={{textAlign: 'center', marginTop: 20}}>You have no crossing requests yet...</h4>
+                    }
+                </GridItem>
+                </> 
+                )
             }
-            </GridItem>
         </GridContainer>
     )
 }
