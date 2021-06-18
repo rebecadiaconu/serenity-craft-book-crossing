@@ -5,7 +5,7 @@ import history from "util/history";
 
 
 export const addReview = (formData, bookId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/book/${bookId}/review`, formData).
     then(({ data }) => {
         dispatch({ 
@@ -28,17 +28,17 @@ export const addReview = (formData, bookId) => (dispatch) => {
 };
 
 export const getReview = (reviewId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.get(`/reviews/${reviewId}`)
     .then(({ data }) => {
         dispatch({ 
             type: Actions.REVIEW.SET_REVIEW,
             payload: data
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data
@@ -47,7 +47,7 @@ export const getReview = (reviewId) => (dispatch) => {
 };
 
 export const editReview = (formData, bookId, reviewId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/book/${bookId}/${reviewId}`, formData).
     then(({ data }) => {
         dispatch({ 
@@ -69,7 +69,7 @@ export const editReview = (formData, bookId, reviewId) => (dispatch) => {
 };
  
 export const reviewDelete = (bookId, reviewId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
     axios.delete(`/book/${bookId}/${reviewId}`)
     .then(({ data }) => {
         dispatch({ 
@@ -78,10 +78,10 @@ export const reviewDelete = (bookId, reviewId) => (dispatch) => {
         });
         dispatch(getBook(bookId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS});
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch({ 
             type: Actions.UI.SET_ERRORS,
             payload: err.response.data

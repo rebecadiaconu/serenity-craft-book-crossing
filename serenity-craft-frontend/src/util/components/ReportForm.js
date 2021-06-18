@@ -16,6 +16,7 @@ import GridItem from 'components-template/Grid/GridItem';
 
 // @material-ui core
 import { 
+    CircularProgress,
     Dialog,
     FormControlLabel,
     makeStyles,
@@ -38,7 +39,7 @@ const ReportForm = ({ open, items, type, username, userImage, book, review, book
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit } = useForm();
-    const { errors } = useSelector((state) => state.ui);
+    const { errors, loadingButton } = useSelector((state) => state.ui);
     const [reason, setReason] = useState(null);;
 
     const handleChange = (value) => {
@@ -137,10 +138,16 @@ const ReportForm = ({ open, items, type, username, userImage, book, review, book
                 </RadioGroup>
                     <Button 
                         color="danger"
+                        disabled={loadingButton}
                         onClick={handleSubmit(onSubmit)}
                         className={classes.submitButton}
                     >
                         MAKE REPORT
+                        {
+                            loadingButton && (
+                                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />
+                            )
+                        }
                     </Button>
                 </GridItem>
             </GridContainer>

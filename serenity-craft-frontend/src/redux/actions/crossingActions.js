@@ -1,9 +1,8 @@
 import axios from "../../util/axios";
 import { Actions } from "../types";
 import { getBook } from "redux/actions/bookActions";
-import { getUserData } from "redux/actions/userActions";
+import { getUserData, getRequests } from "redux/actions/userActions";
 import history from "util/history";
-import { getRequests } from "./userActions";
 
 
 export const getCrossingData = (crossingId) => (dispatch) => {
@@ -29,7 +28,7 @@ export const getCrossingData = (crossingId) => (dispatch) => {
 
 
 export const chooseRandomBook = (sender, recipient) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/random/${sender}/${recipient}`)
     .then(({ data }) => {
         dispatch({
@@ -52,7 +51,7 @@ export const chooseRandomBook = (sender, recipient) => (dispatch) => {
 
 
 export const sendRequest = (bookId, formData) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/crossing/${bookId}`, formData)
     .then(({ data }) => {
         dispatch({ 
@@ -78,7 +77,7 @@ export const sendRequest = (bookId, formData) => (dispatch) => {
 
 
 export const deleteCrossing = (crossingId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.delete(`/crossings/${crossingId}`)
     .then(({ data }) => {
         dispatch({ 
@@ -99,24 +98,24 @@ export const deleteCrossing = (crossingId) => (dispatch) => {
 
 
 export const changeCrossingStatus = (formData, crossingId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/crossing/${crossingId}/status`, formData)
     .then(({ data }) => {
         dispatch(getCrossingData(crossingId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({ 
             type: Actions.UI.SET_ERRORS, 
             payload: err.response.data 
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 
 export const changeCrossingBook = (crossingId, bookId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/crossings/${crossingId}/${bookId}`)
     .then(({ data }) => {
         dispatch({ 
@@ -125,19 +124,19 @@ export const changeCrossingBook = (crossingId, bookId) => (dispatch) => {
         });
         dispatch(getCrossingData(crossingId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({ 
             type: Actions.UI.SET_ERRORS, 
             payload: err.response.data 
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 
 export const changeCrossingType = (crossingId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
     axios.post(`/crossing/${crossingId}/permanent`)
     .then(({ data }) => {
         dispatch({ 
@@ -146,19 +145,19 @@ export const changeCrossingType = (crossingId) => (dispatch) => {
         });
         dispatch(getCrossingData(crossingId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({ 
             type: Actions.UI.SET_ERRORS, 
             payload: err.response.data 
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 
 export const acceptCrossing = (crossingId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/crossing/${crossingId}/accept`)
     .then(({ data }) => {
         dispatch({
@@ -181,7 +180,7 @@ export const acceptCrossing = (crossingId) => (dispatch) => {
 };
 
 export const rejectCrossing = (crossingId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/crossing/${crossingId}/reject`)
     .then(({ data }) => {
         dispatch(getRequests());        
@@ -198,14 +197,17 @@ export const rejectCrossing = (crossingId) => (dispatch) => {
 };
 
 export const cancelCrossing = (crossingId, bookId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/crossing/${crossingId}/cancel`)
     .then(({ data }) => {
         dispatch({ 
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
-        if (bookId) dispatch(getBook(bookId));
+        if (bookId) {
+            dispatch(getUserData());
+            dispatch(getBook(bookId));
+        }
         else dispatch(getCrossingData(crossingId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.UI.STOP_LOADING_DATA });
@@ -254,7 +256,7 @@ export const getTopic = (topicId) => (dispatch) => {
 };
 
 export const addTopic = (formData, crossingId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/crossing/${crossingId}/topic`, formData)
     .then(({ data }) => {
         dispatch({ 
@@ -276,7 +278,7 @@ export const addTopic = (formData, crossingId) => (dispatch) => {
 };  
 
 export const editTopic = (formData, crossingId, topicId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/topics/${topicId}`, formData)
     .then(({ data }) => {
         dispatch({ 
@@ -298,7 +300,7 @@ export const editTopic = (formData, crossingId, topicId) => (dispatch) => {
 };
 
 export const deleteTopic = (topicId, crossingId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.delete(`/topics/${topicId}`)
     .then(({ data }) => {
         dispatch({ 
@@ -320,7 +322,7 @@ export const deleteTopic = (topicId, crossingId) => (dispatch) => {
 };
 
 export const addReply = (formData, topicId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/topics/${topicId}/reply`, formData)
     .then(({ data }) => {
         dispatch({
@@ -342,7 +344,7 @@ export const addReply = (formData, topicId) => (dispatch) => {
 
 
 export const deleteReply = (topicId, replyId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.delete(`/topics/${topicId}/${replyId}`)
     .then(({ data }) => {
         dispatch({ type: Actions.UI.CLEAR_ERRORS });

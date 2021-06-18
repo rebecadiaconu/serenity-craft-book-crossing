@@ -34,7 +34,7 @@ import ReviewContainer from "components-serenity/Review/ReviewContainer";
 import ReportForm from "util/components/ReportForm";
 
 // @material-ui core
-import { List, ListItem, makeStyles, Tooltip, Typography } from '@material-ui/core';
+import { CircularProgress, List, ListItem, makeStyles, Tooltip, Typography } from '@material-ui/core';
 
 // icons
 import ReportIcon from '@material-ui/icons/Report';
@@ -173,7 +173,7 @@ const BookPage = () => {
     const { reviewId, addReview, editReview, deleteReview, reviewData } = useSelector((state) => state.review);
     const { authenticated, credentials, crossings } = useSelector((state) => state.user);
     const { sendReq, randomBookId, randomBook } = useSelector((state) =>  state.crossing);
-    const { message, errors, sendReport } = useSelector((state) => state.ui);
+    const { message, errors, sendReport, loading, loadingButton } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
     useEffect(() => {
@@ -336,224 +336,242 @@ const BookPage = () => {
 
     return (
         <GridContainer className={classes.root}>
-            {alert}
-            {
-                edit && authenticated && <EditBook open={edit} />
-            }
-            {
-                addReview && authenticated && <AddReview open={addReview} />
-            }
-            {
-                editReview && authenticated && reviewId && reviewData && <EditReview open={editReview} />
-            }
-            {
-                sendReport && authenticated && 
-                <ReportForm 
-                    open={sendReport} 
-                    items={reportOnBookReviewTopicReply} 
-                    type="book"
-                    book={book}
-                    username={book.owner}
-                    userImage={book.ownerImage}
-                />
-            }
-            <ChangeCoverImage justAdded={justAdded} handleClose={handleJustAdded} />
-            {
-                !authenticated && (
-                    <GridItem xs={12} sm={12} md={12} style={{textAlign: 'center'}}>
-                        <Danger><h3>Account needed for available actions on this page!</h3></Danger>
-                    </GridItem>
-                )
-            }
-            <GridItem xs={12} sm={12} md={12}>
-                <Card testimonial>
-                    <GridContainer
-                        display="flex"
-                        justify="center"
-                        alignContent="center"
-                        alignItems="center"
-                    >
-                        <GridItem xs={12} sm={12} md={6}>
-                            <CardHeader className={classes.coverContainer}>
-                                <img src={book.coverImage} className={classes.coverImage} />
-                            </CardHeader>
-                            <CardFooter product>
-                                <Tooltip title={`Average rating:  ${book.averageRating}`} classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
-                                    <div className={classes.rating}>
-                                        {book.averageRating < 1 ? (book.averageRating < 0.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
-                                        {book.averageRating < 2 ? (book.averageRating < 1.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
-                                        {book.averageRating < 3 ? (book.averageRating < 2.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
-                                        {book.averageRating < 4 ? (book.averageRating < 3.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
-                                        {book.averageRating < 5 ? (book.averageRating < 4.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
-                                        <p>{`(${book.numReviews} reviews)`}</p>
-                                    </div>
-                                </Tooltip>
-                            </CardFooter>
+        {
+            loading ? (
+                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={72} color='secondary' />
+            ) : (
+            <>
+                {alert}
+                {
+                    edit && authenticated && <EditBook open={edit} />
+                }
+                {
+                    addReview && authenticated && <AddReview open={addReview} />
+                }
+                {
+                    editReview && authenticated && reviewId && reviewData && <EditReview open={editReview} />
+                }
+                {
+                    sendReport && authenticated && 
+                    <ReportForm 
+                        open={sendReport} 
+                        items={reportOnBookReviewTopicReply} 
+                        type="book"
+                        book={book}
+                        username={book.owner}
+                        userImage={book.ownerImage}
+                    />
+                }
+                <ChangeCoverImage justAdded={justAdded} handleClose={handleJustAdded} />
+                {
+                    !authenticated && (
+                        <GridItem xs={12} sm={12} md={12} style={{textAlign: 'center'}}>
+                            <Danger><h3>Account needed for available actions on this page!</h3></Danger>
                         </GridItem>
-                        <GridItem xs={12} sm={12} md={6} >
-                        <Typography variant="h2" className={classes.special}>
-                            {book.title}
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            <small>By </small>{book.author}
-                        </Typography>
-                        {
-                            book?.genres ? (
-                                <>
-                                <h4><small>Book's genres: </small></h4>
-                                {
-                                    book.genres.map((item, index) => {
-                                        return (
-                                            <Button round color="info" size="sm" key={index}>{item}</Button>
-                                        )
-                                    })
-                                }
-                                </>
-                            ) : null
-                        }
+                    )
+                }
+                <GridItem xs={12} sm={12} md={12}>
+                    <Card testimonial>
+                        <GridContainer
+                            display="flex"
+                            justify="center"
+                            alignContent="center"
+                            alignItems="center"
+                        >
+                            <GridItem xs={12} sm={12} md={6}>
+                                <CardHeader className={classes.coverContainer}>
+                                    <img src={book.coverImage} className={classes.coverImage} />
+                                </CardHeader>
+                                <CardFooter product>
+                                    <Tooltip title={`Average rating:  ${book.averageRating}`} classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
+                                        <div className={classes.rating}>
+                                            {book.averageRating < 1 ? (book.averageRating < 0.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
+                                            {book.averageRating < 2 ? (book.averageRating < 1.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
+                                            {book.averageRating < 3 ? (book.averageRating < 2.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
+                                            {book.averageRating < 4 ? (book.averageRating < 3.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
+                                            {book.averageRating < 5 ? (book.averageRating < 4.5 ? <GradeOutlinedIcon className={classes.ratingIcon} /> : <StarHalfIcon className={classes.ratingIcon} />) : <GradeIcon className={classes.ratingIcon} />}  
+                                            <p>{`(${book.numReviews} reviews)`}</p>
+                                        </div>
+                                    </Tooltip>
+                                </CardFooter>
+                            </GridItem>
+                            <GridItem xs={12} sm={12} md={6} >
+                            <Typography variant="h2" className={classes.special}>
+                                {book.title}
+                            </Typography>
+                            <Typography variant="subtitle1">
+                                <small>By </small>{book.author}
+                            </Typography>
+                            {
+                                book?.genres ? (
+                                    <>
+                                    <h4><small>Book's genres: </small></h4>
+                                    {
+                                        book.genres.map((item, index) => {
+                                            return (
+                                                <Button round color="info" size="sm" key={index}>{item}</Button>
+                                            )
+                                        })
+                                    }
+                                    </>
+                                ) : null
+                            }
 
-                        {
-                            book.summary ? (
-                                <GridItem xs={12} sm={12} md={7} style={{display: 'flex',margin: '0 auto'}}>
-                                <Accordion
-                                    active={-1}
-                                    collapses={[
-                                        {
-                                            title: 'Book summary',
-                                            content: <Typography variant="body2">
-                                                {book.summary}
-                                            </Typography>
-                                        },
-                                        {
-                                            title: 'More details',
-                                            content: <Details 
-                                                numPages={book.numPages} 
-                                                language={book.language} 
-                                                publisher={book.publisher}
-                                                bookQuality={book.bookQuality}
-                                                ownerRating={book.ownerRating ?? ""}
-                                                publicationYear={book.publicationYear ?? ""}
-                                            />
-                                        }
-                                    ]}
-                                />
-                                </GridItem>
-                            ) : (
-                                <GridItem xs={12} sm={12} md={7} style={{display: 'flex',margin: '0 auto'}}>
-                                <Accordion
-                                    active={-1}
-                                    collapses={[
-                                        {
-                                            title: 'More details',
-                                            content: <Details 
-                                                numPages={book.numPages} 
-                                                language={book.language} 
-                                                publisher={book.publisher}
-                                                bookQuality={book.bookQuality}
-                                                publicationYear={book.publicationYear ?? ""}
-                                            />
-                                        }
-                                    ]}
-                                />
-                                </GridItem>
-                            )
-                        }
-                        {
-                            (book.owner !== credentials.username && book.available && crossings) && (
-                                <Button 
-                                    disabled={!authenticated}
-                                    color={alreadyPending(book.bookId, crossings) ? "warning" : "success"} 
-                                    onClick={alreadyPending(book.bookId, crossings) ? handleCancelReq : handleSendReq}
-                                >
-                                    {alreadyPending(book.bookId, crossings) ? "REQUEST SENT" : "SEND CROSSING REQUEST"}
-                                </Button>
-                                )
-                        }
-                        {
-                            book.available === false && (
-                                alreadyPending(book.bookId, crossings) ? (
-                                    <Button 
-                                        disabled={!authenticated}
-                                        color="warning"
-                                        onClick={handleCancelReq}
-                                    >
-                                        REQUEST SENT
-                                    </Button>
+                            {
+                                book.summary ? (
+                                    <GridItem xs={12} sm={12} md={7} style={{display: 'flex',margin: '0 auto'}}>
+                                    <Accordion
+                                        active={-1}
+                                        collapses={[
+                                            {
+                                                title: 'Book summary',
+                                                content: <Typography variant="body2">
+                                                    {book.summary}
+                                                </Typography>
+                                            },
+                                            {
+                                                title: 'More details',
+                                                content: <Details 
+                                                    numPages={book.numPages} 
+                                                    language={book.language} 
+                                                    publisher={book.publisher}
+                                                    bookQuality={book.bookQuality}
+                                                    ownerRating={book.ownerRating ?? ""}
+                                                    publicationYear={book.publicationYear ?? ""}
+                                                />
+                                            }
+                                        ]}
+                                    />
+                                    </GridItem>
                                 ) : (
-                                    <Danger>
-                                        UNAVAILABLE   
-                                    </Danger>  
-                                )               
-                            )
-                        }
-                        {
-                            book.ownerReview ? (
-                                <OwnerReview content={book.ownerReview ?? ""} owner={book.owner} ownerImage={book.ownerImage} ownerReviewId={book.ownerReviewId ?? null} />
-                            ) : (
-                                <OwnerReview content="Added by" owner={book.owner} ownerImage={book.ownerImage} ownerReviewId={book.ownerReviewId ?? null}  />
-                            )
-                        }
-                        </GridItem>
-                    </GridContainer>
-                    {
-                        (book.owner === credentials.username) ? (
-                            <div className={classes.actions}>
-                                {
-                                    book.available ? (
-                                        <Tooltip title="Edit" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
-                                            <Button disabled={book.available === false} color="success" simple justIcon onClick={handleEditBook}><Edit /></Button>
-                                        </Tooltip>
-                                    ) : (
-                                        <Tooltip title="Unavailable book! Edit it after the crossing is done!" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
-                                            <Button color="success" simple justIcon><Edit /></Button>
-                                        </Tooltip>
+                                    <GridItem xs={12} sm={12} md={7} style={{display: 'flex',margin: '0 auto'}}>
+                                    <Accordion
+                                        active={-1}
+                                        collapses={[
+                                            {
+                                                title: 'More details',
+                                                content: <Details 
+                                                    numPages={book.numPages} 
+                                                    language={book.language} 
+                                                    publisher={book.publisher}
+                                                    bookQuality={book.bookQuality}
+                                                    publicationYear={book.publicationYear ?? ""}
+                                                />
+                                            }
+                                        ]}
+                                    />
+                                    </GridItem>
+                                )
+                            }
+                            {
+                                (book.owner !== credentials.username && book.available && crossings) && (
+                                    <Button 
+                                        disabled={!authenticated || loadingButton}
+                                        color={alreadyPending(book.bookId, crossings) ? "warning" : "success"} 
+                                        onClick={alreadyPending(book.bookId, crossings) ? handleCancelReq : handleSendReq}
+                                    >
+                                        {alreadyPending(book.bookId, crossings) ? "REQUEST SENT" : "SEND CROSSING REQUEST"}
+                                        {
+                                            loadingButton && (
+                                                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />
+                                            )
+                                        }
+                                    </Button>
                                     )
-                                }
-                                <Tooltip title="Delete" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
-                                    <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.BOOK.DELETE })}><HighlightOffIcon /></Button>
-                                </Tooltip>
-                            </div>
-                        ) : ((book?.reviews?.filter((review) => review.username === credentials.username ).length === 0) ? (
-                            <div style={{position: 'absolute', right: 10}}>
-                                <Tooltip
-                                    id="tooltip-top"
-                                    title="Add review"
-                                    placement="bottom"
-                                    classes={{ tooltip: classes.tooltip }}
-                                >
-                                    <Button disabled={!authenticated} color="primary" simple justIcon onClick={handleAddReview}>
-                                        <RateReviewIcon className={classes.underChartIcons} />
-                                    </Button>
-                                </Tooltip>
-                                <Tooltip
-                                    id="tooltip-top"
-                                    title="REPORT"
-                                    placement="bottom"
-                                    classes={{ tooltip: classes.tooltip }}
-                                >
-                                    <Button disabled={!authenticated} color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
-                                        <ReportIcon className={classes.underChartIcons} />
-                                    </Button>
-                                </Tooltip>
-                            </div>) : 
-                            (<div style={{position: 'absolute', right: 10}}>
-                                <Tooltip
-                                    id="tooltip-top"
-                                    title="REPORT"
-                                    placement="bottom"
-                                    classes={{ tooltip: classes.tooltip }}
-                                >
-                                    <Button disabled={!authenticated} color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
-                                        <ReportIcon className={classes.underChartIcons} />
-                                    </Button>
-                                </Tooltip> 
-                            </div>
+                            }
+                            {
+                                book.available === false && (
+                                    alreadyPending(book.bookId, crossings) ? (
+                                        <Button 
+                                            disabled={!authenticated || loadingButton}
+                                            color="warning"
+                                            onClick={handleCancelReq}
+                                        >
+                                            REQUEST SENT
+                                            {
+                                                loadingButton && (
+                                                    <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />
+                                                )
+                                            }
+                                        </Button>
+                                    ) : (
+                                        <Danger>
+                                            UNAVAILABLE   
+                                        </Danger>  
+                                    )               
+                                )
+                            }
+                            {
+                                book.ownerReview ? (
+                                    <OwnerReview content={book.ownerReview ?? ""} owner={book.owner} ownerImage={book.ownerImage} ownerReviewId={book.ownerReviewId ?? null} />
+                                ) : (
+                                    <OwnerReview content="Added by" owner={book.owner} ownerImage={book.ownerImage} ownerReviewId={book.ownerReviewId ?? null}  />
+                                )
+                            }
+                            </GridItem>
+                        </GridContainer>
+                        {
+                            (book.owner === credentials.username) ? (
+                                <div className={classes.actions}>
+                                    {
+                                        book.available ? (
+                                            <Tooltip title="Edit" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
+                                                <Button disabled={book.available === false} color="success" simple justIcon onClick={handleEditBook}><Edit /></Button>
+                                            </Tooltip>
+                                        ) : (
+                                            <Tooltip title="Unavailable book! Edit it after the crossing is done!" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
+                                                <Button color="success" simple justIcon><Edit /></Button>
+                                            </Tooltip>
+                                        )
+                                    }
+                                    <Tooltip title="Delete" classes={{ tooltip: classes.tooltip }} placement="bottom" arrow>
+                                        <Button color="danger" simple justIcon onClick={() => dispatch({ type: Actions.BOOK.DELETE })}><HighlightOffIcon /></Button>
+                                    </Tooltip>
+                                </div>
+                            ) : ((book?.reviews?.filter((review) => review.username === credentials.username ).length === 0) ? (
+                                <div style={{position: 'absolute', right: 10}}>
+                                    <Tooltip
+                                        id="tooltip-top"
+                                        title="Add review"
+                                        placement="bottom"
+                                        classes={{ tooltip: classes.tooltip }}
+                                    >
+                                        <Button disabled={!authenticated} color="primary" simple justIcon onClick={handleAddReview}>
+                                            <RateReviewIcon className={classes.underChartIcons} />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip
+                                        id="tooltip-top"
+                                        title="REPORT"
+                                        placement="bottom"
+                                        classes={{ tooltip: classes.tooltip }}
+                                    >
+                                        <Button disabled={!authenticated} color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
+                                            <ReportIcon className={classes.underChartIcons} />
+                                        </Button>
+                                    </Tooltip>
+                                </div>) : 
+                                (<div style={{position: 'absolute', right: 10}}>
+                                    <Tooltip
+                                        id="tooltip-top"
+                                        title="REPORT"
+                                        placement="bottom"
+                                        classes={{ tooltip: classes.tooltip }}
+                                    >
+                                        <Button disabled={!authenticated} color="danger" simple justIcon onClick={() => dispatch({ type: Actions.UI.REPORT }) }>
+                                            <ReportIcon className={classes.underChartIcons} />
+                                        </Button>
+                                    </Tooltip> 
+                                </div>
+                                )
                             )
-                        )
-                    }
-                </Card>
-            </GridItem> 
-            <ReviewContainer classes={classes} reviews={(book?.reviews && credentials?.username) ? userReviewFirst(book.reviews, credentials.username) : []} />
+                        }
+                    </Card>
+                </GridItem> 
+                <ReviewContainer classes={classes} reviews={(book?.reviews && credentials?.username) ? userReviewFirst(book.reviews, credentials.username) : []} />
+            </>
+            )
+        }
         </GridContainer>
     )
 }

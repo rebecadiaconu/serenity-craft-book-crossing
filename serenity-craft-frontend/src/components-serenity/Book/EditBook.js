@@ -20,6 +20,7 @@ import GridItem from 'components-template/Grid/GridItem';
 import { 
     Chip,
     Checkbox,
+    CircularProgress,
     Dialog,
     IconButton,
     List,
@@ -50,7 +51,7 @@ const EditBook = ({ open }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
-    const { errors } = useSelector((state) => state.ui);
+    const { errors, loadingButton } = useSelector((state) => state.ui);
     const { book } = useSelector((state) => state.books);
     const [ genres, setGenres ] = useState(book.genres);
     const [dialog, setDialog] = useState(false);
@@ -338,40 +339,18 @@ const EditBook = ({ open }) => {
                         }}  
                         bookCover
                     />
-                    {/* <TextField 
-                        className={classes.textField} 
-                        variant="outlined"
-                        name="ownerRating" 
-                        type="number" 
-                        label="Your rating" 
-                        error={errors?.ownerRating ? true : false}
-                        helperText={errors?.ownerRating}
-                        inputRef={register()}
-                        InputLabelProps={{ shrink: true }}  
-                        InputProps={{ inputProps: { min: 0, max: 5 } }}
-                        fullWidth
-                    />
-                    <TextField 
-                        className={classes.textField} 
-                        variant="outlined"
-                        name="ownerReview" 
-                        type="text"
-                        multiline
-                        rows={4}
-                        label="Your review" 
-                        error={errors?.ownerReview ? true : false}
-                        helperText={errors?.ownerReview}
-                        inputRef={register()}
-                        InputLabelProps={{ shrink: true }}  
-                        fullWidth
-                    /> */}
                 </GridItem>
                 <Button 
                     color="rose"
+                    disabled={loadingButton}
                     onClick={handleSubmit(onSubmit)}
                     className={classes.submitButton}
                 >
                     UPDATE DETAILS
+                    {
+                        loadingButton && (
+                            <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />                        )
+                    }
                 </Button>
             </GridContainer> 
         </Dialog>

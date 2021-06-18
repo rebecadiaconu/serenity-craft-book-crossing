@@ -51,7 +51,7 @@ export const getBook = (bookId) => (dispatch) => {
 
 
 export const deleteBook = (bookId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
     axios.delete(`/books/${bookId}`)
     .then(({ data }) => {
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
@@ -60,20 +60,20 @@ export const deleteBook = (bookId) => (dispatch) => {
             payload: data.message
         });
         dispatch(getAllBooks());
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({ 
             type: Actions.UI.SET_ERRORS, 
             payload: err.response.data 
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 
 
 export const addBook = (formData) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post('/book', formData)
     .then(({ data }) => {
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
@@ -95,7 +95,7 @@ export const addBook = (formData) => (dispatch) => {
 };
 
 export const changeCoverImage = (formData, bookId, justAdded) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
 
     axios.post(`/book/${bookId}/cover`, formData)
     .then(({ data }) => {
@@ -118,7 +118,7 @@ export const changeCoverImage = (formData, bookId, justAdded) => (dispatch) => {
 };
 
 export const removeCover = (bookId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
 
     axios.post(`/book/${bookId}/noCover`)
     .then(({ data }) => {
@@ -140,7 +140,7 @@ export const removeCover = (bookId) => (dispatch) => {
 };
 
 export const editBook = (formData, bookId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/books/${bookId}`, formData)
     .then(({ data }) =>{
         dispatch({ 

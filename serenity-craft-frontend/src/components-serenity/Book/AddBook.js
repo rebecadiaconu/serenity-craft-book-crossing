@@ -20,6 +20,7 @@ import GridItem from 'components-template/Grid/GridItem';
 import { 
     Chip,
     Checkbox,
+    CircularProgress,
     Dialog,
     IconButton,
     List, 
@@ -49,7 +50,7 @@ const AddBook = ({ open, handleClose }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue } = useForm();
-    const { errors } = useSelector((state) => state.ui);
+    const { errors, loadingButton } = useSelector((state) => state.ui);
     const [ genres, setGenres ] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -324,10 +325,16 @@ const AddBook = ({ open, handleClose }) => {
                 </GridItem>
                 <Button 
                     color="rose"
+                    disabled={loadingButton}
                     onClick={handleSubmit(onSubmit)}
                     className={classes.submitButton}
                 >
                     ADD BOOK
+                    {
+                        loadingButton && (
+                            <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />   
+                        )
+                    }
                 </Button>
             </GridContainer> 
         </Dialog>
