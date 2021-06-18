@@ -31,6 +31,7 @@ import TopicCard from "components-serenity/Topic/TopicCard";
 
 // @material-ui core
 import { 
+    CircularProgress,
     FormControl,
     FormControlLabel,
     List,
@@ -70,7 +71,7 @@ const CrossingPage = () => {
     const { crossingId, topicIndex } = useParams();
     const { authenticated, credentials } = useSelector((state) => state.user);
     const { crossing, cancel, deleteCross, changeBook, topicId, topic, viewTopic, addTopic, editTopic, deleteTopicVar } = useSelector((state) => state.crossing);
-    const { message, errors, reportOnCrossing } = useSelector((state) => state.ui);
+    const { message, errors, reportOnCrossing, loading, loadingButton } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
     useEffect(() => {
@@ -252,7 +253,9 @@ const CrossingPage = () => {
     return (
         <GridContainer>
         {
-            crossing && (
+            loading ? (
+                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={72} color='secondary' />
+            ) : crossing && (
                 <>
                 {alert}
                 {
@@ -281,10 +284,24 @@ const CrossingPage = () => {
                 <GridItem xs={12} sm={12} md={12} style={{position: 'relative'}}>
                 {
                     crossing.status === "done" ? 
-                    <Button color="danger" style={{display: 'flex', margin: '0 auto'}} onClick={() => dispatch({ type: Actions.CROSSING.DELETE_CROSSING })} >DELETE CROSSING</Button> : (
+                    <Button disabled={loadingButton} color="danger" style={{display: 'flex', margin: '0 auto'}} onClick={() => dispatch({ type: Actions.CROSSING.DELETE_CROSSING })} >
+                        DELETE CROSSING
+                        {
+                            loadingButton && (
+                                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />
+                            )
+                        }
+                    </Button> : (
                         (!!crossing?.canceled) ? 
                         <Button disabled={crossing.canceled} color="danger" style={{display: 'flex', margin: '0 auto'}} >{`CANCELED BY ${crossing.canceledBy === credentials.username ? "You" : crossing.canceledBy}`}</Button> :
-                        <Button color="danger" style={{display: 'flex', margin: '0 auto'}} onClick={() => dispatch({ type: Actions.CROSSING.CANCEL })} >CANCEL CROSSING</Button>
+                        <Button disabled={loadingButton} color="danger" style={{display: 'flex', margin: '0 auto'}} onClick={() => dispatch({ type: Actions.CROSSING.CANCEL })} >
+                            CANCEL CROSSING
+                            {
+                                loadingButton && (
+                                    <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />
+                                )
+                            }
+                        </Button>
                     )
                 }
                 {

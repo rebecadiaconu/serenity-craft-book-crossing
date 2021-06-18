@@ -115,23 +115,24 @@ export const changeCrossingStatus = (formData, crossingId) => (dispatch) => {
 };
 
 export const changeCrossingBook = (crossingId, bookId) => (dispatch) => {
-    // dispatch({ type: Actions.UI.LOADING_DATA });
+    dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.post(`/crossings/${crossingId}/${bookId}`)
     .then(({ data }) => {
         dispatch({ 
             type: Actions.UI.SET_ACTION_DONE,
             payload: data.message
         });
+        dispatch({ type: Actions.CROSSING.STOP_CHANGE_BOOK });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
         dispatch(getCrossingData(crossingId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({ 
             type: Actions.UI.SET_ERRORS, 
             payload: err.response.data 
         });
-        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 
@@ -236,7 +237,7 @@ export const markRequestsRead = (crossingId) => (dispatch) => {
 };
 
 export const getTopic = (topicId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+    // dispatch({ type: Actions.UI.LOADING_DATA });
     axios.get(`/topics/${topicId}`).
     then(({ data }) => {
         dispatch({
@@ -244,14 +245,14 @@ export const getTopic = (topicId) => (dispatch) => {
             payload: data
         });
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({ 
             type: Actions.UI.SET_ERRORS, 
             payload: err.response.data 
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 
@@ -300,7 +301,7 @@ export const editTopic = (formData, crossingId, topicId) => (dispatch) => {
 };
 
 export const deleteTopic = (topicId, crossingId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_BUTTON });
+    // dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.delete(`/topics/${topicId}`)
     .then(({ data }) => {
         dispatch({ 
@@ -310,14 +311,14 @@ export const deleteTopic = (topicId, crossingId) => (dispatch) => {
         dispatch(getCrossingData(crossingId));
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
         dispatch({ type: Actions.CROSSING.STOP_DELETE_TOPIC });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({ 
             type: Actions.UI.SET_ERRORS, 
             payload: err.response.data 
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };
 
@@ -344,17 +345,17 @@ export const addReply = (formData, topicId) => (dispatch) => {
 
 
 export const deleteReply = (topicId, replyId) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_BUTTON });
+    // dispatch({ type: Actions.UI.LOADING_BUTTON });
     axios.delete(`/topics/${topicId}/${replyId}`)
     .then(({ data }) => {
         dispatch({ type: Actions.UI.CLEAR_ERRORS });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     })
     .catch((err) => {
         dispatch({ 
             type: Actions.UI.SET_ERRORS, 
             payload: err.response.data 
         });
-        dispatch({ type: Actions.UI.STOP_LOADING_DATA });
+        // dispatch({ type: Actions.UI.STOP_LOADING_DATA });
     });
 };

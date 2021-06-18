@@ -824,6 +824,7 @@ exports.getUserDetails = (req, res) => {
         unsorted.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
         userData.books = (unsorted.filter((book) => book.available === true)).concat(unsorted.filter((book) => book.available === false));
 
+        console.log(userData);
         return res.json(userData);
     })
     .catch((err) => {

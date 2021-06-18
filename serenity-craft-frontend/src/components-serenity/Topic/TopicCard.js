@@ -28,6 +28,7 @@ import ReplyCard from "components-serenity/Reply/ReplyCard";
 
 // @material-ui core
 import { 
+    CircularProgress,
     Dialog,
     Divider, 
     makeStyles, 
@@ -55,7 +56,7 @@ const TopicCard = ({ open, handleClose }) => {
     const { register, handleSubmit, setValue } = useForm();
     const { credentials } = useSelector((state) => state.user);
     const { topic, crossing } = useSelector((state) => state.crossing);
-    const { errors, reportOnTopic } = useSelector((state) => state.ui);
+    const { errors, reportOnTopic, loadingButton } = useSelector((state) => state.ui);
 
     const bottom = useRef(null);
 
@@ -187,6 +188,7 @@ const TopicCard = ({ open, handleClose }) => {
                     </GridItem>
                     <GridItem xs={2} sm={2} md={2}>
                         <Button 
+                            disabled={loadingButton}
                             fullWidth
                             disabled={crossing.canceled || crossing.status === "done"}
                             color={credentials.username === topic.username ? "info" : "warning"}
@@ -194,6 +196,11 @@ const TopicCard = ({ open, handleClose }) => {
                             className={classes.submitButton}
                         >
                             ADD
+                            {
+                                loadingButton && (
+                                    <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={30} color='secondary' />
+                                )
+                            }
                         </Button>
                     </GridItem>
                 </GridContainer>

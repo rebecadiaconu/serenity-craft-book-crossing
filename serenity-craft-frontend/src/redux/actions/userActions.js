@@ -303,8 +303,8 @@ export const removeImage = () => (dispatch) => {
     });
 };
 
-export const getAnyUser = (username) => (dispatch) => {
-    dispatch({ type: Actions.UI.LOADING_DATA });
+export const getAnyUser = (username, load) => (dispatch) => {
+    if (load) dispatch({ type: Actions.UI.LOADING_DATA });
     axios.get(`/user/${username}`)
     .then(({ data }) => {
         dispatch({

@@ -16,6 +16,7 @@ import GridItem from 'components-template/Grid/GridItem';
 
 // @material-ui core
 import { 
+    CircularProgress,
     Dialog,
     makeStyles,
     Slide,
@@ -35,7 +36,7 @@ const AddTopic = ({ open }) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit } = useForm();
-    const { errors } = useSelector((state) => state.ui);
+    const { errors, loadingButton } = useSelector((state) => state.ui);
     const { crossingId } = useParams();
 
     useEffect(() => {
@@ -98,10 +99,16 @@ const AddTopic = ({ open }) => {
                     />
                      <Button 
                         color="rose"
+                        disabled={loadingButton}
                         onClick={handleSubmit(onSubmit)}
                         className={classes.submitButton}
                     >
                         POST TOPIC
+                        {
+                            loadingButton && (
+                                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />
+                            )
+                        }
                     </Button>
                 </GridItem> 
             </GridContainer>

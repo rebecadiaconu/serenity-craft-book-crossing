@@ -18,6 +18,7 @@ import GridItem from 'components-template/Grid/GridItem';
 
 // @material-ui core
 import { 
+    CircularProgress,
     Dialog,
     FormControl,
     FormControlLabel,
@@ -43,11 +44,11 @@ const ChangeBookModal = ({ open, recipient }) => {
     const dispatch = useDispatch();
     const { crossingId } = useParams();
     const { books } = useSelector((state) => state.user);
-    const { userBooks } = useSelector((state) => state.ui);
+    const { userBooks, loadingButton } = useSelector((state) => state.ui);
     const [newbook, setNewBook] = useState(null);
 
     useEffect(() => {
-        if (recipient) dispatch(getAnyUser(recipient));
+        if (recipient) dispatch(getAnyUser(recipient, false));
     }, []);
 
     const handleChange = (value) => {
@@ -91,7 +92,7 @@ const ChangeBookModal = ({ open, recipient }) => {
                         ) : (
                             userBooks.filter((book) => book.available && !book.involved).map((book) => {
                                 return (
-                                    <GridItem xs={12} sm={12} md={4} onClick={() => handleChange(book.bookId)}>
+                                    <GridItem key={book.bookId} xs={12} sm={12} md={4} onClick={() => handleChange(book.bookId)}>
                                         <Card className={newbook !== book.bookId ? classes.card : classes.card + " " + classes.selected}>
                                             <CardBody className={classes.cover} >
                                                 <FormControlLabel value={book.bookId} control={<Radio />} />
@@ -110,7 +111,14 @@ const ChangeBookModal = ({ open, recipient }) => {
                     )
                 }
                 <GridItem xs={12} sm={12} md={12}>
-                    <Button color="rose" className={classes.submitButton} onClick={handleSubmit}>CHANGE BOOK</Button>
+                    <Button disabled={loadingButton} color="rose" className={classes.submitButton} onClick={handleSubmit}>
+                        CHANGE BOOK
+                        {
+                            loadingButton && (
+                                <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={32} color='secondary' />
+                            )
+                        }
+                    </Button>
                 </GridItem>
                 </GridContainer>
                 </RadioGroup>

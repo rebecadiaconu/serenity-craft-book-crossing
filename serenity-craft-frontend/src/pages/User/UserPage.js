@@ -29,13 +29,14 @@ const UserPage = () => {
     const dispatch = useDispatch();
     const { user, loading } = useSelector((state) => state.ui);
     const { authenticated } = useSelector((state) => state.user);
+    const { changeBook } = useSelector((state) => state.crossing);
     const { initBooks, books, searchApplied } = useSelector((state) => state.books);
     const booksPerPage = 6;
     const [index, setIndex] = useState(1);
     const [showedBooks, setShowed] = useState(Math.min(booksPerPage, books.length));
 
     useEffect(() => {
-        if (authenticated) dispatch(getAnyUser(username));
+        if (authenticated) dispatch(getAnyUser(username, true));
 
         return () => {
             dispatch({ 
@@ -60,7 +61,7 @@ const UserPage = () => {
             alignContent="flex-end"
         >
         {
-            loading ? (
+            (loading && !changeBook) ? (
                 <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={72} color='secondary' />
             ) : (
             <>
