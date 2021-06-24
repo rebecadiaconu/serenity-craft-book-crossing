@@ -21,8 +21,8 @@ import Card from 'components-template/Card/Card';
 import CardHeader from 'components-template/Card/CardHeader';
 import CardAvatar from 'components-template/Card/CardAvatar';
 import CardBody from "components-template/Card/CardBody.js";
-import Danger from "components-template/Typography/Danger";
 import CardFooter from 'components-template/Card/CardFooter';
+import Danger from "components-template/Typography/Danger";
 import GridContainer from 'components-template/Grid/GridContainer';
 import GridItem from 'components-template/Grid/GridItem';
 
@@ -48,8 +48,8 @@ import GradeOutlinedIcon from '@material-ui/icons/GradeOutlined';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/bookStyle";
-import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
+import styles from "assets/jss/serenity-craft/components/book/bookStyle";
+import alertStyles from "assets/jss/serenity-craft/util/sweetAlertStyle.js";
 
 const useStyles = makeStyles(styles);
 const useAlert = makeStyles(alertStyles);
@@ -237,7 +237,6 @@ const BookPage = () => {
         if (deleteBookNow) {
             setAlert(null);
             dispatch({ type: Actions.BOOK.STOP_DELETE });
-            history.push("/");
         }
         else if (deleteReview) {
             setAlert(null);

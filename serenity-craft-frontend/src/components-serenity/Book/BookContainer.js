@@ -29,7 +29,7 @@ import StarHalfIcon from '@material-ui/icons/StarHalf';
 import ArtTrack from "@material-ui/icons/ArtTrack";
 
 // Styles
-import styles from "assets/jss/material-dashboard-pro-react/views/bookStyle.js";
+import styles from "assets/jss/serenity-craft/components/book/bookContainer.js";
 const useStyles = makeStyles(styles);
 
 const BookContainer = ({ book, carousel }) => {

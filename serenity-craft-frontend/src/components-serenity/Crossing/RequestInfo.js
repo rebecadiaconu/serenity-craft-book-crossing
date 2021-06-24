@@ -19,7 +19,7 @@ import GridItem from 'components-template/Grid/GridItem';
 import { Dialog, Slide, makeStyles, Typography } from '@material-ui/core';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/crossingRequest"
+import styles from "assets/jss/serenity-craft/components/crossing/crossingRequest"
 const useStyles = makeStyles(styles);
 
 const Transition = forwardRef(function Transition(props, ref) {

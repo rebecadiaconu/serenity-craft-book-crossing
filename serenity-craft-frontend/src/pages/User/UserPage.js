@@ -19,7 +19,6 @@ import UserCard from "components-serenity/User/UserCard";
 
 // @material-ui core
 import { CircularProgress } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
 
 // icons
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';

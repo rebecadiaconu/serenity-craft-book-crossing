@@ -25,7 +25,8 @@ import { makeStyles, Tooltip, Typography } from '@material-ui/core';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
 
-import requestStyle from "assets/jss/serenity-craft/components/crossingRequest";
+// Styles
+import requestStyle from "assets/jss/serenity-craft/components/crossing/crossingRequest";
 const useStyles = makeStyles(requestStyle);
 
 

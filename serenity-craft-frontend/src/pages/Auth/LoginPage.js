@@ -19,7 +19,7 @@ import CardHeader from "components-template/Card/CardHeader.js";
 import CardFooter from "components-template/Card/CardFooter.js";
 import GridContainer from "components-template/Grid/GridContainer.js";
 import GridItem from "components-template/Grid/GridItem.js";
-import TypographyDanger from "components-template/Typography/Danger.js";
+import Danger from "components-template/Typography/Danger.js";
 
 // @material-ui/core components
 import { 
@@ -143,9 +143,9 @@ const LoginPage = () => {
                 <br />
                 {
                   errors?.general && (
-                    <TypographyDanger variant="body2" style={{textAlign: 'center', marginTop: 20}}>
+                    <Danger variant="body2" style={{textAlign: 'center', marginTop: 20}}>
                       {errors.general}
-                    </TypographyDanger>
+                    </Danger>
                   )
                 }
               </CardBody>

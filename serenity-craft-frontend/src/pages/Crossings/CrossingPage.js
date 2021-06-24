@@ -16,6 +16,7 @@ import { getCrossingData, changeCrossingType, cancelCrossing, deleteCrossing, ge
 // template
 import Button from "components-template/CustomButtons/Button";
 import CustomTabs from 'components-template/CustomTabs/CustomTabs';
+import CustomDropdown from 'components-template/CustomDropdown/CustomDropdown';
 import GridContainer from 'components-template/Grid/GridContainer';
 import GridItem from 'components-template/Grid/GridItem';
 import Timeline from 'components-template/Timeline/Timeline';
@@ -54,11 +55,10 @@ import ShareIcon from '@material-ui/icons/Share';
 import InfoIcon from '@material-ui/icons/Info';
 import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check';
-import CustomDropdown from 'components-template/CustomDropdown/CustomDropdown';
 
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/customCheckboxRadioSwitch.js";
-import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
+import alertStyles from "assets/jss/serenity-craft/util/sweetAlertStyle.js";
 const useAlert = makeStyles(alertStyles);
 const switchStyles = makeStyles(styles);
 

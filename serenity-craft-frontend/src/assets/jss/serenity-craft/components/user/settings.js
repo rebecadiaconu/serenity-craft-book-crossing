@@ -3,25 +3,25 @@ import { tooltip } from "assets/jss/material-dashboard-pro-react";
 
 const settingsStyle = {
     tooltip,
-    central: {
-        margin: '0 auto'
+    actionContainer: {
+        display: 'flex',
+        justifyContent: "center"
     },
     button: {
         margin: '0 10px',
         width: 150
     },
+    central: {
+        margin: '0 auto'
+    },
     closeButton: {
         float: 'right'
     },
-    actionContainer: {
-        display: 'flex',
-        justifyContent: "center"
+    icon: {
+        color: 'red',
     },
     textField: {
         margin: '10px auto'
-    },
-    icon: {
-        color: 'red',
     }
 };
 

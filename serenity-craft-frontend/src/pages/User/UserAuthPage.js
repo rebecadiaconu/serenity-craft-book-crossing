@@ -30,7 +30,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import EditIcon from '@material-ui/icons/Edit';
 
 // Styles
-import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
+import alertStyles from "assets/jss/serenity-craft/util/sweetAlertStyle.js";
 const useAlert = makeStyles(alertStyles);
 
 

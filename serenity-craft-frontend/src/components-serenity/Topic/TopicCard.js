@@ -41,7 +41,7 @@ import TextField from "@material-ui/core/TextField";
 import ReportIcon from '@material-ui/icons/Report';
 
 // Styles
-import topicStyle from "assets/jss/serenity-craft/components/topicStyle";
+import topicStyle from "assets/jss/serenity-craft/components/crossing/topicStyle";
 const useStyles = makeStyles(topicStyle);
 
 const Transition = forwardRef(function Transition(props, ref) {

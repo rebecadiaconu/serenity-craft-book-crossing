@@ -26,7 +26,7 @@ import { makeStyles, Typography, Tooltip } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/crossingContainer";
+import styles from "assets/jss/serenity-craft/components/crossing/crossingContainer";
 const useStyles = makeStyles(styles);
 
 const responsive = {

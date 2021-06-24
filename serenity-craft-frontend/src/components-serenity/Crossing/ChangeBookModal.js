@@ -31,7 +31,7 @@ import {
  } from '@material-ui/core';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/changeBookModal";
+import styles from "assets/jss/serenity-craft/components/crossing/changeBookModal";
 const useStyles = makeStyles(styles);
 
 

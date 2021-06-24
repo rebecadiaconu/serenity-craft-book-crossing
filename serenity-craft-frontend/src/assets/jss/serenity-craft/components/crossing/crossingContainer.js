@@ -6,13 +6,6 @@ import {
 
 const crossingContainer = {
     tooltip,
-    root: {
-        // backgroundImage: `url(${CrossingBackgr})`,
-        margin: 15,
-        maxHeight: 350,
-        fontFamily: "'Grandstander', cursive",
-        maxWidth: 450
-    },
     avatar: {
         display: 'flex',
         margin: '0 auto',
@@ -23,9 +16,11 @@ const crossingContainer = {
         }
         // marginTop: 10
     },
-    submitButton: {
-        display: 'flex',
-        margin: '0 auto'
+    changeBookBtn: {
+        position: 'absolute',
+        right: 0,
+        top: 10,
+        zIndex: 2
     },
     cover: {
         maxHeight: 300,
@@ -40,17 +35,7 @@ const crossingContainer = {
     info: {
         fontFamily: "'Grandstander', cursive",
         margin: '0 auto'
-    },
-    changeBookBtn: {
-        position: 'absolute',
-        right: 0,
-        top: 10,
-        zIndex: 2
     },  
-    right: {
-        float: "right!important",
-        display: "block"
-    },
     link: {
         color: "black",
         textDecoration: "none",
@@ -58,6 +43,21 @@ const crossingContainer = {
             color: "black",
             textDecoration: "none",
         }
+    },
+    root: {
+        // backgroundImage: `url(${CrossingBackgr})`,
+        margin: 15,
+        maxHeight: 350,
+        fontFamily: "'Grandstander', cursive",
+        maxWidth: 450
+    },
+    right: {
+        float: "right!important",
+        display: "block"
+    },
+    submitButton: {
+        display: 'flex',
+        margin: '0 auto'
     }
 };
 

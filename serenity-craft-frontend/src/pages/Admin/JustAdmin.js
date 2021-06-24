@@ -45,9 +45,9 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 // Styles
 import backgrImage from "assets/img/backgr6.jpg";
-import styles from "assets/jss/serenity-craft/components/justAdminStyle";
-import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
-import formStyles from "assets/jss/serenity-craft/components/addForm"
+import styles from "assets/jss/serenity-craft/components/user/justAdminStyle";
+import alertStyles from "assets/jss/serenity-craft/util/sweetAlertStyle.js";
+import formStyles from "assets/jss/serenity-craft/util/formStyle"
 const useForm = makeStyles(formStyles);
 const useAlert = makeStyles(alertStyles);
 const useStyles = makeStyles((theme) => ({

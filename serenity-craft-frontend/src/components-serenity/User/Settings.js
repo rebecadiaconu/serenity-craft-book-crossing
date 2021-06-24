@@ -39,7 +39,7 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/settings";
+import styles from "assets/jss/serenity-craft/components/user/settings";
 const useStyles = makeStyles(styles);
 
 const Transition = forwardRef(function Transition(props, ref) {

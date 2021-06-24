@@ -28,7 +28,7 @@ import {
  } from '@material-ui/core';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/addForm"
+import styles from "assets/jss/serenity-craft/util/formStyle"
 const useStyles = makeStyles(styles);
 
 const Transition = forwardRef(function Transition(props, ref) {

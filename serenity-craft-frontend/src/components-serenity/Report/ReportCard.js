@@ -27,7 +27,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import EmailIcon from '@material-ui/icons/Email';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/reportCard";
+import styles from "assets/jss/serenity-craft/util/reportCard";
 const useStyles = makeStyles(styles);
 
 const ReportCard = ({ report }) => {

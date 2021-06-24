@@ -20,7 +20,7 @@ import { CircularProgress, Typography, makeStyles } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import GridItem from 'components-template/Grid/GridItem';
 
-import styles from "assets/jss/serenity-craft/components/bookStyle.js";
+import styles from "assets/jss/serenity-craft/components/book/bookStyle.js";
 const useStyles = makeStyles(styles);
 
 const Favorites = () => {

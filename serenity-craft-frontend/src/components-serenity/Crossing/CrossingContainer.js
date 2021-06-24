@@ -20,7 +20,7 @@ import GridItem from 'components-template/Grid/GridItem';
 import { makeStyles, Typography } from "@material-ui/core";
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/crossingContainer";
+import styles from "assets/jss/serenity-craft/components/crossing/crossingContainer";
 const useStyles = makeStyles(styles);
 
 const CrossingContainer = ({ crossing, color }) => {

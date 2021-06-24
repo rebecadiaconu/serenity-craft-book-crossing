@@ -13,6 +13,11 @@ const errorPageStyles = () => ({
     width: "100%",
     maxWidth: "880px"
   },
+  description: {
+    fontSize: "1.125rem",
+    marginTop: "0",
+    marginBottom: "8px"
+  },
   title: {
     ...title,
     fontSize: "13.7em",
@@ -22,11 +27,6 @@ const errorPageStyles = () => ({
   },
   subTitle: {
     fontSize: "2.25rem",
-    marginTop: "0",
-    marginBottom: "8px"
-  },
-  description: {
-    fontSize: "1.125rem",
     marginTop: "0",
     marginBottom: "8px"
   }

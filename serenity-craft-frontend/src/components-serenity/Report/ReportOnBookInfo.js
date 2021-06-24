@@ -23,7 +23,7 @@ import GradeOutlinedIcon from '@material-ui/icons/GradeOutlined';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/bookStyle";
+import styles from "assets/jss/serenity-craft/components/book/bookStyle";
 const useStyles = makeStyles(styles);
 
 const Details = ({ numPages, language, publisher, bookQuality, publicationYear, ownerRating }) => {

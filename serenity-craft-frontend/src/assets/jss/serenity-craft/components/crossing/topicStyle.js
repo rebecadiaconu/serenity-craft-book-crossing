@@ -8,13 +8,10 @@ const topicStyle = {
     tooltip,
     cardTitle,
     cardSubtitle,
-    root: {
-        minHeight: 800,
-        maxHeight: 1100,
-        margin: '0 auto'
-    },
-    user: {
-        fontFamily: "'Grandstander', cursive"
+    addReply: {
+        backgroundColor: "white",
+        position: 'sticky',
+        bottom: "1rem"
     },
     card: {
         position: 'relative',
@@ -41,15 +38,19 @@ const topicStyle = {
         position: 'absolute',
         right: 5
     },
+    root: {
+        minHeight: 800,
+        maxHeight: 1100,
+        margin: '0 auto'
+    },
     submitButton: {
         display: 'flex',
         margin: '0 auto'
     },
-    addReply: {
-        backgroundColor: "white",
-        position: 'sticky',
-        bottom: "1rem"
-    }
+    user: {
+        fontFamily: "'Grandstander', cursive"
+    },
+    
 };
 
 export default topicStyle;

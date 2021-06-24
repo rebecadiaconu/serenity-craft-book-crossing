@@ -5,20 +5,6 @@ import {
 
 const changeBookModal ={
     tooltip,
-    root: {
-        minHeight: 800,
-        maxHeight: 1100,
-        margin: '0 auto'
-    },
-    header: {
-        margin: '30px 0 15px',
-        fontFamily: "'Sacramento', cursive",
-        textAlign: "center",
-    },
-    grid: {
-        maxWidth: 1200,
-        margin: '0 auto'
-    },
     card: {
         textAlign: 'center'
     },
@@ -32,16 +18,30 @@ const changeBookModal ={
             margin: '15px 10px'
         }
     },
-    selected: {
-        border: '1px solid',
-        borderColor: roseColor[0]
-    },
     footer: {
         marginTop: 20,
         marginBottom: 20,
         textAlign: 'center',
         fontFamily: "'Grandstander', cursive",
         color: "#999999"
+    },
+    grid: {
+        maxWidth: 1200,
+        margin: '0 auto'
+    },
+    header: {
+        margin: '30px 0 15px',
+        fontFamily: "'Sacramento', cursive",
+        textAlign: "center",
+    },
+    root: {
+        minHeight: 800,
+        maxHeight: 1100,
+        margin: '0 auto'
+    },
+    selected: {
+        border: '1px solid',
+        borderColor: roseColor[0]
     },
     submitButton: {
         display: 'flex',

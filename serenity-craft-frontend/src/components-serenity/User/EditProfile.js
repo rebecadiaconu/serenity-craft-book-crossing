@@ -40,7 +40,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import TextsmsIcon from '@material-ui/icons/Textsms';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/editProfile";
+import styles from "assets/jss/serenity-craft/components/user/editProfile";
 const useStyles = makeStyles(styles);
 
 const EditProfile = () => {

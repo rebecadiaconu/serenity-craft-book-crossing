@@ -15,6 +15,7 @@ import Button from "components-template/CustomButtons/Button";
 import Danger from "components-template/Typography/Danger.js";
 import GridContainer from 'components-template/Grid/GridContainer';
 import GridItem from 'components-template/Grid/GridItem';
+import UploadImage from 'util/components/UploadImage';
 
 // @material-ui core
 import { 
@@ -39,8 +40,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/addForm"
-import UploadImage from 'util/components/UploadImage';
+import styles from "assets/jss/serenity-craft/util/formStyle"
 const useStyles = makeStyles(styles);
 
 const Transition = forwardRef(function Transition(props, ref) {

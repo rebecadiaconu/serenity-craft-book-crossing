@@ -13,9 +13,10 @@ import UploadImage from 'util/components/UploadImage';
 import { Dialog, makeStyles, Slide, Typography } from '@material-ui/core';
 
 // Styles
-import upload from "assets/jss/serenity-craft/components/editProfile";
-import formStyles from "assets/jss/serenity-craft/components/addForm";
+import upload from "assets/jss/serenity-craft/components/user/editProfile";
+import formStyles from "assets/jss/serenity-craft/util/formStyle";
 import featherLogo from "assets/img/feather-logo.png";
+
 const uploadStyles = makeStyles({
     ...upload,
     ...formStyles

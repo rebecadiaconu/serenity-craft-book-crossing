@@ -39,7 +39,7 @@ import TextField from "@material-ui/core/TextField"
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/addForm"
+import styles from "assets/jss/serenity-craft/util/formStyle"
 const useStyles = makeStyles(styles);
 
 const Transition = forwardRef(function Transition(props, ref) {

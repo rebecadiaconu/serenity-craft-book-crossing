@@ -20,7 +20,7 @@ import RequestCard from 'components-serenity/Crossing/RequestCard';
 import { CircularProgress, Typography, makeStyles } from '@material-ui/core';
 
 // Styles
-import alertStyles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
+import alertStyles from "assets/jss/serenity-craft/util/sweetAlertStyle.js";
 const useAlert = makeStyles(alertStyles);
 
 const RequestPage = () => {

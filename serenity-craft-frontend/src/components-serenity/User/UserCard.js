@@ -29,47 +29,7 @@ import AlternateEmailIcon from '@material-ui/icons/AlternateEmail';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 // Style
-import styles from "assets/jss/material-dashboard-pro-react/views/userProfileStyles";
-import { cardTitle } from "assets/jss/material-dashboard-pro-react.js";
-
-const userStyles = {
-    ...styles,
-    cardTitle,
-    user: {
-        fontFamily: "'Grandstander', cursive"
-    },
-    email: {
-        color: "inherit",
-        "& h4": {
-        marginBottom: "0px",
-        marginTop: "0px"
-        }
-    },
-    location: {
-        color: "#999999",
-        fontSize: "12px",
-        lineHeight: "22px",
-        display: "inline-flex",
-        "& svg": {
-          position: "relative",
-          top: "4px",
-          width: "16px",
-          height: "16px",
-          marginRight: "3px"
-        },
-        "& .fab,& .fas,& .far,& .fal,& .material-icons": {
-          position: "relative",
-          top: "4px",
-          fontSize: "16px",
-          marginRight: "3px"
-        }
-      },
-    cardCategory: {
-        margin: "0 auto",
-        color: "#999999"
-    }
-}
-
+import userStyles from "assets/jss/serenity-craft/components/user/userCardStyle";
 const useStyles = makeStyles(userStyles);
 
 const UserCard = ({ user, search }) => {

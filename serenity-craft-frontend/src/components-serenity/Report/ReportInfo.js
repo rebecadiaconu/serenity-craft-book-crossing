@@ -23,7 +23,7 @@ import ReportOnReplyTopicReview from "components-serenity/Report/ReportOnReplyTo
 import { Dialog, Divider, makeStyles, Slide, Typography } from '@material-ui/core';
 
 // Styles
-import styles from "assets/jss/serenity-craft/components/reportCard"
+import styles from "assets/jss/serenity-craft/util/reportCard"
 const useStyles = makeStyles(styles);
 // let ps;
 

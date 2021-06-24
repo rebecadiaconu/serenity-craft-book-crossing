@@ -20,7 +20,7 @@ import CardHeader from "components-template/Card/CardHeader.js";
 import CardFooter from "components-template/Card/CardFooter.js";
 import GridContainer from "components-template/Grid/GridContainer.js";
 import GridItem from "components-template/Grid/GridItem.js";
-import TypographyDanger from "components-template/Typography/Danger.js";
+import Danger from "components-template/Typography/Danger.js";
 
 // @material-ui/core 
 import { 
@@ -36,7 +36,7 @@ import EmailIcon from '@material-ui/icons/Email';
 
 // Styles
 import styles from "assets/jss/material-dashboard-pro-react/views/loginPageStyle.js";
-import stylesSweet from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
+import stylesSweet from "assets/jss/serenity-craft/util/sweetAlertStyle.js";
 const useStyles = makeStyles(styles);
 const alertStyles = makeStyles(stylesSweet);
 
@@ -120,9 +120,9 @@ const ResetPassword = () => {
                   <br />
                   {
                     errors?.general && (
-                      <TypographyDanger variant="body2" className={classes.justifyContentCenter}>
+                      <Danger variant="body2" className={classes.justifyContentCenter}>
                         {errors.general}
-                      </TypographyDanger>
+                      </Danger>
                     )
                   }
                 </CardBody>

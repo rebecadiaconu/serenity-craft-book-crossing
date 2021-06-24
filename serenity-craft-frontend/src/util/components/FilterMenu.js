@@ -26,7 +26,7 @@ import {
 import FilterListIcon from '@material-ui/icons/FilterList';
 
 // Styles
-import styles from "assets/jss/material-dashboard-pro-react/filterMenuStyle";
+import styles from "assets/jss/serenity-craft/util/filterMenuStyle";
 
 const useStyles = makeStyles(styles);
 

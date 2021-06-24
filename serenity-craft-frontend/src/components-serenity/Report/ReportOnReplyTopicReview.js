@@ -21,8 +21,8 @@ import GradeOutlinedIcon from '@material-ui/icons/GradeOutlined';
 import StarHalfIcon from '@material-ui/icons/StarHalf';
 
 // Styles
-import topicStyles from "assets/jss/serenity-craft/components/topicStyle";
-import bookStyles from "assets/jss/serenity-craft/components/bookStyle";
+import topicStyles from "assets/jss/serenity-craft/components/crossing/topicStyle";
+import bookStyles from "assets/jss/serenity-craft/components/book/bookStyle";
 const useTopic = makeStyles(topicStyles);
 const useBook = makeStyles(bookStyles);
 

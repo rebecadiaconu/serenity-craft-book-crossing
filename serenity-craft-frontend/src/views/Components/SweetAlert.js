@@ -15,7 +15,7 @@ import Button from "components-template/CustomButtons/Button.js";
 import Card from "components-template/Card/Card.js";
 import CardBody from "components-template/Card/CardBody.js";
 
-import styles from "assets/jss/material-dashboard-pro-react/views/sweetAlertStyle.js";
+import styles from "assets/jss/serenity-craft/util/sweetAlertStyle.js";
 
 const useStyles = makeStyles(styles);
 

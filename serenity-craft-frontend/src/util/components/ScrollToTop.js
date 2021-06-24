@@ -13,7 +13,7 @@ import {
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 // Styles
-import styles from "assets/jss/material-dashboard-pro-react/scrollTopStyle.js";
+import styles from "assets/jss/serenity-craft/util/scrollTopStyle.js";
 const useStyles = makeStyles(styles);
 
 const ScrollToTop = ({ top }) => {
