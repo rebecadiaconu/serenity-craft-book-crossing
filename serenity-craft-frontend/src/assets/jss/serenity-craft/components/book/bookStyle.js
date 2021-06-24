@@ -77,8 +77,8 @@ const bookStyle = {
         marginTop: 30
     },
     coverImage: {
-        height: 600,
-        width: 350,
+        maxHeight: '90%',
+        maxWidth: '85%',
         objectFit: "cover",
         margin: '0 auto',
         borderRadius: 15
