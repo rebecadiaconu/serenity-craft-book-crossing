@@ -10,7 +10,7 @@ import GridItem from 'components-template/Grid/GridItem';
 import UploadImage from 'util/components/UploadImage';
 
 // @material-ui core
-import { Dialog, makeStyles, Slide, Typography } from '@material-ui/core';
+import { Dialog, Hidden, makeStyles, Slide, Typography } from '@material-ui/core';
 
 // Styles
 import upload from "assets/jss/serenity-craft/components/user/editProfile";
@@ -44,9 +44,11 @@ const ChangeCoverImage = ({ justAdded, handleClose }) => {
                 alignContent="center"
                 style={{width: '95%', position: 'relative', marginLeft: 10, height: 800}}
             >
-                <GridItem xs={2} sm={2} md={2}>
-                    <img src={featherLogo} className={classes.logo} />
-                </GridItem>
+                <Hidden smDown implementation="css">
+                    <GridItem xs={2} sm={2} md={2}>
+                        <img src={featherLogo} className={classes.logo} />
+                    </GridItem>
+                </Hidden>
                 <GridItem xs={10} sm={10} md={6}>
                     <Typography variant="h4" className={classes.header}>
                         Upload a cover image for you book to make it more atractive!

@@ -44,8 +44,8 @@ const ReviewContainer = ({ classes, reviews }) => {
                         tabContent: (
                             <Card className={classes.reviewContainer}>
                             {
-                                reviews.filter((review) => review.body && review.username !== book.owner).length > 0 ? (
-                                    reviews.filter((review) => review.body && review.username !== book.owner).map((review, index) => {
+                                reviews.filter((review) => review.username !== book.owner).length > 0 ? (
+                                    reviews.filter((review) => review.username !== book.owner).map((review, index) => {
                                         return (
                                             <ReviewCard key={index} review={review} classes={classes} show={show} />
                                         ) 
@@ -61,8 +61,8 @@ const ReviewContainer = ({ classes, reviews }) => {
                         tabContent: (
                             <Card className={classes.reviewContainer}>
                             {
-                                reviews.filter((review) => review.rating === 0 && review.body && review.username !== book.owner).length > 0 ? (
-                                    reviews.filter((review) => review.rating === 0 && review.body && review.username !== book.owner).map((review, index) => {
+                                reviews.filter((review) => review.rating === 0 && review.username !== book.owner).length > 0 ? (
+                                    reviews.filter((review) => review.rating === 0 && review.username !== book.owner).map((review, index) => {
                                         return <ReviewCard key={index} review={review} classes={classes} show={show} />
                                     })
                                 ) : (
@@ -78,8 +78,8 @@ const ReviewContainer = ({ classes, reviews }) => {
                         tabContent: (
                             <Card className={classes.reviewContainer}>
                             {
-                                reviews.filter((review) => review.rating === 1 && review.body && review.username !== book.owner).length > 0 ? (
-                                    reviews.filter((review) => review.rating === 1 && review.body && review.username !== book.owner).map((review, index) => {
+                                reviews.filter((review) => review.rating === 1 && review.username !== book.owner).length > 0 ? (
+                                    reviews.filter((review) => review.rating === 1 && review.username !== book.owner).map((review, index) => {
                                         return <ReviewCard key={index} review={review} classes={classes} show={show} />
                                     })
                                 ) : (
@@ -95,8 +95,8 @@ const ReviewContainer = ({ classes, reviews }) => {
                         tabContent: (
                             <Card className={classes.reviewContainer}>
                             {
-                                reviews.filter((review) => review.rating === 2 && review.body && review.username !== book.owner).length > 0 ? (
-                                    reviews.filter((review) => review.rating === 2 && review.body && review.username !== book.owner).map((review, index) => {
+                                reviews.filter((review) => review.rating === 2 && review.username !== book.owner).length > 0 ? (
+                                    reviews.filter((review) => review.rating === 2 && review.username !== book.owner).map((review, index) => {
                                         return <ReviewCard key={index} review={review} classes={classes} show={show} />
                                     })
                                 ) : (
@@ -112,8 +112,8 @@ const ReviewContainer = ({ classes, reviews }) => {
                         tabContent: (
                             <Card className={classes.reviewContainer}>
                             {
-                                reviews.filter((review) => review.rating === 3 && review.body && review.username !== book.owner).length > 0 ? (
-                                    reviews.filter((review) => review.rating === 3 && review.body && review.username !== book.owner).map((review, index) => {
+                                reviews.filter((review) => review.rating === 3 && review.username !== book.owner).length > 0 ? (
+                                    reviews.filter((review) => review.rating === 3 && review.username !== book.owner).map((review, index) => {
                                         return <ReviewCard key={index} review={review} classes={classes} show={show} />
                                     })
                                 ) : (
@@ -129,8 +129,8 @@ const ReviewContainer = ({ classes, reviews }) => {
                         tabContent: (
                             <Card className={classes.reviewContainer}>
                             {
-                                reviews.filter((review) => review.rating === 4 && review.body && review.username !== book.owner).length > 0 ? (
-                                    reviews.filter((review) => review.rating === 4 && review.body && review.username !== book.owner).map((review, index) => {
+                                reviews.filter((review) => review.rating === 4 && review.username !== book.owner).length > 0 ? (
+                                    reviews.filter((review) => review.rating === 4 && review.username !== book.owner).map((review, index) => {
                                         return <ReviewCard key={index} review={review} classes={classes} show={show} />
                                     })
                                 ) : (
@@ -146,8 +146,8 @@ const ReviewContainer = ({ classes, reviews }) => {
                         tabContent: (
                             <Card className={classes.reviewContainer}>
                             {
-                                reviews.filter((review) => review.rating === 5 && review.body && review.username !== book.owner).length > 0 ? (
-                                    reviews.filter((review) => review.rating === 5 && review.body && review.username !== book.owner).map((review, index) => {
+                                reviews.filter((review) => review.rating === 5 && review.username !== book.owner).length > 0 ? (
+                                    reviews.filter((review) => review.rating === 5 && review.username !== book.owner).map((review, index) => {
                                         return <ReviewCard key={index} review={review} classes={classes} show={show} />
                                     })
                                 ) : (

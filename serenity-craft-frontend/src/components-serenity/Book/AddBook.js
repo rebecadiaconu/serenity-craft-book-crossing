@@ -22,6 +22,7 @@ import {
     Checkbox,
     CircularProgress,
     Dialog,
+    Hidden,
     IconButton,
     List, 
     ListItem,
@@ -112,18 +113,22 @@ const AddBook = ({ open, handleClose }) => {
                 justify="center"
                 alignItems="flex-start"
                 alignContent="center"
-                style={{width: '95%', position: 'relative', marginLeft: 10, width: 900}}
+                style={{width: '97%', position: 'relative', marginLeft: 10, maxWidth: 900}}
             >
-                <GridItem xs={2} sm={2} md={2}>
-                    <img src={featherLogo} className={classes.logo} />
-                </GridItem>
+                <Hidden smDown implementation="css">
+                    <GridItem xs={2} sm={2} md={2}>
+                        <img src={featherLogo} className={classes.logo} />
+                    </GridItem>
+                </Hidden>
                 <GridItem xs={10} sm={10} md={10}>
                     <Typography variant="h2" className={classes.header}>
                     Add a new book to Serenity
                     </Typography>
-                    <Typography variant="h4" className={classes.header}>
-                    Make people happy by sharing your books!
-                    </Typography>
+                    <Hidden smDown implementation="css">
+                        <Typography variant="h4" className={classes.header}>
+                            Make people happy by sharing your books!
+                        </Typography>
+                    </Hidden>
                 </GridItem>           
                 <GridItem xs={12} sm={12} md={6} style={{marginTop: 30, position: 'relative'}}>
                     <Typography variant="subtitle1">

@@ -80,7 +80,7 @@ const EditTopic = ({ open }) => {
             >
                 <GridItem xs={12} sm={12} md={12}>
                     <Typography variant="h4" className={classes.header}>
-                    Edit you topic's content!
+                    Edit your topic's content!
                     </Typography>
                 </GridItem>  
                 <GridItem xs={12} sm={12} md={12} style={{marginTop: 30, position: 'relative'}}>

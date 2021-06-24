@@ -11,7 +11,8 @@ const topicStyle = {
     addReply: {
         backgroundColor: "white",
         position: 'sticky',
-        bottom: "1rem"
+        bottom: "1rem",
+        width: '100%'
     },
     card: {
         position: 'relative',

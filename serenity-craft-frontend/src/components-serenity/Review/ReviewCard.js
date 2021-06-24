@@ -20,7 +20,7 @@ import GridItem from 'components-template/Grid/GridItem';
 import ReportForm from "util/components/ReportForm";
 
 // @material-ui core
-import { Tooltip, Typography } from '@material-ui/core';
+import { Hidden, Tooltip, Typography } from '@material-ui/core';
 
 // icons
 import ReportIcon from '@material-ui/icons/Report';
@@ -66,16 +66,18 @@ const ReviewCard = ({ show, review, classes }) => {
             alignItems="flex-start"
             className={classes.review}
         >
-            <GridItem xs={4} sm={4} md={2}>
-                <NavLink
-                        to={review.username === "deletedUser" ? "/auth/not-found" : `/admin/users/${review.username}`}
-                    >
-                        <CardAvatar>
-                            <img src={review.userImage} style={{objectFit: 'cover', width: 130, height: 130}} />
-                        </CardAvatar>
-                </NavLink>
-            </GridItem>
-            <GridItem xs={8} sm={8} md={9} className={classes.left}>
+            <Hidden mdDown implementation="css">
+                <GridItem xs={4} sm={4} md={2}>
+                    <NavLink
+                            to={review.username === "deletedUser" ? "/auth/not-found" : `/admin/users/${review.username}`}
+                        >
+                            <CardAvatar>
+                                <img src={review.userImage} style={{objectFit: 'cover', width: 130, height: 130}} />
+                            </CardAvatar>
+                    </NavLink>
+                </GridItem>
+            </Hidden>
+            <GridItem xs={12} sm={12} md={9} className={classes.left}>
                 <Typography variant="subtitle1" style={{fontFamily: "'Grandstander', cursive"}}>
                     {review.username} 
                 </Typography>

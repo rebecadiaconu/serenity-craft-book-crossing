@@ -19,6 +19,7 @@ import GridItem from 'components-template/Grid/GridItem';
 import { 
     CircularProgress,
     Dialog,
+    Hidden,
     makeStyles,
     Slide,
     Typography
@@ -68,11 +69,13 @@ const AddReview = ({ open }) => {
                 justify="center"
                 alignItems="center"
                 alignContent="center"
-                style={{width: '95%', position: 'relative', marginLeft: 10,  height: 500, textAlign: "center"}}
+                style={{width: '97%', position: 'relative', marginLeft: 10,  height: 500, textAlign: "center"}}
             >
-                <GridItem xs={2} sm={2} md={2}>
-                    <img src={featherLogo} className={classes.logo} />
-                </GridItem>
+                <Hidden smDown implementation="css">
+                    <GridItem xs={2} sm={2} md={2}>
+                        <img src={featherLogo} className={classes.logo} />
+                    </GridItem>
+                </Hidden>
                 <GridItem xs={10} sm={10} md={10}>
                     <Typography variant="h4" className={classes.header}>
                     Let other people know what you think!

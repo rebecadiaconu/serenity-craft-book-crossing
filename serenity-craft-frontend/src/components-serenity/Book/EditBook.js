@@ -23,6 +23,7 @@ import {
     Checkbox,
     CircularProgress,
     Dialog,
+    Hidden,
     IconButton,
     List,
     ListItem,
@@ -146,9 +147,11 @@ const EditBook = ({ open }) => {
                 alignContent="center"
                 style={{width: '95%', position: 'relative', marginLeft: 10}}
             >
-                <GridItem xs={2} sm={2} md={2}>
-                    <img src={featherLogo} className={classes.logo} />
-                </GridItem>
+                <Hidden smDown implementation="css">
+                    <GridItem xs={2} sm={2} md={2}>
+                        <img src={featherLogo} className={classes.logo} />
+                    </GridItem>
+                </Hidden>
                 <GridItem xs={10} sm={10} md={10}>
                     <Typography variant="h2" className={classes.header}>
                     Edit "{book.title}"
