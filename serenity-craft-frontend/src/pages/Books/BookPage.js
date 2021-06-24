@@ -7,6 +7,7 @@ import { userReviewFirst, alreadyPending, reportOnBookReviewTopicReply } from "u
 // Redux
 import { useSelector, useDispatch } from "react-redux";
 import { getBook, deleteBook } from "redux/actions/bookActions";
+import { addToFavs, removeFromFavs } from "redux/actions/userActions";
 import { getReview, reviewDelete } from "redux/actions/reviewActions";
 import { chooseRandomBook, sendRequest, cancelCrossing } from 'redux/actions/crossingActions';
 import { Actions } from 'redux/types';
@@ -262,6 +263,18 @@ const BookPage = () => {
         dispatch(cancelCrossing(crossingId, bookId));
     };
 
+    const handleFavsClick = (event) => {
+        event.preventDefault();
+        if (!credentials.favs.includes(book.bookId)) {
+            console.log('jhfjkerlg');
+            credentials.favs.push(book.bookId);
+            dispatch(addToFavs(book.bookId));
+        } else {
+            credentials.favs.splice(credentials.favs.indexOf(book.bookId), 1);
+            dispatch(removeFromFavs(book.bookId));
+        }
+    };
+
     const successAlert = (text) => {
         setAlert(
             <SweetAlert
@@ -368,6 +381,19 @@ const BookPage = () => {
                         <GridItem xs={12} sm={12} md={12} style={{textAlign: 'center'}}>
                             <Danger><h3>Account needed for available actions on this page!</h3></Danger>
                         </GridItem>
+                    ) 
+                }
+                {
+                    authenticated && credentials && (
+                        credentials?.favs?.includes(book.bookId) ? (
+                            <Button color="rose" style={{margin: '0 auto'}} onClick={handleFavsClick}>
+                                Remove from Favorites
+                            </Button>
+                        ) : (
+                            <Button color="rose" style={{margin: '0 auto'}} onClick={handleFavsClick}>
+                                Add to Favorites
+                            </Button>
+                        )
                     )
                 }
                 <GridItem xs={12} sm={12} md={12}>
