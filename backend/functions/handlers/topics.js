@@ -49,7 +49,6 @@ exports.addTopic = (req, res) => {
             createdAt: new Date().toISOString(),
             read: false,
             sender: req.user.username,
-            senderImage: req.user.imageUrl,
             type: 'topic',
             crossingId: req.params.crossingId,
             topicId: newTopic.topicId
@@ -241,7 +240,6 @@ exports.addReply = (req, res) => {
                 createdAt: new Date().toISOString(),
                 read: false,
                 sender: req.user.username,
-                senderImage: req.user.imageUrl,
                 type: 'reply',
                 recipient: recipientName,
                 topicId: topicData.topicId,

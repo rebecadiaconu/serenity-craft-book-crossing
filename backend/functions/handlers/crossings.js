@@ -197,7 +197,6 @@ exports.changeToPermanent = (req, res) => {
                         createdAt: new Date().toISOString(),
                         read: false,
                         sender: req.user.username,
-                        senderImage: req.user.imageUrl,
                         recipient: isSender ? doc.data().recipient : doc.data().sender,
                         type: 'type-permanent',
                         crossingId: req.params.crossingId
@@ -319,7 +318,6 @@ exports.acceptCrossing = (req, res) => {
                                 createdAt: new Date().toISOString(),
                                 read: false,
                                 sender: req.user.username,
-                                senderImage: req.user.imageUrl,
                                 recipient: req.user.username,
                                 type: 'check-request',
                                 crossingId: req.params.crossingId
@@ -336,7 +334,6 @@ exports.acceptCrossing = (req, res) => {
                                 createdAt: new Date().toISOString(),
                                 read: false,
                                 sender: req.user.username,
-                                senderImage: req.user.imageUrl,
                                 recipient: notifRecip,
                                 type: 'accept-request',
                                 crossingId: req.params.crossingId
@@ -434,7 +431,6 @@ exports.cancelCrossing = (req, res) => {
                     createdAt: new Date().toISOString(),
                     read: false,
                     sender: req.user.username,
-                    senderImage: req.user.imageUrl,
                     type: 'cancel-request',
                     crossingId: doc.id
                 }
@@ -542,7 +538,6 @@ exports.changeCrossingStatus = (req, res) => {
                 createdAt: new Date().toISOString(),
                 read: false,
                 sender: req.user.username,
-                senderImage: req.user.imageUrl,
                 recipient: crossingData.sender,
                 type: 'crossing-done',
                 crossingId: req.params.crossingId
@@ -553,7 +548,6 @@ exports.changeCrossingStatus = (req, res) => {
                 createdAt: new Date().toISOString(),
                 read: false,
                 sender: req.user.username,
-                senderImage: req.user.imageUrl,
                 recipient: crossingData.recipient,
                 type: 'crossing-done',
                 crossingId: req.params.crossingId

@@ -462,7 +462,6 @@ exports.reviewBook = (req, res) => {
                 let newNotification = {
                     notificationId: uuid(),
                     sender: req.user.username,
-                    senderImage: req.user.imageUrl,
                     createdAt: new Date().toISOString(),
                     recipient: doc.data().owner,
                     read: false,
