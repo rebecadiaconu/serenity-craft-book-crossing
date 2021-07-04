@@ -14,4 +14,4 @@ Firebase-React-Redux web app made as my bachelors degree project to support book
 <img src="https://user-images.githubusercontent.com/57195730/124397012-d014ae00-dd15-11eb-9831-28b067ade1a3.png" alt="user-page">
 
 ## How to run the project
-Open up two terminals and run: in the backend/functions directory run *firebase serve* and in the serenity-craft-frontend folder *npm start*.
+Open up two terminals and run: in the backend/functions directory run ***firebase serve*** and in the serenity-craft-frontend folder ***npm start***.
