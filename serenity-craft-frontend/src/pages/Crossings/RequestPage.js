@@ -27,7 +27,7 @@ const RequestPage = () => {
     const alertClasses = useAlert();
     const dispatch = useDispatch();
     const { requests } = useSelector((state) => state.user);
-    const { message, errors, loading } = useSelector((state) => state.ui);
+    const { message, errors, loading, seeRequest, request } = useSelector((state) => state.ui);
     const [alert, setAlert] = useState(null);
 
     useEffect(() =>{
@@ -95,7 +95,7 @@ const RequestPage = () => {
         >
             {alert}
             {
-                loading ? (
+                loading && !(seeRequest && request) ? (
                     <CircularProgress style={{position: 'absolute', margin: '0 auto', left: 0, right: 0}} size={72} color='secondary' />
                 ) : (
                 <>
